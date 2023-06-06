@@ -6,7 +6,8 @@
 function print() {
   console.log("clicked!");
 }
-function unused() {
-  console.log("unused!");
-}
+// unused() function is for checking if eslint is working
+// function unused() {
+//   console.log("unused!");
+// }
 </script>
