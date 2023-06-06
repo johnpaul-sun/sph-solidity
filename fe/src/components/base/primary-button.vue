@@ -1,12 +1,12 @@
 <template>
-  <button @click="print"><slot /></button>
+  <button class="text-green-500" @click="print"><slot /></button>
 </template>
 
 <script setup lang="ts">
 function print() {
-    console.log('clicked!')
+  console.log("clicked!");
 }
 function unused() {
-    console.log('unused!')
+  console.log("unused!");
 }
 </script>
