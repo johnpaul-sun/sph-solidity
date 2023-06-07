@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
+    "@nomiclabs/hardhat-solhint": "^3.0.1",
     "hardhat": "^2.14.1"
   }
 }
