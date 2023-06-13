@@ -1,6 +1,7 @@
 <template>
-    <div>Dashboard page</div>
+  <div>
+    Dashboard page
     <BasePrimaryButton>Button</BasePrimaryButton>
+  </div>
 </template>
-<script setup>
-</script>
+<script setup></script>

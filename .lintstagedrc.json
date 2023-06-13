@@ -1,0 +1,10 @@
+{
+  "*.sol": [
+    "npm run hardhat:prettier",
+    "npm run hardhat:solhint"
+  ],
+  "*.{js,vue}": [
+    "npm run nuxt:prettier",
+    "npm run nuxt:eslint"
+  ]
+}

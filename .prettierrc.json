@@ -1,0 +1,23 @@
+{
+  "tabWidth": 4,
+  "semi": true,
+  "printWidth": 80,
+  "trailingComma": "none",
+  "endOfLine": "lf",
+  "bracketSpacing": true,
+  "overrides": [
+    {
+      "files": "*.vue",
+      "options": {
+        "parser": "vue",
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": "*.json",
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}

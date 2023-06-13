@@ -1,10 +1,26 @@
 {
+  "name": "sph-solidity",
+  "version": "1.0.0",
+  "private": true,
   "devDependencies": {
-    "@commitlint/cli": "^17.6.5",
-    "@commitlint/config-conventional": "^17.6.5",
-    "husky": "^8.0.3"
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "hardhat:solhint": "yarn workspace smart-contract lint:solhint",
+    "hardhat:prettier": "yarn workspace smart-contract lint:prettier",
+    "hardhat:delpoy-local": "yarn workspace smart-contract deploy:local",
+    "hardhat:test": "yarn workspace smart-contract test",
+    "nuxt:dev": "yarn workspace fe dev",
+    "nuxt:eslint": "yarn workspace fe lint:eslint",
+    "nuxt:prettier": "yarn workspace fe lint:prettier"
+  },
+  "workspaces": {
+    "packages": [
+      "fe",
+      "smart-contract"
+    ]
   }
 }

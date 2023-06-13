@@ -25,7 +25,7 @@
               <button
                 :class="[
                   active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                  'group flex w-full items-center rounded-md px-2 py-2 text-sm'
                 ]"
               >
                 Edit
@@ -35,7 +35,7 @@
               <button
                 :class="[
                   active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                  'group flex w-full items-center rounded-md px-2 py-2 text-sm'
                 ]"
               >
                 Duplicate
@@ -47,7 +47,7 @@
               <button
                 :class="[
                   active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                  'group flex w-full items-center rounded-md px-2 py-2 text-sm'
                 ]"
               >
                 Archive
@@ -57,7 +57,7 @@
               <button
                 :class="[
                   active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                  'group flex w-full items-center rounded-md px-2 py-2 text-sm'
                 ]"
               >
                 Move
@@ -70,7 +70,7 @@
               <button
                 :class="[
                   active ? 'bg-violet-500 text-white' : 'text-gray-900',
-                  'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                  'group flex w-full items-center rounded-md px-2 py-2 text-sm'
                 ]"
               >
                 Delete

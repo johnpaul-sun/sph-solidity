@@ -1,16 +1,21 @@
 {
-  "name": "hardhat-smart-contract",
+  "name": "smart-contract",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test",
+    "lint:solhint": "solhint -f table contracts/**/*.sol",
+    "lint:prettier": "../node_modules/.bin/prettier --write contracts/**/*.sol"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
     "@nomiclabs/hardhat-solhint": "^3.0.1",
-    "hardhat": "^2.14.1"
+    "hardhat": "^2.14.1",
+    "prettier-plugin-solidity": "^1.1.3",
+    "solhint": "^3.4.1",
+    "solhint-plugin-prettier": "^0.0.5"
   }
 }

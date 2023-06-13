@@ -1,4 +1,6 @@
 <template>
-  <div>WELCOME TO VUE!</div>
-  <BaseDropdown />
+  <div>
+    WELCOME TO VUE!
+    <BaseDropdown />
+  </div>
 </template>
