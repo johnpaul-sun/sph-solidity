@@ -1,6 +1,5 @@
 {
   "recommendations": [
-    "JuanBlanco.solidity",
     "esbenp.prettier-vscode",
     "nomicfoundation.hardhat-solidity",
     "Vue.volar",

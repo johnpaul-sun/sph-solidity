@@ -9,10 +9,10 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "hardhat:solhint": "yarn workspace smart-contract lint:solhint",
-    "hardhat:prettier": "yarn workspace smart-contract lint:prettier",
-    "hardhat:delpoy-local": "yarn workspace smart-contract deploy:local",
-    "hardhat:test": "yarn workspace smart-contract test",
+    "hardhat:solhint": "yarn workspace smart_contract lint:solhint",
+    "hardhat:prettier": "yarn workspace smart_contract lint:prettier",
+    "hardhat:delpoy-local": "yarn workspace smart_contract deploy:local",
+    "hardhat:test": "yarn workspace smart_contract test",
     "nuxt:dev": "yarn workspace fe dev",
     "nuxt:eslint": "yarn workspace fe lint:eslint",
     "nuxt:prettier": "yarn workspace fe lint:prettier"
@@ -20,7 +20,7 @@
   "workspaces": {
     "packages": [
       "fe",
-      "smart-contract"
+      "smart_contract"
     ]
   }
 }
