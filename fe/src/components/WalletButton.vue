@@ -12,13 +12,13 @@
       <span class="truncate" :title="address">{{
         truncateAddress(address, 6, 3)
       }}</span>
-      <Icon v-if="isDropdownOpen" name="ps:down" size="20" />
-      <Icon v-else name="ps:up" size="20" />
+      <Icon v-show="isDropdownOpen" name="ps:down" size="20" />
+      <Icon v-show="!isDropdownOpen" name="ps:up" size="20" />
     </button>
     <button v-else class="btn-gradient h-full p-2 w-56">Connect Wallet</button>
     <div
-      v-if="isDropdownOpen && connected"
       class="absolute pt-3 right-0"
+      :hidden="!isDropdownOpen || !connected"
       @mouseover="isDropdownOpen = true"
       @mouseleave="isDropdownOpen = false"
     >

@@ -1,10 +1,7 @@
 <template>
   <div class="flex space-x-4 p-2 rounded-md bg-gray-200">
-    <Icon name="charm:search" class="my-auto text-disabled" />
-    <input
-      placeholder="Search"
-      class="bg-gray-200 focus:bg-white outline-none rounded-md"
-    />
+    <Icon name="charm:search" class="my-auto" />
+    <input placeholder="Search" class="bg-gray-200 outline-none" />
   </div>
 </template>
 
