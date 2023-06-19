@@ -1,6 +1,6 @@
 <template>
-  <header class="shadow-sm bg-white">
-    <nav class="container m-auto py-2 px-5 flex justify-between items-center">
+  <header class="shadow-sm bg-white h-16 py-3 px-16">
+    <nav class="container m-auto flex justify-between items-center">
       <NuxtLink to="/" class="justify-center"><Logo /></NuxtLink>
       <div class="flex gap-4">
         <BaseSearch />

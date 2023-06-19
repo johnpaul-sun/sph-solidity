@@ -18,7 +18,7 @@
     <button v-else class="btn-gradient h-full p-2 w-56">Connect Wallet</button>
     <div
       v-if="isDropdownOpen && connected"
-      class="absolute pt-2 right-0"
+      class="absolute pt-3 right-0"
       @mouseover="isDropdownOpen = true"
       @mouseleave="isDropdownOpen = false"
     >
