@@ -1,9 +1,13 @@
 <template>
-  <button class="text-green-500" @click="print"><slot /></button>
+  <button v-bind="$attrs" @click="handleSubmit"><slot /></button>
 </template>
 
 <script setup lang="ts">
-function print() {
-  console.log("clicked!");
-}
+type Props = {
+  label?: String;
+};
+
+function handleSubmit() {}
+
+defineProps<Props>();
 </script>
