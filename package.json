@@ -22,5 +22,8 @@
       "fe",
       "smart_contract"
     ]
+  },
+  "dependencies": {
+    "tailwindcss": "^3.3.2"
   }
 }
