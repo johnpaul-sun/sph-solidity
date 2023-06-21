@@ -1,5 +1,11 @@
 <template>
-  <button v-bind="$attrs" @click="handleSubmit"><slot /></button>
+  <button
+    v-bind="$attrs"
+    class="{ disabled: 'opacity-50'}"
+    @click="handleSubmit"
+  >
+    <slot />
+  </button>
 </template>
 
 <script setup lang="ts">

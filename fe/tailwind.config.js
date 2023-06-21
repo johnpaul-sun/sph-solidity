@@ -8,6 +8,7 @@ module.exports = {
                 disabled: "#949BA1",
                 white: "#FFFFFF",
                 blue: "#4391DA",
+                light: "#EAD9D3",
                 success: "#609876",
                 danger: "#9F3030",
                 warning: "#FFD700",
@@ -36,7 +37,8 @@ module.exports = {
             backgroundImage: {
                 gradient: "linear-gradient(180deg, #F39D40 0%, #AC3971 100%)",
                 "gradient-container":
-                    "linear-gradient(180deg, #F0F0F0 0%, #F5DED4 100%)"
+                    "linear-gradient(180deg, #F0F0F0 0%, #F5DED4 100%)",
+                beTheChange: "url(./src/assets/img/be-the-change.jpg')",
             },
             spacing: {
                 "8xl": "96rem",

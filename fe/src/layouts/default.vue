@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="flex flex-col h-screen">
     <Navbar />
-    <div>
+    <div class="flex h-full">
       <slot />
     </div>
   </div>
