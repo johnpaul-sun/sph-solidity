@@ -1,6 +1,6 @@
 <template>
-  <div class="space-y-1">
-    <label :for="name" class="text-sm font-bold text-dark">
+  <div class="flex flex-col space-y-1">
+    <label :for="name" class="flex items-center text-sm font-bold text-dark">
       {{ label }}
     </label>
     <textarea
@@ -10,11 +10,12 @@
       :placeholder="placeholder"
       type="text"
       rows="5"
+      :class="{
+        'outline outline-danger outline-1': error
+      }"
       class="w-full text-sm p-2 max-h-40 overflow-y-auto rounded border border-disabled focus:outline-none placeholder-disabled"
     />
-    <span v-if="error" class="flex pt-2 text-red-500 text-xs">
-      {{ error }}
-    </span>
+    <span class="h-4 text-red-500 text-xs font-light"> {{ error }} </span>
   </div>
 </template>
 

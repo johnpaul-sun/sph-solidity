@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full w-full">
-    <div class="w-1/2">
+    <div class="h-full w-1/2">
       <img
         src="../assets/img/be-the-change.jpg"
         alt="Be the Change"
@@ -8,57 +8,62 @@
       />
     </div>
     <div
-      class="flex justify-center items-center flex-col w-1/2 bg-gradient-to-b from-white to-light"
+      class="flex h-full justify-center items-center flex-col w-1/2 bg-gradient-to-b from-white to-light"
     >
       <form
         class="flex flex-col w-full p-16 space-y-16"
         @submit.prevent="onSubmit"
       >
         <div class="text-2xl text-dark font-bold">START A NEW CAMPAIGN</div>
-        <div class="space-y-4">
+        <div class="space-y-2">
           <BaseInput
             id="fullname"
-            v-model="fullname"
             label="Full name"
             name="fullname"
             placeholder="Enter your full name"
             :error="errors.fullname"
+            :model-value="fullname"
+            @change="handleChange"
           />
           <BaseInput
             id="campaign-name"
-            v-model="campaign"
             label="Campaign name"
-            name="campaign-name"
+            name="campaign"
             placeholder="Enter a title"
             :error="errors.campaign"
+            :model-value="campaign"
+            @change="handleChange"
           />
           <BaseTextArea
             id="story"
-            v-model="story"
             label="Story"
             name="story"
             placeholder="Write your story..."
             :error="errors.story"
+            :model-value="story"
+            @change="handleChange"
           />
           <FileUpload />
           <div class="flex w-full space-x-4">
             <BaseInput
               id="goal"
-              v-model="goal"
               label="Goal"
               name="goal"
               placeholder="0.123 DCAPP"
               :error="errors.goal"
               type="number"
               step="any"
+              :model-value="goal"
+              @change="handleChange"
             />
             <BaseInput
               id="date"
-              v-model="date"
               label="Date"
               name="date"
               type="date"
               :error="errors.date"
+              :model-value="date"
+              @change="handleChange"
             />
           </div>
         </div>
@@ -81,9 +86,28 @@ import {
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
 
-const { handleSubmit, resetForm, values, errors } = useForm({
+const {
+  handleSubmit,
+  resetForm,
+  values,
+  errors,
+  setFieldValue,
+  validateField
+} = useForm({
   validationSchema
 });
+
+const handleChange = (e: any) => {
+  const { name, value, type } = e.target;
+
+  if (type === "number") {
+    setFieldValue(name, parseFloat(value));
+  } else {
+    setFieldValue(name, value);
+  }
+
+  validateField(e.target.name);
+};
 
 const { value: fullname } =
   useField<CreateCampaignRequest["fullname"]>("fullname");

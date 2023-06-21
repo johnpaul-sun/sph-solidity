@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col w-full space-y-1">
-    <label :for="name" class="text-sm font-bold text-dark">{{ label }}</label>
+    <label :for="name" class="flex items-center text-sm font-bold text-dark"
+      >{{ label }}
+    </label>
     <input
       :id="id"
       v-model="modelValue"
@@ -9,12 +11,12 @@
       :placeholder="placeholder"
       :type="type"
       :step="step"
-      :class="{ 'text-disabled': !modelValue }"
-      class="w-full text-sm px-2 h-10 rounded border border-disabled focus:outline-none"
+      :class="{
+        'outline outline-danger outline-1': error
+      }"
+      class="w-full text-sm px-2 h-10 rounded border border-disabled focus:outline-none placeholder-disabled"
     />
-    <span v-if="error" class="flex pt-2 text-red-500 text-xs">
-      {{ error }}
-    </span>
+    <span class="h-4 text-red-500 text-xs font-light"> {{ error }} </span>
   </div>
 </template>
 

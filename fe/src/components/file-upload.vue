@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-1">
+  <div class="flex flex-col space-y-1">
     <div class="font-bold text-sm text-dark">Upload image</div>
     <div class="flex h-10 items-center text-sm">
       <input id="upload-file" name="upload-file" type="file" class="hidden" />
@@ -14,6 +14,9 @@
         Upload image
       </label>
     </div>
+    <span class="h-4 text-red-500 text-xs font-light">
+      <!-- error message -->
+    </span>
   </div>
 </template>
 <script setup lang="ts"></script>
