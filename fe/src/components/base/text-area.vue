@@ -13,7 +13,7 @@
       :class="{
         'outline outline-danger outline-1': error
       }"
-      class="w-full text-sm p-2 max-h-40 overflow-y-auto rounded border border-disabled focus:outline-none placeholder-disabled"
+      class="w-full text-sm p-2 h-32 max-h-32 overflow-y-auto rounded border border-disabled focus:outline-none placeholder-disabled"
     />
     <span class="h-4 text-red-500 text-xs font-light"> {{ error }} </span>
   </div>
