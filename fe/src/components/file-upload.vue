@@ -9,7 +9,7 @@
       </span>
       <label
         for="upload-file"
-        class="flex whitespace-nowrap h-full items-center justify-center px-4 border bg-base text-white border-disabled border-l-0 rounded-tr rounded-br"
+        class="flex whitespace-nowrap h-full items-center justify-center px-4 border bg-base text-white border-disabled border-l-1 rounded-tr rounded-br"
       >
         Upload image
       </label>
