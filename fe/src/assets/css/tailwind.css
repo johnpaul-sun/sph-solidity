@@ -16,7 +16,7 @@ body {
 
 .btn-gradient {
   background: var(--gradient);
-  @apply rounded-[6px] text-white;
+  @apply h-10 px-4 rounded-[6px] text-white;
 }
 
 .dropdown-item {

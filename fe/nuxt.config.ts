@@ -5,6 +5,7 @@ export default defineNuxtConfig({
         "@nuxtjs/eslint-module",
         "@nuxtjs/tailwindcss",
         "nuxt-headlessui",
-        "nuxt-icon"
+        "nuxt-icon",
+        "@vueuse/nuxt"
     ]
 });
