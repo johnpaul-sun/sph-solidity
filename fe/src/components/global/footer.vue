@@ -1,5 +1,5 @@
 <template>
-  <footer class="h-32 bg-gradient-container flex justify-center">
+  <footer class="h-16 bg-gradient-container flex justify-center">
     <div class="flex items-center">
       <icons-copy-right class="mr-1"></icons-copy-right>
       <div>SPH_SOLIDITY {{ year }}</div>
