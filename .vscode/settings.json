@@ -7,5 +7,6 @@
   "prettier.useTabs": false,
   "prettier.configPath": "prettierrc.json",
   "prettier.singleQuote": true,
+  "prettier.prettierPath": "./node_modules/prettier",
   "editor.tabSize": 2
 }
