@@ -3,7 +3,6 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                base: "#575655",
                 dark: "#500B0B",
                 disabled: "#949BA1",
                 white: "#FFFFFF",
@@ -13,7 +12,8 @@ module.exports = {
                 danger: "#9F3030",
                 warning: "#FFD700",
                 primary: {
-                    50: "#CF7A1E",
+                    10: "#575655",
+                    50: "#F9F8F8",
                     100: "#EAE5E5",
                     200: "#DACACA",
                     300: "#C29494",
@@ -40,13 +40,12 @@ module.exports = {
                     "linear-gradient(180deg, #F0F0F0 0%, #F5DED4 100%)",
                 beTheChange: "url(./src/assets/img/be-the-change.jpg')",
             },
-            spacing: {
-                "8xl": "96rem",
-                "9xl": "128rem"
-            },
             borderRadius: {
                 "4xl": "2rem"
-            }
+            },
+            boxShadow: {
+                card: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+            },
         }
     }
 };
