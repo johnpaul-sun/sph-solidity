@@ -38,14 +38,14 @@ module.exports = {
                 gradient: "linear-gradient(180deg, #F39D40 0%, #AC3971 100%)",
                 "gradient-container":
                     "linear-gradient(180deg, #F0F0F0 0%, #F5DED4 100%)",
-                beTheChange: "url(./src/assets/img/be-the-change.jpg')",
+                beTheChange: "url(./src/assets/img/be-the-change.jpg')"
             },
             borderRadius: {
                 "4xl": "2rem"
             },
             boxShadow: {
-                card: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-            },
+                card: "0px 4px 4px rgba(0, 0, 0, 0.25)"
+            }
         }
     }
 };

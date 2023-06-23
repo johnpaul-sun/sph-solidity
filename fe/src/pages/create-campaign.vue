@@ -68,21 +68,32 @@
           </div>
         </div>
         <BaseButton
+          v-if="isConnected"
           class="flex w-fit items-center justify-center text-sm uppercase btn-gradient"
         >
           Submit Application
         </BaseButton>
+        <div
+          v-else
+          class="flex w-fit items-center justify-center text-sm uppercase btn-gradient cursor-pointer"
+          @click="warning"
+        >
+          Connect Wallet
+        </div>
       </form>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { toast } from "vue3-toastify";
 import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import {
   CreateCampaignRequest,
   CreateCampaignRequestSchema
 } from "../schemas/create-campaign";
+import { useWalletStore } from "~/store/wallet";
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
 
@@ -121,4 +132,11 @@ const onSubmit = handleSubmit(() => {
   console.log(values);
   resetForm();
 });
+
+const useWallet: any = useWalletStore();
+const { isConnected } = storeToRefs(useWallet);
+
+const warning = () => {
+  toast.info("Connect wallet first!", { autoClose: 1500 });
+};
 </script>

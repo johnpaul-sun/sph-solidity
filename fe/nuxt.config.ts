@@ -2,10 +2,12 @@
 export default defineNuxtConfig({
     srcDir: "./src",
     modules: [
-        "@nuxtjs/eslint-module",
-        "@nuxtjs/tailwindcss",
-        "nuxt-headlessui",
         "nuxt-icon",
-        "@vueuse/nuxt"
-    ]
+        "@pinia/nuxt",
+        "@vueuse/nuxt",
+        "nuxt-headlessui",
+        "@nuxtjs/tailwindcss",
+        "@nuxtjs/eslint-module"
+    ],
+    plugins: [{ src: "~/plugins/toastify.ts", mode: "client" }]
 });
