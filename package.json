@@ -11,8 +11,11 @@
     "prepare": "husky install",
     "hardhat:solhint": "yarn workspace smart_contract lint:solhint",
     "hardhat:prettier": "yarn workspace smart_contract lint:prettier",
-    "hardhat:delpoy-local": "yarn workspace smart_contract deploy:local",
     "hardhat:test": "yarn workspace smart_contract test",
+    "hardhat:compile": "yarn workspace smart_contract compile",
+    "hardhat:node": "yarn workspace smart_contract run-node",
+    "hardhat:deploy-local": "yarn workspace smart_contract deploy-local",
+    "hardhat:interact-local": "yarn workspace smart_contract interact-local",
     "nuxt:dev": "yarn workspace fe dev",
     "nuxt:eslint": "yarn workspace fe lint:eslint",
     "nuxt:prettier": "yarn workspace fe lint:prettier"

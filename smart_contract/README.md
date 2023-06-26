@@ -1,13 +1,46 @@
-# Sample Hardhat Project
+# Hardhat
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+Look at the [Hardhat documentation](https://hardhat.org/hardhat-runner/docs/getting-started) to learn more.
 
-Try running some of the following tasks:
+## Setup
 
-```shell
+Make sure to install the dependencies:
+
+```
+npm install
+```
+
+## Local Development
+
+Start the development server on `http://127.0.0.1:8545/`
+
+```
+npm run compile
+npm run run-node
+```
+
+In another terminal, run this command:
+
+```
+npm run deploy-local
+```
+
+Set the returned contract address to environment variable `CONTRACT_ADDRESS`
+
+```
+npm run interact-local
+```
+
+## Linting
+
+```
+npm run lint:solhint
+npm run lint:prettier
+```
+
+## Other commands
+
+```
 npx hardhat help
-npx hardhat test
 REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
 ```

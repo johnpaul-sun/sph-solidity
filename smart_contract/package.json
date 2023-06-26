@@ -6,7 +6,11 @@
   "scripts": {
     "test": "npx hardhat test",
     "lint:solhint": "solhint -f table contracts/**/*.sol",
-    "lint:prettier": "../node_modules/.bin/prettier --write contracts/**/*.sol"
+    "lint:prettier": "../node_modules/.bin/prettier --write contracts/**/*.sol",
+    "compile": "npx hardhat compile",
+    "run-node": "npx hardhat node",
+    "deploy-local": "npx hardhat run scripts/deploy.ts --network localhost",
+    "interact-local": "npx hardhat run scripts/interact.ts --network localhost"
   },
   "author": "",
   "license": "ISC",
