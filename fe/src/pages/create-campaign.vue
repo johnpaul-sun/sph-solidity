@@ -81,7 +81,7 @@ import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import {
   CreateCampaignRequest,
-  CreateCampaignRequestSchema
+  CreateCampaignRequestSchema,
 } from "../schemas/create-campaign";
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
@@ -92,9 +92,9 @@ const {
   values,
   errors,
   setFieldValue,
-  validateField
+  validateField,
 } = useForm({
-  validationSchema
+  validationSchema,
 });
 
 const handleChange = (e: any) => {

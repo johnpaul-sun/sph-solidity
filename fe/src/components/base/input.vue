@@ -12,7 +12,7 @@
       :type="type"
       :step="step"
       :class="{
-        'outline outline-danger outline-1': error
+        'outline outline-danger outline-1': error,
       }"
       class="w-full text-sm px-2 h-10 rounded border border-disabled focus:outline-none placeholder-disabled"
     />

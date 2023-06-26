@@ -11,7 +11,7 @@
       type="text"
       rows="5"
       :class="{
-        'outline outline-danger outline-1': error
+        'outline outline-danger outline-1': error,
       }"
       class="w-full text-sm p-2 h-32 max-h-32 overflow-y-auto rounded border border-disabled focus:outline-none placeholder-disabled"
     />

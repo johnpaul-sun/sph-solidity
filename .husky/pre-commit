@@ -4,4 +4,3 @@
 export FORCE_COLOR=true
 
 npx lint-staged
-git add .

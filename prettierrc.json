@@ -3,13 +3,19 @@
   "semi": true,
   "printWidth": 80,
   "trailingComma": "none",
-  "endOfLine": "lf",
+  "endOfLine": "crlf",
   "bracketSpacing": true,
   "overrides": [
     {
       "files": "*.vue",
       "options": {
         "parser": "vue"
+      }
+    },
+    {
+      "files": "*.sol",
+      "options": {
+        "tabWidth": 4
       }
     }
   ]
