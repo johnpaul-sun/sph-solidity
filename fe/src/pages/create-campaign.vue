@@ -78,7 +78,7 @@
           class="flex w-fit items-center justify-center text-sm uppercase btn-gradient cursor-pointer"
           @click="warning"
         >
-          Connect Wallet
+          Submit Application
         </div>
       </form>
     </div>

@@ -59,17 +59,22 @@ const connectWallet = async () => {
       const account = await ethereum.request({
         method: "eth_requestAccounts"
       });
-      const connection = localStorage.getItem("isConnected");
+      const connection = localStorage.getItem("is-connected");
 
       if (!connection) {
         toast.success("Wallet connected successfully!", { autoClose: 1500 });
       }
 
-      localStorage.setItem("isConnected", "true");
+      localStorage.setItem("is-connected", "true");
       updateStatus(true, account[0]);
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong!", { autoClose: 1500 });
+    } catch (error: any) {
+      const processingErrorCode = -32002;
+
+      if (error.code === processingErrorCode) {
+        toast.error("Please unlock your MetaMask wallet!", { autoClose: 1500 });
+      } else {
+        toast.error("Something went wrong!", { autoClose: 1500 });
+      }
     }
   } else {
     toast.info("Please install MetaMask extension.", { autoClose: 1500 });
@@ -78,12 +83,13 @@ const connectWallet = async () => {
 
 const disconnectWallet = () => {
   updateStatus(false);
-  localStorage.removeItem("isConnected");
+  toast.success("Wallet disconnected successfully!", { autoClose: 1500 });
+  localStorage.removeItem("is-connected");
 };
 
 if (process.client) {
   watchEffect(() => {
-    const connection = localStorage.getItem("isConnected");
+    const connection = localStorage.getItem("is-connected");
 
     if (connection) {
       connectWallet();
