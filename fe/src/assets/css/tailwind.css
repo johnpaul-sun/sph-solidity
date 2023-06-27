@@ -23,6 +23,14 @@ body {
   @apply p-2 text-left hover:bg-gray-200;
 }
 
+.bg-linear-gradient-primary {
+  @apply bg-gradient-to-r from-[#CF7A1E] to-[#AC3971];
+}
+
+.bg-linear-gradient-white-to-light {
+  @apply bg-gradient-to-b from-white to-light;
+}
+
 .truncate {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -35,3 +43,4 @@ body {
     @apply !grid-cols-4;
   }
 }
+
