@@ -1,0 +1,13 @@
+stages:
+  - build
+
+jobs:
+  build:
+    stage: build
+    image: node:16-alpine
+    script:
+      - npm install
+      - npm ci --omit=dev --ignore-scripts
+      - npm install eslint
+      - npm run nuxt:eslint
+
