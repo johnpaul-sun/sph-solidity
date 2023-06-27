@@ -3,7 +3,7 @@
     "npm run hardhat:prettier",
     "npm run hardhat:solhint"
   ],
-  "*.{js,vue}": [
+  "*.{js,vue,ts}": [
     "npm run nuxt:prettier",
     "npm run nuxt:eslint"
   ]
