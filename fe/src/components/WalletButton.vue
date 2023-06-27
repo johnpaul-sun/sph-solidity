@@ -31,7 +31,7 @@
         <BaseButton class="dropdown-item rounded-t-md" @click="copyAddress"
           >Copy Address</BaseButton
         >
-        <BaseButton class="dropdown-item">Profile</BaseButton>
+        <NuxtLink to="/profile" class="dropdown-item">Profile</NuxtLink>
         <BaseButton class="dropdown-item rounded-b-md" @click="disconnectWallet"
           >Disconnect</BaseButton
         >
@@ -100,7 +100,7 @@ if (process.client) {
 const truncateAddress = (
   address: string,
   startLength: number,
-  endLength: number
+  endLength: number,
 ) => {
   if (address.length <= startLength + endLength) {
     return address;
@@ -122,3 +122,4 @@ const copyAddress = () => {
     });
 };
 </script>
+
