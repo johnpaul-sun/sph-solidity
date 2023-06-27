@@ -8,7 +8,7 @@
       />
     </div>
     <div
-      class="flex h-full justify-center items-center flex-col w-1/2 bg-gradient-to-b from-white to-light"
+      class="flex h-full justify-center items-center flex-col w-1/2 bg-linear-gradient-white-to-light"
     >
       <form
         class="flex flex-col w-full p-16 space-y-16"
@@ -140,3 +140,4 @@ const warning = () => {
   toast.info("Connect wallet first!", { autoClose: 1500 });
 };
 </script>
+
