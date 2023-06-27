@@ -36,4 +36,3 @@ const tabsProps = defineProps<TabsProps>();
 
 const { activeTab, items } = toRefs(tabsProps);
 </script>
-

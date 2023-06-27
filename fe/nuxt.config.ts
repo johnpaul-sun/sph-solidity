@@ -9,5 +9,13 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/eslint-module",
   ],
-  plugins: [{ src: "~/plugins/toastify.ts", mode: "client" }],
+  plugins: [
+    { src: "~/plugins/ethers.ts", mode: "client" },
+    { src: "~/plugins/toastify.ts", mode: "client" },
+  ],
+  runtimeConfig: {
+    public: {
+      CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS,
+    },
+  },
 });

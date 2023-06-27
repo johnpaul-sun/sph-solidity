@@ -1,10 +1,7 @@
 {
-  "*.sol": [
+  "smart_contract/**/*.sol": [
     "npm run hardhat:prettier",
     "npm run hardhat:solhint"
   ],
-  "*.{js,vue,ts}": [
-    "npm run nuxt:prettier",
-    "npm run nuxt:eslint"
-  ]
+  "fe/**/*.{js,vue,ts}": ["npm run nuxt:prettier", "npm run nuxt:eslint"]
 }

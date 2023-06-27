@@ -100,7 +100,7 @@ if (process.client) {
 const truncateAddress = (
   address: string,
   startLength: number,
-  endLength: number,
+  endLength: number
 ) => {
   if (address.length <= startLength + endLength) {
     return address;
@@ -116,10 +116,8 @@ const copyAddress = () => {
     .then(() => {
       toast.success("Address copied successfully!", { autoClose: 1500 });
     })
-    .catch((error) => {
-      console.error("Failed to copy address:", error);
+    .catch(() => {
       toast.error("Failed to copy address!", { autoClose: 1500 });
     });
 };
 </script>
-

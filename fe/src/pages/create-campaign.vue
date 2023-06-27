@@ -69,7 +69,13 @@
         </div>
         <BaseButton
           v-if="isConnected"
-          class="flex w-fit items-center justify-center text-sm uppercase btn-gradient"
+          class="flex w-fit items-center justify-center text-sm uppercase"
+          :class="
+            isLoading
+              ? 'bg-disabled h-10 px-4 rounded-[6px] text-white'
+              : 'btn-gradient'
+          "
+          :disabled="isLoading"
         >
           Submit Application
         </BaseButton>
@@ -89,6 +95,7 @@ import { storeToRefs } from "pinia";
 import { toast } from "vue3-toastify";
 import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
+import { ethers } from "ethers";
 import {
   CreateCampaignRequest,
   CreateCampaignRequestSchema,
@@ -96,6 +103,7 @@ import {
 import { useWalletStore } from "~/store/wallet";
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
+const { $smartContract: smartContract } = useNuxtApp();
 
 const {
   handleSubmit,
@@ -128,16 +136,44 @@ const { value: story } = useField<CreateCampaignRequest["story"]>("story");
 const { value: goal } = useField<CreateCampaignRequest["goal"]>("goal");
 const { value: date } = useField<CreateCampaignRequest["date"]>("date");
 
-const onSubmit = handleSubmit(() => {
-  console.log(values);
-  resetForm();
-});
-
+const isLoading = ref<boolean>(false);
 const useWallet: any = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
 
 const warning = () => {
   toast.info("Connect wallet first!", { autoClose: 1500 });
 };
-</script>
 
+const onSubmit = handleSubmit(() => {
+  isLoading.value = true;
+  const deadline = new Date(values.date as string);
+
+  // adjust date to handle time difference for epoch timestamp
+  const offset = deadline.getTimezoneOffset();
+  deadline.setMinutes(deadline.getMinutes() + offset);
+
+  if (smartContract !== null) {
+    smartContract
+      .createCampaign(
+        values.fullname,
+        values.campaign,
+        values.story,
+        ethers.parseEther((values.goal as number).toString()),
+        deadline.getTime() / 1000 // convert from milliseconds to secsonds
+      )
+      .then(() => {
+        resetForm();
+        toast.info("Campaign creation in progress!");
+      })
+      .catch((error) => {
+        toast.error(error.reason);
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  } else {
+    warning();
+    isLoading.value = false;
+  }
+});
+</script>
