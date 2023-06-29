@@ -1,6 +1,6 @@
 <template>
   <div class="flex-grow bg-linear-gradient-white-to-light">
-    <div class="max-w-[800px] mx-auto space-y-6 py-6">
+    <div class="max-w-[960px] mx-auto space-y-6 py-6">
       <div class="flex items-center space-x-2">
         <BaseButton @click="handleBack">
           <Icon name="material-symbols:chevron-left" class="h-6 w-6" />
