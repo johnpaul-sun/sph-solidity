@@ -167,7 +167,11 @@ const onSubmit = handleSubmit(async () => {
         toast.info("Campaign creation in progress!");
       })
       .catch((error) => {
-        toast.error(error.reason);
+        if (error.reason === "rejected") {
+          toast.error("Campaign rejected!");
+        } else {
+          toast.error(error.reason);
+        }
       })
       .finally(() => {
         isLoading.value = false;
