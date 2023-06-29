@@ -18,7 +18,7 @@ export const CreateCampaignRequestSchema = z.object({
     required_error: "Goal is required",
     invalid_type_error: "Invalid input",
   }),
-  date: z.string(),
+  date: z.string({ required_error: "Date is required" }),
 });
 
 export type CreateCampaignRequest = z.infer<typeof CreateCampaignRequestSchema>;

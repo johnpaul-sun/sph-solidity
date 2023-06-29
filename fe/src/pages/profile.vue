@@ -66,4 +66,3 @@ const profileTabs = ["My Campaigns", "Donators", "Donations"];
 
 const activeTab = ref("My Campaigns");
 </script>
-

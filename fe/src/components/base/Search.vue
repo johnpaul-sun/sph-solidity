@@ -1,7 +1,7 @@
 <template>
-  <div class="flex space-x-4 p-2 rounded-md bg-gray-200">
-    <Icon name="charm:search" class="my-auto" />
-    <input placeholder="Search" class="bg-gray-200 outline-none" />
+  <div class="flex space-x-2 p-2 border bg-white rounded-md">
+    <Icon name="charm:search" class="text-disabled my-auto" />
+    <input placeholder="Search" class="bg-white outline-none" />
   </div>
 </template>
 

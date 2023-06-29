@@ -1,20 +1,23 @@
 <template>
-  <div class="flex flex-grow">
-    <div class="w-1/2 sm:flex hidden">
-      <img
-        src="../assets/img/be-the-change.jpg"
-        alt="Be the Change"
-        class="object-cover h-full"
-      />
-    </div>
-    <div
-      class="flex flex-grow justify-center items-center bg-linear-gradient-white-to-light"
-    >
-      <form
-        class="flex flex-col w-full p-16 space-y-16"
-        @submit.prevent="onSubmit"
-      >
-        <div class="text-2xl text-dark font-bold">START A NEW CAMPAIGN</div>
+  <div class="flex-grow bg-linear-gradient-white-to-light">
+    <div class="max-w-[800px] mx-auto space-y-6 py-6">
+      <div class="flex items-center space-x-2">
+        <BaseButton @click="handleBack">
+          <Icon name="material-symbols:chevron-left" class="h-6 w-6" />
+        </BaseButton>
+        <div class="font-bold text-2xl text-dark">EDIT CAMPAIGN</div>
+      </div>
+      <div class="relative h-60 z-0">
+        <img
+          src="../assets/img/be-the-change.jpg"
+          class="w-full h-full object-cover"
+        />
+        <BaseButton
+          class="absolute bottom-0 right-0 -translate-x-4 -translate-y-4 flex items-center h-7 px-4 py-2 text-xs text-dark bg-white opacity-50 rounded-md"
+          >Edit</BaseButton
+        >
+      </div>
+      <form class="flex flex-col space-y-6" @submit.prevent="onSubmit">
         <div class="space-y-2">
           <BaseInput
             id="fullname"
@@ -43,16 +46,15 @@
             :model-value="story"
             @change="handleChange"
           />
-          <FileUpload />
           <div class="flex w-full space-x-4">
             <BaseInput
               id="goal"
               label="Goal"
               name="goal"
               placeholder="0.123 DCAPP"
-              :error="errors.goal"
               type="number"
               step="any"
+              :error="errors.goal"
               :model-value="goal"
               @change="handleChange"
             />
@@ -67,35 +69,21 @@
             />
           </div>
         </div>
-        <BaseButton
-          v-if="isConnected"
-          class="flex w-fit items-center justify-center text-sm uppercase btn-gradient"
-        >
-          Submit Application
-        </BaseButton>
-        <div
-          v-else
-          class="flex w-fit items-center justify-center text-sm uppercase btn-gradient cursor-pointer"
-          @click="warning"
-        >
-          Submit Application
-        </div>
+        <BaseButton class="btn-gradient w-fit">UPDATE CAMPAIGN</BaseButton>
       </form>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { toast } from "vue3-toastify";
-import { useField, useForm } from "vee-validate";
+import { useForm, useField } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import {
-  CreateCampaignRequest,
   CreateCampaignRequestSchema,
+  CreateCampaignRequest,
 } from "../schemas/create-campaign";
-import { useWalletStore } from "~/store/wallet";
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
+const router = useRouter();
 
 const {
   handleSubmit,
@@ -109,10 +97,13 @@ const {
 });
 
 const handleChange = (e: any) => {
-  const { name, value, type } = e.target;
+  const { name, type, value } = e.target;
 
   if (type === "number") {
     setFieldValue(name, parseFloat(value));
+  } else if (type === "date ") {
+    const dateValue = new Date(value);
+    setFieldValue(name, dateValue);
   } else {
     setFieldValue(name, value);
   }
@@ -127,15 +118,13 @@ const { value: story } = useField<CreateCampaignRequest["story"]>("story");
 const { value: goal } = useField<CreateCampaignRequest["goal"]>("goal");
 const { value: date } = useField<CreateCampaignRequest["date"]>("date");
 
+const handleBack = () => {
+  router.back();
+};
+
 const onSubmit = handleSubmit(() => {
   console.log(values);
+
   resetForm();
 });
-
-const useWallet: any = useWalletStore();
-const { isConnected } = storeToRefs(useWallet);
-
-const warning = () => {
-  toast.info("Connect wallet first!", { autoClose: 1500 });
-};
 </script>
