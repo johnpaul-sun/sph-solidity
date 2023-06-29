@@ -39,7 +39,7 @@
           All Campaigns
         </div>
         <div
-          class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 campaigns"
+          class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
         >
           <base-campaign-card
             v-for="i in 6"
