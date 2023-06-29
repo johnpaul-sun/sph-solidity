@@ -8,36 +8,58 @@ export default defineNuxtPlugin(async (app) => {
   const { isConnected } = storeToRefs(useWalletStore());
   const CONTRACT_ADDRESS = app.$config.public.CONTRACT_ADDRESS;
 
-  let smartContract = null;
-  let signer = null;
-  const ethereum = (window as any).ethereum;
+  const ethereum = await (window as any).ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
-  const contractInterface = new ethers.Interface(contract.abi);
+  const contractInterface = new ethers.BrowserProvider(ethereum);
+  let smartContract: ethers.Contract | null = null;
+  let signer = null;
 
-  if (ethereum.isConnected) {
-    signer = await provider.getSigner();
+  const getSmartContract = async () => {
+    if (ethereum.selectedAddress !== null) {
+      try {
+        signer = await provider.getSigner();
+        smartContract = new ethers.Contract(
+          CONTRACT_ADDRESS as string,
+          contract.abi,
+          signer
+        );
 
-    smartContract = new ethers.Contract(
-      CONTRACT_ADDRESS as string,
-      contract.abi,
-      signer
-    );
-
-    smartContract.on("CampaignCreated", (sender, id) => {
-      if (sender.toLowerCase() === ethereum.selectedAddress.toLowerCase()) {
-        toast.success(`Campaign with ID: ${Number(id)} successfully Created!`);
+        return smartContract;
+      } catch (error) {
+        toast.error("Something went wrong!");
+        return null;
       }
-    });
-  } else {
-    isConnected.value = false;
+    } else {
+      isConnected.value = false;
+      return null;
+    }
+  };
+
+  if (ethereum.selectedAddress !== null) {
+    try {
+      signer = await provider.getSigner();
+      smartContract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        contract.abi,
+        signer
+      );
+    } catch (error) {
+      toast.error("Something went wrong!");
+    }
   }
+
+  smartContract?.on("CampaignCreated", (sender, title) => {
+    if (sender.toLowerCase() === ethereum.selectedAddress.toLowerCase()) {
+      toast.success(`Campaign ${title} was successfully created!`);
+    }
+  });
 
   return {
     provide: {
       provider,
       signer,
       contractInterface,
-      smartContract,
+      getSmartContract,
     },
   };
 });

@@ -103,7 +103,7 @@ import {
 import { useWalletStore } from "~/store/wallet";
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
-const { $smartContract: smartContract } = useNuxtApp();
+const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const {
   handleSubmit,
@@ -144,7 +144,7 @@ const warning = () => {
   toast.info("Connect wallet first!", { autoClose: 1500 });
 };
 
-const onSubmit = handleSubmit(() => {
+const onSubmit = handleSubmit(async () => {
   isLoading.value = true;
   const deadline = new Date(values.date as string);
 
@@ -152,6 +152,7 @@ const onSubmit = handleSubmit(() => {
   const offset = deadline.getTimezoneOffset();
   deadline.setMinutes(deadline.getMinutes() + offset);
 
+  const smartContract = await getSmartContract();
   if (smartContract !== null) {
     smartContract
       .createCampaign(

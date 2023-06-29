@@ -16,6 +16,7 @@
     "hardhat:compile": "yarn workspace smart_contract compile",
     "hardhat:node": "yarn workspace smart_contract run-node",
     "hardhat:deploy-local": "yarn workspace smart_contract deploy-local",
+    "hardhat:deploy-sepolia": "yarn workspace smart_contract deploy-sepolia",
     "hardhat:interact-local": "yarn workspace smart_contract interact-local",
     "nuxt:dev": "yarn workspace fe dev",
     "nuxt:eslint": "yarn workspace fe lint:eslint",

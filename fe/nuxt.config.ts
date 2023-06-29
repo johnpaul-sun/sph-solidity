@@ -10,8 +10,8 @@ export default defineNuxtConfig({
     "@nuxtjs/eslint-module",
   ],
   plugins: [
-    { src: "~/plugins/ethers.ts", mode: "client" },
     { src: "~/plugins/toastify.ts", mode: "client" },
+    { src: "~/plugins/ethers.ts", mode: "client" },
   ],
   runtimeConfig: {
     public: {

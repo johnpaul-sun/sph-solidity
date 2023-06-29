@@ -28,7 +28,7 @@ contract CrowdFunding {
     uint public totalCampaigns;
 
     // Events
-    event CampaignCreated(address indexed sender, uint id);
+    event CampaignCreated(address indexed sender, string title);
 
     constructor() payable {
         owner = payable(msg.sender);
@@ -66,6 +66,6 @@ contract CrowdFunding {
         users[msg.sender].totalCampaigns++;
 
         totalCampaigns++;
-        emit CampaignCreated(msg.sender, totalCampaigns - 1);
+        emit CampaignCreated(msg.sender, newCampaign.title);
     }
 }
