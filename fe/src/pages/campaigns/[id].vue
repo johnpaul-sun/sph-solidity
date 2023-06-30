@@ -7,7 +7,7 @@
         <img
           :src="imgSrc"
           alt="Boy writing on paper"
-          class="object-cover w-full h-[420px] rounded-lg"
+          class="object-cover w-full h-[420px]"
         />
       </div>
 
@@ -39,7 +39,9 @@
               <p class="font-bold">
                 {{ middleTruncate(creator.address, 8, 5) }}
               </p>
-              <p>{{ creator.totalCampaigns }} campaigns</p>
+              <p class="text-disabled">
+                {{ creator.totalCampaigns }} campaigns
+              </p>
             </div>
           </div>
         </div>
