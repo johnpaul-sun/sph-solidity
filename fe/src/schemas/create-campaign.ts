@@ -19,7 +19,8 @@ export const CreateCampaignRequestSchema = z.object({
       required_error: "Goal is required",
       invalid_type_error: "Invalid input",
     })
-    .min(0),
+    .min(0)
+    .max(10000000000),
   date: z.string(),
 });
 
