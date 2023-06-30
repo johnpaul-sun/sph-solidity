@@ -7,16 +7,23 @@
 :root {
   --gradient: linear-gradient(180deg, #f39d40 0%, #ac3971 100%);
   --primary-50: "#F9F8F8";
+  --hr-gradient: linear-gradient(90deg, #cf7a1e 0%, #ac3971 100%);
 }
 
 body {
   background: var(--primary-50);
   font-family: "Space Mono", monospace;
+  @apply text-primary-10;
 }
 
 .btn-gradient {
   background: var(--gradient);
   @apply h-10 px-4 rounded-[6px] text-white;
+}
+
+.btn-gradient-hr {
+  background: var(--hr-gradient);
+  @apply py-2 px-4 rounded-lg text-white text-sm font-bold;
 }
 
 .dropdown-item {

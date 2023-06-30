@@ -1,0 +1,32 @@
+{
+  "id": 1,
+  "creator": {
+    "address": "0x1023913e12b40a6e14d94d3f3538bd511c312398",
+    "totalCampaigns": 2,
+    "imgSrc": "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg?w=740&t=st=1687760025~exp=1687760625~hmac=946cdd8c9a832b0e18de9b71174ba1117c0d5d2e4510eafafac9ee1cd8dc97a5"
+  },
+  "title": "Let's Read, Write, and Learn",
+  "imgSrc": "https://images.unsplash.com/photo-1529390079861-591de354faf5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+  "story": "Lorem ipsum dolor sit amet consectetur. Amet senectus augue in urna. Lorem ipsum dolor sit amet consectetur. Amet senectus augue in urna.Lorem ipsum dolor sit amet consectetur. Amet senectus augue in urna. Lorem ipsum dolor sit amet consectetur. Amet senectus augue in urna.Lorem ipsum dolor sit amet consectetur. Amet senectus augue in urna.",
+  "daysLeft": 190,
+  "donations": "0.23",
+  "totalBackers": 23,
+  "donators": [
+    {
+      "address": "0x1023913e12b40a6e14d94d3f3538bd511c312398",
+      "amount": 0.0002
+    },
+    {
+      "address": "0x1023913e12b40a6e14d94d3f3538bd511c312398",
+      "amount": 0.0002
+    },
+    {
+      "address": "0x1023913e12b40a6e14d94d3f3538bd511c312398",
+      "amount": 0.0002
+    },
+    {
+      "address": "0x1023913e12b40a6e14d94d3f3538bd511c312398",
+      "amount": 0.0002
+    }
+  ]
+}

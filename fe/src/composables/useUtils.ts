@@ -7,5 +7,18 @@ export const useUtils = () => {
     }
   };
 
-  return { truncate };
+  const middleTruncate = (
+    address: string,
+    startLength: number,
+    endLength: number
+  ) => {
+    if (address.length <= startLength + endLength) {
+      return address;
+    }
+    const start = address.substring(0, startLength);
+    const end = address.substring(address.length - endLength);
+    return start + "..." + end;
+  };
+
+  return { truncate, middleTruncate };
 };
