@@ -68,4 +68,16 @@ contract CrowdFunding {
         totalCampaigns++;
         emit CampaignCreated(msg.sender, newCampaign.title);
     }
+
+    function getUserCampaigns() public view returns (Campaign[] memory) {
+        uint userTotalCampaigns = users[msg.sender].totalCampaigns;
+        Campaign[] memory allCampaigns = new Campaign[](userTotalCampaigns);
+
+        for (uint i = 0; i < userTotalCampaigns; i++) {
+            Campaign storage campaign = users[msg.sender].campaigns[i];
+            allCampaigns[i] = campaign;
+        }
+
+        return allCampaigns;
+    }
 }
