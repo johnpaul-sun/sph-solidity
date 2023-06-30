@@ -94,6 +94,31 @@ Set the returned contract address to environment variable `CONTRACT_ADDRESS`
 npm run hardhat:interact-local
 ```
 
+Hardhat + Alchemy: https://eth-sepolia.g.alchemy.com/v2/KPjBlFd432ifoUNi8UKzGcq-uL1OhX31
+
+```
+npm run hardhat:compile
+```
+
+Update smart_contract/.env file
+
+```
+API_URL = "https://eth-sepolia.g.alchemy.com/v2/KPjBlFd432ifoUNi8UKzGcq-uL1OhX31"
+USER_KEY = <your metamask private key>
+```
+
+Deploy in Sepolia test network
+
+```
+npm run hardhat:deploy-sepolia
+```
+
+Set the returned contract address to environment variable `CONTRACT_ADDRESS`
+
+```
+npm run hardhat:interact-local
+```
+
 ## Linting
 
 Nuxt

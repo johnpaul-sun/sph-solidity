@@ -2,6 +2,7 @@
   <button
     v-bind="$attrs"
     class="{ disabled: 'opacity-50'}"
+    :disabled="disabled"
     @click="handleSubmit"
   >
     <slot />
@@ -11,6 +12,7 @@
 <script setup lang="ts">
 type Props = {
   label?: String;
+  disabled?: boolean;
 };
 
 function handleSubmit() {}
