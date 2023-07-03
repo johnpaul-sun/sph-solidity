@@ -6,7 +6,9 @@
     <div class="group flex-col">
       <p class="label">Creator:</p>
       <div class="group">
-        <UserAvatar :img-src="creator.imgSrc" :height="60" :width="60" />
+        <div class="w-[60px] h-[60px]">
+          <UserAvatar :img-src="creator.imgSrc" />
+        </div>
         <div class="flex flex-col gap-1 px-4 py-1 max-w-[196px] overflow-clip">
           <p class="font-bold">
             {{ middleTruncate(creator.address, 8, 5) }}
