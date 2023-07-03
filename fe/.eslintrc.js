@@ -19,6 +19,20 @@ module.exports = {
   plugins: ["@typescript-eslint", "vue"],
   rules: {
     "vue/multi-word-component-names": "off",
-    "prettier/prettier": ["warn", { trailingComma: "all" }],
+    "vue/component-name-in-template-casing": [
+      "warn",
+      "PascalCase",
+      {
+        registeredComponentsOnly: false,
+        ignores: [],
+      },
+    ],
+    "prettier/prettier": [
+      "warn",
+      {
+        trailingComma: "all",
+        endOfLine: "auto",
+      },
+    ],
   },
 };

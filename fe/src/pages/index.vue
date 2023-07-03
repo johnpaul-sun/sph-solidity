@@ -41,7 +41,7 @@
         <div
           class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
         >
-          <base-campaign-card
+          <CampaignCard
             v-for="i in 6"
             :key="i"
             :title="title"
@@ -49,7 +49,7 @@
             :eth-value="ethValue"
             :img-src="imgSrc"
             :days-left="daysLeft"
-          ></base-campaign-card>
+          ></CampaignCard>
         </div>
         <div class="w-full mt-8 h-14 flex items-center justify-center">
           <BasePaginator

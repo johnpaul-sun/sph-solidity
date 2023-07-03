@@ -9,9 +9,7 @@
       class="flex gap-4 justify-center items-center btn-gradient h-full px-3 w-56"
     >
       <Icon name="solar:wallet-linear" size="40" />
-      <span class="truncate" :title="address">{{
-        middleTruncate(address, 6, 3)
-      }}</span>
+      <span :title="address">{{ middleTruncate(address, 6, 3) }}</span>
       <Icon v-show="isDropdownOpen" name="ps:down" size="20" />
       <Icon v-show="!isDropdownOpen" name="ps:up" size="20" />
     </button>

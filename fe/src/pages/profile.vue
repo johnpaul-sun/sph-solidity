@@ -2,14 +2,14 @@
   <div
     class="py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
   >
-    <base-user-card
+    <UserCard
       :block-chain-value="blockChainValue"
       :block-chain-label="blockChainLabel"
       :img-src="imgSrc"
       :user-id="userId"
     />
     <div class="mt-6">
-      <base-tabs
+      <BaseTabs
         :active-tab="activeTab"
         :items="profileTabs"
         @change-tab="activeTab = $event"
@@ -19,7 +19,7 @@
       <div
         class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 campaigns"
       >
-        <base-campaign-card
+        <CampaignCard
           v-for="i in 6"
           :key="i"
           :title="title"
@@ -27,7 +27,7 @@
           :eth-value="ethValue"
           :img-src="imgSrc"
           :days-left="daysLeft"
-        ></base-campaign-card>
+        ></CampaignCard>
       </div>
       <div class="w-full mt-8 h-14 flex items-center justify-center">
         <BasePaginator

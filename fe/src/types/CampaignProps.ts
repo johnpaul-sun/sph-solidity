@@ -1,24 +1,22 @@
-interface Creator {
+export interface Creator {
   address: string;
-  totalCampaigns: number | string;
+  totalCampaigns: number;
   imgSrc: string;
 }
 
-interface Donator {
+export interface Donator {
   address: string;
-  amount: number | string;
+  amount: number;
 }
 
-interface CampaignProps {
+export default interface CampaignProps {
   id: number;
   creator: Creator;
   title: string;
   imgSrc: string;
   story: string;
   daysLeft: number;
-  donations: number | string;
+  donations: number;
   totalBackers: number;
   donators: Donator[];
 }
-
-export default CampaignProps;

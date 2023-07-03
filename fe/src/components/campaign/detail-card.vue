@@ -12,8 +12,9 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
+type Props = {
   label: string;
   content: string | number;
-}>();
+};
+defineProps<Props>();
 </script>
