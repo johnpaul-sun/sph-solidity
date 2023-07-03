@@ -9,9 +9,7 @@
       class="flex gap-4 justify-center items-center btn-gradient h-full px-3 w-56"
     >
       <Icon name="solar:wallet-linear" size="40" />
-      <span class="truncate" :title="address">{{
-        truncateAddress(address, 6, 3)
-      }}</span>
+      <span :title="address">{{ middleTruncate(address, 6, 3) }}</span>
       <Icon v-show="isDropdownOpen" name="ps:down" size="20" />
       <Icon v-show="!isDropdownOpen" name="ps:up" size="20" />
     </button>
@@ -44,6 +42,7 @@ import { storeToRefs } from "pinia";
 import { toast } from "vue3-toastify";
 
 import { useWalletStore } from "~/store/wallet";
+const { middleTruncate } = useUtils();
 
 const isDropdownOpen = ref<boolean>(false);
 const useWallet: any = useWalletStore();
@@ -95,19 +94,6 @@ if (process.client) {
     }
   });
 }
-
-const truncateAddress = (
-  address: string,
-  startLength: number,
-  endLength: number
-) => {
-  if (address.length <= startLength + endLength) {
-    return address;
-  }
-  const start = address.substr(0, startLength);
-  const end = address.substr(address.length - endLength);
-  return start + "..." + end;
-};
 
 const copyAddress = () => {
   navigator.clipboard
