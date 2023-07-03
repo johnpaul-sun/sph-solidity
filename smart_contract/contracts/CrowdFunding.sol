@@ -9,7 +9,7 @@ contract CrowdFunding {
 
     struct User {
         uint totalCampaigns;
-        mapping(uint => Campaign) campaigns;
+        mapping(uint => uint) campaignIds;
     }
 
     struct Campaign {
@@ -30,6 +30,22 @@ contract CrowdFunding {
     // Events
     event CampaignCreated(address indexed sender, string title);
 
+    // Modifiers
+    modifier validCampaignArguments(
+        string memory _fullname,
+        string memory _title,
+        string memory _story,
+        uint _goalAmount,
+        uint _deadline
+    ) {
+        require(_deadline > block.timestamp, "Date should be future date");
+        require(_goalAmount > 0, "Goal amount should be more than 0");
+        require(bytes(_fullname).length > 0, "Full name cannot be empty");
+        require(bytes(_title).length > 0, "Title cannot be empty");
+        require(bytes(_story).length > 0, "Story cannot be empty");
+        _;
+    }
+
     constructor() payable {
         owner = payable(msg.sender);
         totalCampaigns = 0;
@@ -41,13 +57,16 @@ contract CrowdFunding {
         string memory _story,
         uint _goalAmount,
         uint _deadline
-    ) public {
-        require(_deadline > block.timestamp, "Date should be future date");
-        require(_goalAmount > 0, "Goal amount should be more than 0");
-        require(bytes(_fullname).length > 0, "Full name cannot be empty");
-        require(bytes(_title).length > 0, "Title cannot be empty");
-        require(bytes(_story).length > 0, "Story cannot be empty");
-
+    )
+        public
+        validCampaignArguments(
+            _fullname,
+            _title,
+            _story,
+            _goalAmount,
+            _deadline
+        )
+    {
         Campaign memory newCampaign = Campaign({
             id: totalCampaigns,
             creator: msg.sender,
@@ -62,10 +81,24 @@ contract CrowdFunding {
         campaigns[totalCampaigns] = newCampaign;
 
         uint userTotalCampaigns = users[msg.sender].totalCampaigns;
-        users[msg.sender].campaigns[userTotalCampaigns] = newCampaign;
+        users[msg.sender].campaignIds[userTotalCampaigns] = newCampaign.id;
         users[msg.sender].totalCampaigns++;
 
         totalCampaigns++;
         emit CampaignCreated(msg.sender, newCampaign.title);
+    }
+
+    function getUserCampaigns() public view returns (Campaign[] memory) {
+        uint userTotalCampaigns = users[msg.sender].totalCampaigns;
+        Campaign[] memory allCampaigns = new Campaign[](userTotalCampaigns);
+
+        for (uint i = 0; i < userTotalCampaigns; i++) {
+            Campaign memory campaign = campaigns[
+                users[msg.sender].campaignIds[i]
+            ];
+            allCampaigns[i] = campaign;
+        }
+
+        return allCampaigns;
     }
 }
