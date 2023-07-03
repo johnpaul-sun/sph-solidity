@@ -1,4 +1,3 @@
-<!-- eslint-disable import/namespace -->
 <template>
   <div
     class="relative"

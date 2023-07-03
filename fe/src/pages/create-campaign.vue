@@ -1,14 +1,14 @@
 <template>
-  <div class="flex h-full w-full">
-    <div class="h-full w-1/2">
+  <div class="flex flex-grow">
+    <div class="w-1/2 sm:flex hidden">
       <img
         src="../assets/img/be-the-change.jpg"
         alt="Be the Change"
-        class="object-cover w-full h-full"
+        class="object-cover h-full"
       />
     </div>
     <div
-      class="flex h-full justify-center items-center flex-col w-1/2 bg-linear-gradient-white-to-light"
+      class="flex flex-grow justify-center items-center bg-linear-gradient-white-to-light"
     >
       <form
         class="flex flex-col w-full p-16 space-y-16"
@@ -124,8 +124,7 @@ const handleChange = (e: any) => {
   } else {
     setFieldValue(name, value);
   }
-
-  validateField(e.target.name);
+  validateField(name);
 };
 
 const { value: fullname } =
@@ -160,7 +159,7 @@ const onSubmit = handleSubmit(async () => {
         values.campaign,
         values.story,
         ethers.parseEther((values.goal as number).toString()),
-        deadline.getTime() / 1000 // convert from milliseconds to secsonds
+        deadline.getTime() / 1000, // convert from milliseconds to secsonds
       )
       .then(() => {
         resetForm();

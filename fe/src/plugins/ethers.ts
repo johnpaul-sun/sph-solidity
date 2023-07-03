@@ -15,13 +15,13 @@ export default defineNuxtPlugin(async (app) => {
   let signer = null;
 
   const getSmartContract = async () => {
-    if (ethereum.selectedAddress !== null) {
+    if (ethereum?.selectedAddress !== null) {
       try {
         signer = await provider.getSigner();
         smartContract = new ethers.Contract(
           CONTRACT_ADDRESS as string,
           contract.abi,
-          signer
+          signer,
         );
 
         return smartContract;
@@ -35,13 +35,13 @@ export default defineNuxtPlugin(async (app) => {
     }
   };
 
-  if (ethereum.selectedAddress !== null) {
+  if (ethereum?.selectedAddress !== null) {
     try {
       signer = await provider.getSigner();
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        signer
+        signer,
       );
     } catch (error) {
       toast.error("Something went wrong!");

@@ -37,10 +37,3 @@ body {
   white-space: nowrap;
   width: 100%;
 }
-
-@media (min-width: 1920px) {
-  .campaigns {
-    @apply !grid-cols-4;
-  }
-}
-

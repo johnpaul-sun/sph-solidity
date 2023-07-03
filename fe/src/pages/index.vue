@@ -6,18 +6,20 @@
       <div class="flex flex-col justify-center items-center">
         <IconsBlocksLeft />
       </div>
-      <div class="flex flex-col justify-center items-center gap-8">
+      <div
+        class="flex flex-col justify-center items-center gap-8 text-primary-10"
+      >
         <h1
           class="text-[40px] bg-gradient text-transparent bg-clip-text font-bold text-4xl leading-[125%]"
         >
           WELCOME TO SUNBLOCK
         </h1>
-        <p class="font-bold max-w-[480px] text-center leading-[125%] text-lg">
+        <p class="max-w-[480px] text-center leading-[125%] text-lg">
           Contribute to projects and innovations that matter using Blockchain
           technology.
         </p>
         <div class="flex flex-col justify-center items-center">
-          <p class="text-base mb-2">Want to make a project?</p>
+          <p class="text-base font-bold mb-2">Want to make a project?</p>
           <NuxtLink
             to="/create-campaign"
             class="flex justify-center items-center btn-gradient h-10 px-4 font-bold text-sm uppercase"
@@ -30,14 +32,14 @@
       </div>
     </div>
     <div class="bg-primary-50">
-      <div class="pt-16 mx-44 pb-24">
+      <div class="max-w-[960px] mx-auto py-6">
         <div
           class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
         >
           All Campaigns
         </div>
         <div
-          class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 campaigns"
+          class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
         >
           <base-campaign-card
             v-for="i in 6"

@@ -27,7 +27,7 @@
       <li v-for="number in pageNumbers" :key="number">
         <div
           :class="`ml-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border border-transparent text-center text-sm leading-tight  hover:border-dark ${pageStatus(
-            number
+            number,
           )} `"
           @click="setPage(number)"
         >
@@ -70,7 +70,7 @@ const { perPage, lastPage, currentPage, onPageChange } =
 
 const numberToGenerate = lastPage.value <= 5 ? lastPage.value : 5;
 const pageNumbers = ref<number[]>(
-  Array.from(Array(numberToGenerate), (_, x) => x + 1)
+  Array.from(Array(numberToGenerate), (_, x) => x + 1),
 );
 
 const generatePageNumbers = (page: number): void => {
@@ -123,7 +123,7 @@ const onClickEnd = (): void => {
   if (lastPage.value > 5) {
     pageNumbers.value = Array.from(
       { length: lastPage.value - (lastPage.value - 5) + 1 },
-      (_, i) => i + (lastPage.value - 5)
+      (_, i) => i + (lastPage.value - 5),
     );
   }
 };
