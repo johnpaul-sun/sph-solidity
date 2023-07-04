@@ -10,7 +10,7 @@ export const useUtils = () => {
   const middleTruncate = (
     address: string,
     startLength: number,
-    endLength: number
+    endLength: number,
   ): string => {
     if (address.length <= startLength + endLength) {
       return address;

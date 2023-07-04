@@ -1,7 +1,7 @@
 <template>
-  <div class="h-[400px] rounded-2xl overflow-hidden bg-white shadow-card">
+  <div class="rounded-2xl overflow-hidden bg-white shadow-card">
     <img :src="imgSrc" class="h-44 w-full object-cover" />
-    <div class="mx-4 mt-4 leading-[150%]">
+    <div class="m-4 leading-[150%]">
       <div class="text-dark text-base font-bold">{{ title }}</div>
       <div class="mt-2 text-disabled text-sm font-normal flex items-center">
         {{ truncate(description, 95) }}

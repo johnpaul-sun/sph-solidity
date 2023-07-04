@@ -159,7 +159,7 @@ const onSubmit = handleSubmit(async () => {
         values.campaign,
         values.story,
         ethers.parseEther((values.goal as number).toString()),
-        deadline.getTime() / 1000 // convert from milliseconds to secsonds
+        deadline.getTime() / 1000, // convert from milliseconds to secsonds
       )
       .then(() => {
         resetForm();
