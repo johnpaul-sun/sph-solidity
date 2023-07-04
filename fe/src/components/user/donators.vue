@@ -9,13 +9,13 @@
     </thead>
     <tbody>
       <tr
-        v-for="{ id, avatar, donator, title, amount } in donors"
+        v-for="({ id, avatar, donator, title, amount }, index) in donors"
         :key="id"
         class="flex items-center min-h-[56px] border-b border-disabled"
       >
         <td class="px-4 w-72">
           <div class="flex items-center space-x-2">
-            <span>{{ id }}.</span>
+            <span>{{ index + 1 }}.</span>
             <UserAvatar :img-src="avatar" :height="40" :width="40" />
             <span>
               {{ middleTruncate(donator, 6, 4) }}
@@ -30,7 +30,7 @@
       <BasePaginator
         :current-page="currentPage"
         :last-page="lastPage"
-        :per-page="itemPerPage"
+        :items-per-page="itemsPerPage"
         :on-page-change="setPage"
       />
     </div>
@@ -42,10 +42,10 @@ import { useUtils } from "~/composables/useUtils";
 
 const { middleTruncate } = useUtils();
 const currentPage = ref(1);
-const itemPerPage = ref(5);
-const lastPage = donors.length / itemPerPage.value;
+const itemsPerPage = ref(5);
+const lastPage = donors.length / itemsPerPage.value;
 
-const setPage = (itemPerPage: number, pageNumber: number) => {
+const setPage = (itemsPerPage: number, pageNumber: number) => {
   currentPage.value = pageNumber;
 };
 </script>

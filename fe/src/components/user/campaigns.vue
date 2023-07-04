@@ -16,7 +16,7 @@
     <BasePaginator
       :current-page="currentPage"
       :last-page="10"
-      :per-page="itemPerPage"
+      :items-per-page="itemsPerPage"
       :on-page-change="setPage"
     />
   </div>
@@ -29,13 +29,13 @@ import UserCardProps from "~/types/UserCardProps";
 
 const userCardValueSample = ref<UserCardProps>(UserCardSample);
 
-const itemPerPage = ref(5);
+const itemsPerPage = ref(5);
 const currentPage = ref(1);
 const cardValueSample = ref<CampaignCardProps>(CardSample);
 const { imgSrc } = userCardValueSample.value;
 
 const { title, description, ethValue, daysLeft } = cardValueSample.value;
-const setPage = (itemPerPage: number, pageNumber: number) => {
+const setPage = (itemsPerPage: number, pageNumber: number) => {
   currentPage.value = pageNumber;
 };
 </script>
