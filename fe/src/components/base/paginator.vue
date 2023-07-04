@@ -65,7 +65,7 @@
 import PaginatorProps from "@/types/PaginatorProps";
 
 const paginationProps = defineProps<PaginatorProps>();
-const { perPage, lastPage, currentPage, onPageChange } =
+const { itemPerPage, lastPage, currentPage, onPageChange } =
   toRefs(paginationProps);
 
 const numberToGenerate = lastPage.value <= 5 ? lastPage.value : 5;
@@ -93,7 +93,7 @@ const generatePageNumbers = (page: number): void => {
 const onClickStart = (): void => {
   if (currentPage.value - 1 < 1) return;
 
-  onPageChange.value(perPage.value, 1);
+  onPageChange.value(itemPerPage.value, 1);
   if (lastPage.value > 5) {
     pageNumbers.value = Array.from(Array(5), (_, x) => x + 1);
   }
@@ -103,7 +103,7 @@ const onClickPrevious = (): void => {
   const previousValue = currentPage.value - 1;
   if (previousValue < 1) return;
 
-  onPageChange.value(perPage.value, previousValue);
+  onPageChange.value(itemPerPage.value, previousValue);
   generatePageNumbers(previousValue);
 };
 
@@ -111,14 +111,14 @@ const onClickNext = (): void => {
   const nextValue = currentPage.value + 1;
   if (nextValue > lastPage.value) return;
 
-  onPageChange.value(perPage.value, nextValue);
+  onPageChange.value(itemPerPage.value, nextValue);
   generatePageNumbers(nextValue);
 };
 
 const onClickEnd = (): void => {
   if (currentPage.value + 1 > lastPage.value) return;
 
-  onPageChange.value(perPage.value, lastPage.value);
+  onPageChange.value(itemPerPage.value, lastPage.value);
 
   if (lastPage.value > 5) {
     pageNumbers.value = Array.from(
@@ -131,7 +131,7 @@ const onClickEnd = (): void => {
 const setPage = (page: number): void => {
   if (page === currentPage.value) return;
 
-  onPageChange.value(perPage.value, page);
+  onPageChange.value(itemPerPage.value, page);
 };
 
 const leftIconsStatus = computed(() => {

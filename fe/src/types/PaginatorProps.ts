@@ -1,8 +1,8 @@
 interface PaginatorProps {
   currentPage: number;
   lastPage: number;
-  perPage: number;
-  onPageChange: (first: number, page: number) => void;
+  itemPerPage: number;
+  onPageChange: (itemPerPage: number, pageNumber: number) => void;
 }
 
 export default PaginatorProps;
