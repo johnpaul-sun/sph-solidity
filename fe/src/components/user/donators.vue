@@ -16,11 +16,7 @@
         <td class="px-4 w-72">
           <div class="flex items-center space-x-2">
             <span>{{ id }}.</span>
-            <img
-              :src="avatar"
-              alt="avatar"
-              class="flex h-10 w-10 rounded-full"
-            />
+            <UserAvatar :img-src="avatar" :height="40" :width="40" />
             <span>
               {{ middleTruncate(donator, 6, 4) }}
             </span>
@@ -49,8 +45,7 @@ const currentPage = ref(1);
 const itemPerPage = ref(5);
 const lastPage = donors.length / itemPerPage.value;
 
-const setPage = (first: number, page: number) => {
-  currentPage.value = page;
-  console.log(first);
+const setPage = (itemPerPage: number, pageNumber: number) => {
+  currentPage.value = pageNumber;
 };
 </script>
