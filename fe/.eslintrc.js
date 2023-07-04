@@ -19,7 +19,6 @@ module.exports = {
   plugins: ["@typescript-eslint", "vue"],
   rules: {
     "vue/multi-word-component-names": "off",
-    "@typescript-eslint/no-unused-vars": "off",
     "vue/component-name-in-template-casing": [
       "warn",
       "PascalCase",

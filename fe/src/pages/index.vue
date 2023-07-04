@@ -74,7 +74,7 @@ const cardValueSample = ref<CampaignCardProps>(CardSample);
 
 const { title, imgSrc, description, ethValue, daysLeft } =
   cardValueSample.value;
-const setPage = (itemsPerPage: number, pageNumber: number) => {
+const setPage = (_itemsPerPage: number, pageNumber: number) => {
   currentPage.value = pageNumber;
 };
 </script>
