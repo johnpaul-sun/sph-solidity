@@ -29,6 +29,7 @@ contract CrowdFunding {
 
     // Events
     event CampaignCreated(address indexed sender, string title);
+    event CampaignEdited(address indexed sender, string title);
 
     // Modifiers
     modifier validCampaignArguments(
@@ -100,5 +101,41 @@ contract CrowdFunding {
         }
 
         return allCampaigns;
+    }
+
+    function editCampaign(
+        uint _campaignId,
+        string memory _fullname,
+        string memory _title,
+        string memory _story,
+        uint _goalAmount,
+        uint _deadline
+    )
+        public
+        validCampaignArguments(
+            _fullname,
+            _title,
+            _story,
+            _goalAmount,
+            _deadline
+        )
+    {
+        Campaign storage campaign = campaigns[_campaignId];
+        require(
+            _campaignId >= 0 && _campaignId < totalCampaigns,
+            "Invalid campaign ID"
+        );
+        require(
+            campaign.creator == msg.sender,
+            "You are not the campaign creator!"
+        );
+
+        campaign.fullname = _fullname;
+        campaign.title = _title;
+        campaign.story = _story;
+        campaign.goalAmount = _goalAmount;
+        campaign.deadline = _deadline;
+
+        emit CampaignEdited(msg.sender, campaign.title);
     }
 }
