@@ -9,7 +9,9 @@ contract CrowdFunding {
 
     struct User {
         uint totalCampaigns;
+        uint totalDonations;
         mapping(uint => uint) campaignIds;
+        mapping(uint => uint) donationTransactionIds;
     }
 
     struct Campaign {
@@ -23,14 +25,25 @@ contract CrowdFunding {
         uint deadline;
     }
 
+    struct DonationTransaction {
+        uint id;
+        uint campaignId;
+        address donor;
+        uint amount;
+        uint timestamp;
+    }
+
     // State variables
     mapping(address => User) public users;
     mapping(uint => Campaign) public campaigns;
+    mapping(uint => DonationTransaction) public donationTransactions;
     uint public totalCampaigns;
+    uint public totalDonations;
 
     // Events
     event CampaignCreated(address indexed sender, string title);
     event CampaignEdited(address indexed sender, string title);
+    event DonationSent(address indexed sender, string title, uint amount);
 
     // Modifiers
     modifier validCampaignArguments(
@@ -162,5 +175,38 @@ contract CrowdFunding {
         campaign.deadline = _deadline;
 
         emit CampaignEdited(msg.sender, campaign.title);
+    }
+
+    function sendDonation(uint _campaignId) public payable {
+        require(
+            _campaignId >= 0 && _campaignId < totalCampaigns,
+            "Invalid campaign ID"
+        );
+        Campaign storage campaign = campaigns[_campaignId];
+        require(
+            block.timestamp <= campaign.deadline,
+            "Campaign is already over"
+        );
+        require(msg.value > 0, "Donation amount should be more than 0");
+
+        User storage sender = users[msg.sender];
+        uint totalUserDonations = sender.totalDonations;
+
+        DonationTransaction memory transaction = DonationTransaction({
+            id: totalDonations,
+            campaignId: campaign.id,
+            donor: msg.sender,
+            amount: msg.value,
+            timestamp: block.timestamp
+        });
+
+        donationTransactions[totalDonations] = transaction;
+        sender.donationTransactionIds[totalUserDonations] = transaction.id;
+
+        campaign.currentAmount += msg.value;
+        totalDonations++;
+        sender.totalDonations++;
+
+        emit DonationSent(msg.sender, campaign.title, campaign.currentAmount);
     }
 }

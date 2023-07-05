@@ -13,7 +13,10 @@ type UserCampaignsResult = [
 async function getUserCampaigns() {
   console.log("FETCHING...");
   await crowdFundingContract
-    .getUserCampaigns(process.argv[2], process.argv[3])
+    .getUserCampaigns(
+      process.argv[2], // page size
+      process.argv[3], // page number
+    )
     .then((result: UserCampaignsResult) => {
       console.log(result[0]);
       console.log("User total campaigns: ", result[1].toNumber());
