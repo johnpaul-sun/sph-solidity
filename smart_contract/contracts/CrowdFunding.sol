@@ -23,6 +23,7 @@ contract CrowdFunding {
         uint deadline;
     }
 
+    // State variables
     mapping(address => User) public users;
     mapping(uint => Campaign) public campaigns;
     uint public totalCampaigns;
@@ -89,18 +90,42 @@ contract CrowdFunding {
         emit CampaignCreated(msg.sender, newCampaign.title);
     }
 
-    function getUserCampaigns() public view returns (Campaign[] memory) {
-        uint userTotalCampaigns = users[msg.sender].totalCampaigns;
-        Campaign[] memory allCampaigns = new Campaign[](userTotalCampaigns);
+    function getUserCampaigns(
+        uint _pageSize,
+        uint _pageNumber
+    ) public view returns (Campaign[] memory, uint, uint, uint, uint) {
+        require(_pageSize > 0, "Page size cannot be 0");
+        require(_pageNumber > 0, "Page number cannot be 0");
 
-        for (uint i = 0; i < userTotalCampaigns; i++) {
+        User storage user = users[msg.sender];
+        uint totalPages = (user.totalCampaigns + _pageSize - 1) / _pageSize;
+        uint startIndex = totalPages > 0 ? _pageSize * (_pageNumber - 1) : 0;
+        uint endIndex = _pageSize + startIndex > user.totalCampaigns
+            ? user.totalCampaigns
+            : _pageSize + startIndex;
+
+        Campaign[] memory allCampaigns = new Campaign[](endIndex - startIndex);
+
+        for (uint i = 0; i < allCampaigns.length; i++) {
             Campaign memory campaign = campaigns[
-                users[msg.sender].campaignIds[i]
+                user.campaignIds[startIndex + i]
             ];
             allCampaigns[i] = campaign;
         }
 
-        return allCampaigns;
+        uint nextPage = (_pageNumber < totalPages)
+            ? (_pageNumber + 1)
+            : totalPages;
+        uint previousPage = (_pageNumber > 1) ? (_pageNumber - 1) : 1;
+        previousPage = (totalPages > 0) ? previousPage : 0;
+
+        return (
+            allCampaigns,
+            user.totalCampaigns,
+            totalPages,
+            nextPage,
+            previousPage
+        );
     }
 
     function editCampaign(
