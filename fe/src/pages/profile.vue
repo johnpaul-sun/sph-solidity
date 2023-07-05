@@ -1,12 +1,13 @@
 <template>
   <div
+    v-if="isConnected || !isLoading"
     class="py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
   >
     <UserCard
-      :block-chain-value="blockChainValue"
-      :block-chain-label="blockChainLabel"
+      :block-chain-value="balance"
+      block-chain-label="ETH"
       :img-src="imgSrc"
-      :user-id="userId"
+      :user-id="middleTruncate(address, 6, 3)"
     />
     <div class="mt-6">
       <BaseTabs
@@ -25,13 +26,16 @@
 </template>
 
 <script setup lang="ts">
-import UserCardProps from "~/types/UserCardProps";
-import UserCardSample from "~/mocks/user-card-sample.json";
+import { storeToRefs } from "pinia";
 
-const userCardValueSample = ref<UserCardProps>(UserCardSample);
+import { useWalletStore } from "~/store/wallet";
+const useWallet = useWalletStore();
+const { isConnected, address, balance } = storeToRefs(useWallet);
 
-const { userId, imgSrc, blockChainLabel, blockChainValue } =
-  userCardValueSample.value;
+const { middleTruncate } = useUtils();
+
+const isLoading = ref<boolean>(false);
+const imgSrc = `https://api.multiavatar.com/${address}.png`;
 
 const profileTabs = ["My Campaigns", "Donators", "Donations"];
 

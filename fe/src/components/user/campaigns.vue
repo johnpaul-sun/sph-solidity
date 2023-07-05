@@ -3,39 +3,82 @@
     class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 campaigns"
   >
     <CampaignCard
-      v-for="i in 6"
-      :key="i"
-      :title="title"
-      :description="description"
-      :eth-value="ethValue"
-      :img-src="imgSrc"
-      :days-left="daysLeft"
+      v-for="campaign in userCampaigns"
+      :key="campaign.id"
+      :title="campaign.title"
+      :description="campaign.description"
+      :eth-value="campaign.ethValue"
+      :img-src="campaign.imgSrc"
+      :days-left="campaign.daysLeft"
     ></CampaignCard>
   </div>
-  <div class="w-full mt-8 h-14 flex items-center justify-center">
+  <div
+    v-if="lastPage > 1"
+    class="w-full mt-8 h-14 flex items-center justify-center"
+  >
     <BasePaginator
       :current-page="currentPage"
-      :last-page="10"
+      :last-page="lastPage"
       :items-per-page="itemsPerPage"
       :on-page-change="setPage"
     />
   </div>
 </template>
 <script setup lang="ts">
-import CardSample from "~/mocks/card-sample.json";
+import { storeToRefs } from "pinia";
+import { BigNumberish, ethers } from "ethers";
+import { toast } from "vue3-toastify";
+import { useWalletStore } from "~/store/wallet";
 import CampaignCardProps from "~/types/CampaignCardProps";
-import UserCardSample from "~/mocks/user-card-sample.json";
-import UserCardProps from "~/types/UserCardProps";
 
-const userCardValueSample = ref<UserCardProps>(UserCardSample);
+const { $getSmartContract: getSmartContract } = useNuxtApp();
+const { getDaysLeft } = useUtils();
+const useWallet = useWalletStore();
 
-const itemsPerPage = ref(5);
-const currentPage = ref(1);
-const cardValueSample = ref<CampaignCardProps>(CardSample);
-const { imgSrc } = userCardValueSample.value;
+const itemsPerPage = ref<number>(6);
+const currentPage = ref<number>(1);
+const lastPage = ref<number>(1);
+const { address } = storeToRefs(useWallet);
+const isLoading = ref<boolean>(false);
+const imgSrc = `https://api.multiavatar.com/${address}.png`;
+const userCampaigns = ref<CampaignCardProps[]>([]);
 
-const { title, description, ethValue, daysLeft } = cardValueSample.value;
+const getUserCampaings = async (pageNumber: number) => {
+  isLoading.value = true;
+  const smartContract = await getSmartContract();
+  if (smartContract !== null) {
+    smartContract
+      .getUserCampaigns(itemsPerPage.value, pageNumber)
+      .then((result) => {
+        userCampaigns.value = result[0].map((campaign: BigNumberish[]) => {
+          return {
+            id: campaign[0],
+            imgSrc,
+            title: campaign[3],
+            description: campaign[4],
+            ethValue: ethers.formatEther(campaign[6]),
+            daysLeft: getDaysLeft(campaign[7]),
+          };
+        });
+        lastPage.value = Number(result[2]);
+      })
+      .catch((error) => {
+        toast.error(error.reason);
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  } else {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  getUserCampaings(currentPage.value);
+});
+
 const setPage = (_itemsPerPage: number, pageNumber: number): void => {
   currentPage.value = pageNumber;
+  getUserCampaings(currentPage.value);
 };
 </script>

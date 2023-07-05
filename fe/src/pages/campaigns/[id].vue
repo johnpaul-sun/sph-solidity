@@ -13,7 +13,7 @@
 
       <div class="flex flex-col gap-[24px]">
         <CampaignDetailCard label="Days left" :content="daysLeft" />
-        <CampaignDetailCard label="Donations" :content="`${donations} DCAPP`" />
+        <CampaignDetailCard label="Donations" :content="`${donations} ETH`" />
         <CampaignDetailCard label="Total backers" :content="totalBackers" />
       </div>
     </div>

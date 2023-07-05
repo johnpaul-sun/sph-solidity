@@ -51,7 +51,7 @@
               id="goal"
               label="Goal"
               name="goal"
-              placeholder="0.123 DCAPP"
+              placeholder="0.123 ETH"
               type="number"
               step="any"
               :error="errors.goal"
