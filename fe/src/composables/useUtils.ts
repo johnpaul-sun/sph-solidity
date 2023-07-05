@@ -1,3 +1,5 @@
+import { BigNumberish } from "ethers";
+
 export const useUtils = () => {
   const truncate = (text: string, length: number): string => {
     if (text.length > length) {
@@ -20,5 +22,13 @@ export const useUtils = () => {
     return start + "..." + end;
   };
 
-  return { truncate, middleTruncate };
+  const getDaysLeft = (dateInt: BigNumberish): number => {
+    const dateNow: Date = new Date();
+    const dateNew: Date = new Date(Number(dateInt) * 1000);
+    const timeDiff: number = dateNew.getTime() - dateNow.getTime();
+
+    return Math.ceil(timeDiff / (1000 * 3600 * 24));
+  };
+
+  return { truncate, middleTruncate, getDaysLeft };
 };

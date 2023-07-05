@@ -1,5 +1,5 @@
 interface UserCardProps {
-  blockChainValue: string;
+  blockChainValue: string | number;
   blockChainLabel: string;
   imgSrc: string;
   userId: string;

@@ -4,7 +4,9 @@
     <div class="m-4 leading-[150%]">
       <div class="text-dark text-base font-bold">{{ title }}</div>
       <div class="mt-2 text-disabled text-sm font-normal flex items-center">
-        {{ truncate(description, 95) }}
+        <p class="text-ellipsis overflow-hidden ...">
+          {{ truncate(description, 95) }}
+        </p>
       </div>
       <div class="mt-6">
         <div class="font-bold text-dark flex justify-between">
