@@ -82,7 +82,7 @@ const warning = () => {
 const { value: amount } = useField<FundCampaignRequest["amount"]>("amount");
 
 const onSubmit = handleSubmit(() => {
-  if (isConnected) {
+  if (isConnected.value) {
     emit("fund-campaign", values.amount);
     resetForm();
   } else {
