@@ -21,7 +21,7 @@ export default defineNuxtPlugin(async (app) => {
         smartContract = new ethers.Contract(
           CONTRACT_ADDRESS as string,
           contract.abi,
-          signer,
+          signer
         );
 
         return smartContract;
@@ -41,11 +41,9 @@ export default defineNuxtPlugin(async (app) => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        signer,
+        signer
       );
-    } catch (error) {
-      toast.error("Something went wrong!");
-    }
+    } catch (error) {}
   }
 
   smartContract?.on("CampaignCreated", (sender, title) => {

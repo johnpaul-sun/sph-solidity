@@ -147,3 +147,36 @@ Nuxt
   ```
   npm run preview
   ```
+
+## Wallet Setup
+
+### Install MetaMask for Chrome to access features
+
+- Download Link -> https://metamask.io/download/
+- Once installed, create an account.
+
+### Enable Testnet
+
+- Click the MetaMask extension then click the `Show/hide` link. (See image below)
+  - ![image](https://github.com/framgia/sph-solidity/assets/104751512/436bb9fe-717f-4a5f-9516-14e753d04636)
+
+- After that, make sure to turn on the `Show test networks`. (See image below)
+  - ![image](https://github.com/framgia/sph-solidity/assets/104751512/768e9f85-a170-4e0b-a1d2-2c2539e9396f)
+
+- Once done, Click again the MetaMask extension and select from `Ethereum Mainnet` to `Sepolia test network`. (See image below)
+  - ![image](https://github.com/framgia/sph-solidity/assets/104751512/303fc528-4d8f-4aef-b9dc-503218ec26bc)
+
+### Fund your Sepolia Wallet
+
+- Go to Sepolia Faucet -> https://sepoliafaucet.com/
+
+- Log in using your Alchemy account, you can use your Google account when you sign up at Alchemy
+  - ![image](https://github.com/framgia/sph-solidity/assets/104751512/dd399335-c2b0-414b-908f-3ae06c2e020b)
+
+- Once you logged in, copy your Sepolia Address in your MetaMask wallet and paste it into the Sepoli Faucet then click `Send Me ETH` to claim your `0.5` ETH
+  - ![image](https://github.com/framgia/sph-solidity/assets/104751512/5f569dbb-34d4-4913-9331-0499e3130222)
+
+## Once all is done, you can now explore the features of this Decentralized Crowdfunding Application
+
+- Local -> http://localhost:3000/
+- Hosted -> https://sph-solidity-fe.vercel.app/

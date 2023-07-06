@@ -9,6 +9,30 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@nuxtjs/eslint-module",
   ],
+  app: {
+    head: {
+        title: 'SUNBLOCK',
+        meta: [
+          {
+            property: "og:title",
+            content: "SUNBLOCK",
+          },
+          {
+            property: "og:description",
+            content:
+              "Contribute to projects and innovations that matter using Blockchain technology.",
+          },
+          {
+            property: "og:image",
+            content: "/favicon.ico",
+          },
+          { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+        ],
+        link: [
+          { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+        ]
+    },
+  },
   plugins: [
     { src: "~/plugins/toastify.ts", mode: "client" },
     { src: "~/plugins/ethers.ts", mode: "client" },
