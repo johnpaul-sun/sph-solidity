@@ -15,7 +15,7 @@ export const signer: Signer = new ethers.Wallet(
   httpProvider,
 );
 
-// // Contract
+// Contract
 export const crowdFundingContract: Contract = new ethers.Contract(
   CONTRACT_ADDRESS as string,
   contract.abi,

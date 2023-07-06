@@ -213,6 +213,7 @@ contract CrowdFunding {
         emit DonationSent(msg.sender, campaign.title, campaign.currentAmount);
     }
 
+<<<<<<< HEAD
     function getCampaign(
         uint _campaignId
     ) public view returns (Campaign memory) {
@@ -240,5 +241,56 @@ contract CrowdFunding {
                 donationCount++;
             }
         }
+=======
+    struct DonationData {
+        address donator;
+        string campaignTitle;
+        uint donationAmount;
+    }
+
+    function getDonatorsByWalletAddress(
+        address _walletAddress
+    ) public view returns (DonationData[] memory) {
+        uint256 donatorCount = 0;
+
+        for (uint256 i = 0; i < totalCampaigns; i++) {
+            Campaign storage campaign = campaigns[i];
+            if (campaign.creator == _walletAddress) {
+                for (uint256 j = 0; j < totalDonations; j++) {
+                    DonationTransaction storage donation = donationTransactions[
+                        j
+                    ];
+                    if (donation.campaignId == campaign.id) {
+                        donatorCount++;
+                    }
+                }
+            }
+        }
+
+        DonationData[] memory donations = new DonationData[](donatorCount);
+
+        uint256 index = 0;
+
+        for (uint256 i = 0; i < totalCampaigns; i++) {
+            Campaign storage campaign = campaigns[i];
+            if (campaign.creator == _walletAddress) {
+                for (uint256 j = 0; j < totalDonations; j++) {
+                    DonationTransaction storage donation = donationTransactions[
+                        j
+                    ];
+                    if (donation.campaignId == campaign.id) {
+                        DonationData memory donatorData;
+                        donatorData.donator = donation.donor;
+                        donatorData.campaignTitle = campaign.title;
+                        donatorData.donationAmount = donation.amount;
+                        donations[index] = donatorData;
+                        index++;
+                    }
+                }
+            }
+        }
+
+        return donations;
+>>>>>>> 6fce191 (SOL-46 [BE] Create smart contract function for viewing donators on user's campaigns)
     }
 }
