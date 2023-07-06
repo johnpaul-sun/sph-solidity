@@ -3,14 +3,14 @@
     <thead class="border-b border-primary-10">
       <tr class="h-10 items-center">
         <th class="text-center px-4 text-primary-500">#</th>
-        <th class="text-left px-4 w-72">Donator</th>
+        <th class="text-left px-4 w-60">Campaign ID</th>
         <th class="text-left px-4 flex-1">Campaign Title</th>
         <th class="text-left px-4 w-40">Amount</th>
       </tr>
     </thead>
     <tbody>
       <tr
-        v-for="({ id, avatar, donator, title, amount }, index) in donors"
+        v-for="({ id, campaignId, title, amount }, index) in donations"
         :key="id"
         class="items-center min-h-[56px] border-b border-disabled"
       >
@@ -19,9 +19,8 @@
         </td>
         <td class="px-4 py-2">
           <div class="flex items-center space-x-2">
-            <UserAvatar :img-src="avatar" :height="40" :width="40" />
             <span>
-              {{ middleTruncate(donator, 6, 4) }}
+              {{ middleTruncate(campaignId, 6, 4) }}
             </span>
           </div>
         </td>
@@ -40,13 +39,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import donors from "@/mocks/campaign-donators.json";
+import donations from "~/mocks/campaign-donations.json";
 import { useUtils } from "~/composables/useUtils";
 
 const { middleTruncate } = useUtils();
 const currentPage = ref(1);
 const itemsPerPage = ref(5);
-const lastPage = Math.ceil(donors.length / itemsPerPage.value);
+
+const lastPage = Math.ceil(donations.length / itemsPerPage.value);
 
 const setPage = (_itemsPerPage: number, pageNumber: number): void => {
   currentPage.value = pageNumber;
