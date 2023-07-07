@@ -26,9 +26,11 @@
       </div>
       <BaseButton
         type="submit"
-        loading-class="bg-disabled h-9 px-4 rounded-[6px] text-white"
-        default-class="btn-gradient-hr"
-        :is-loading="isLoading"
+        :class="
+          isLoading
+            ? 'bg-disabled h-9 px-4 rounded-[6px] text-white'
+            : 'btn-gradient-hr'
+        "
         :disabled="isLoading"
       >
         Fund Campaign
