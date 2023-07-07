@@ -43,9 +43,7 @@ export default defineNuxtPlugin(async (app) => {
         contract.abi,
         signer,
       );
-    } catch (error) {
-      toast.error("Something went wrong!");
-    }
+    } catch (error) {}
   }
 
   smartContract?.on("CampaignCreated", (sender, title) => {

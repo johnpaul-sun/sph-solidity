@@ -140,7 +140,7 @@ const useWallet: any = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
 
 const warning = () => {
-  toast.info("Connect wallet first!", { autoClose: 1500 });
+  toast.warning("Connect wallet first!", { autoClose: 1500 });
 };
 
 const onSubmit = handleSubmit(async () => {

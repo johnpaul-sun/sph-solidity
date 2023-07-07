@@ -69,3 +69,59 @@ npm run lint:prettier
 npx hardhat help
 REPORT_GAS=true npx hardhat test
 ```
+
+## Crowdfunding App Commands
+
+- Create campaign
+
+  ```
+  npx ts-node scripts/createCampaign.ts <name> <title> <story> <goal> <deadline>
+
+  # Example
+  npx ts-node scripts/createCampaign.ts "sample name" "sample title" "sample story" 36510000000 1701360000
+  ```
+
+- Get user's created campaigns
+
+  ```
+  npx ts-node scripts/getUserCampaigns.ts <page size> <page number>
+
+  # Example
+  npx ts-node scripts/getUserCampaigns.ts 1 1
+  ```
+
+- Update a specific campaign
+
+  ```
+  npx ts-node scripts/editCampaign.ts <campaign id> <name> <title> <story> <goal> <deadline>
+
+  # Example
+  npx ts-node scripts/editCampaign.ts "updated sample name" "updated sample title" "updated sample story" 36510000001 1701360001
+  ```
+
+- Send ETH to a selected campaign
+
+  ```
+  npx ts-node scripts/sendDonation.ts <campaign id> <donation in eth>
+
+  # Example
+  npx ts-node scripts/sendDonation.ts 0 0.0000025
+  ```
+
+- Get specific campaign
+
+  ```
+  npx ts-node scripts/getCampaign.ts <campaign id>
+
+  # Example
+  npx ts-node scripts/getCampaign.ts 0
+  ```
+
+- Get donator list by campaign ID
+
+  ```
+  npx ts-node scripts/getDonatorsByCampaignId.ts <campaign id>
+
+  # Example
+  npx ts-node scripts/getDonatorsByCampaignId.ts 0
+  ```
