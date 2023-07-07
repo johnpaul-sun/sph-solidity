@@ -10,6 +10,8 @@
       </p>
       <BaseInput
         id="amount"
+        type="number"
+        step="any"
         name="amount"
         placeholder="0.123 ETH"
         :error="errors.amount"
@@ -24,7 +26,17 @@
           Supporting a project for no reward, just because it speaks to you.
         </p>
       </div>
-      <button type="submit" class="btn-gradient-hr">Fund Campaign</button>
+      <BaseButton
+        type="submit"
+        :class="
+          isLoading
+            ? 'bg-disabled h-9 px-4 rounded-[6px] text-white'
+            : 'btn-gradient-hr'
+        "
+        :disabled="isLoading"
+      >
+        Fund Campaign
+      </BaseButton>
     </form>
   </div>
 </template>
@@ -32,10 +44,17 @@
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
 import { useField, useForm } from "vee-validate";
+import { toast } from "vue3-toastify";
 import {
   FundCampaignRequest,
   FundCampaignRequestSchema,
 } from "~/schemas/fund-campaign";
+import CampaignFundFormProps from "~/types/CampaignFundFormProps";
+
+const campaignFundFormProps = defineProps<CampaignFundFormProps>();
+const emit = defineEmits(["fund-campaign"]);
+
+const { isLoading, isConnected } = toRefs(campaignFundFormProps);
 
 const validationSchema = toTypedSchema(FundCampaignRequestSchema);
 
@@ -61,8 +80,12 @@ const handleChange = (e: any) => {
 const { value: amount } = useField<FundCampaignRequest["amount"]>("amount");
 
 const onSubmit = handleSubmit(() => {
-  console.log(values);
-  resetForm();
+  if (isConnected.value) {
+    emit("fund-campaign", values.amount);
+    resetForm();
+  } else {
+    toast.info("Connect wallet first!", { autoClose: 1500 });
+  }
 });
 </script>
 

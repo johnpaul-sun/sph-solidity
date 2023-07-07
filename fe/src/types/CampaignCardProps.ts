@@ -3,6 +3,7 @@ interface CampaignCardProps {
   imgSrc: string;
   title: string;
   description: string;
+  additionalClass?: string;
   ethValue: number | string;
   daysLeft: number | string;
 }
