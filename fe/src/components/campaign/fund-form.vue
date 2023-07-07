@@ -10,6 +10,8 @@
       </p>
       <BaseInput
         id="amount"
+        type="number"
+        step="any"
         name="amount"
         placeholder="0.123 ETH"
         :error="errors.amount"

@@ -54,6 +54,12 @@ export default defineNuxtPlugin(async (app) => {
     }
   });
 
+  smartContract?.on("DonationSent", (sender) => {
+    if (sender.toLowerCase() === ethereum.selectedAddress.toLowerCase()) {
+      toast.success(`Fund successfully send!`);
+    }
+  });
+
   return {
     provide: {
       provider,

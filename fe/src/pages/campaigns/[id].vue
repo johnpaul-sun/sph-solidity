@@ -63,13 +63,19 @@ const donateCampaign = async (amount: number): Promise<void> => {
         value: ethers.parseEther(amount.toString()),
       })
       .then(() => {
-        toast.info("Funding campaign ...");
+        toast.info("Funding campaign in progress!");
       })
       .catch((error) => {
-        toast.error(
-          "There was an error from your request. Details :" +
-            truncate(error.message, 10),
-        );
+        if (error.reason === "rejected") {
+          toast.error("Fund rejected!");
+        } else if (error.message.includes("insufficient funds for gas")) {
+          toast.error("Insufficient balance!");
+        } else {
+          toast.error(
+            "There was an error from your request. Details :" +
+              truncate(error.message, 10),
+          );
+        }
       })
       .finally(() => {
         isLoading.value = false;
