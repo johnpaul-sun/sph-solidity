@@ -1,5 +1,8 @@
 <template>
-  <div class="rounded-2xl overflow-hidden bg-white shadow-card">
+  <div
+    class="rounded-2xl overflow-hidden bg-white shadow-card"
+    :class="additionalClass ?? ''"
+  >
     <img :src="imgSrc" class="h-44 w-full object-cover" />
     <div class="m-4 leading-[150%]">
       <div class="text-dark text-base font-bold">{{ title }}</div>
@@ -27,6 +30,6 @@ import CampaignCardProps from "@/types/CampaignCardProps";
 
 const { truncate } = useUtils();
 const campaignCardProps = defineProps<CampaignCardProps>();
-const { imgSrc, ethValue, title, description, daysLeft } =
+const { imgSrc, ethValue, title, description, daysLeft, additionalClass } =
   toRefs(campaignCardProps);
 </script>

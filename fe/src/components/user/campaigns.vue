@@ -10,6 +10,8 @@
       :eth-value="campaign.ethValue"
       :img-src="campaign.imgSrc"
       :days-left="campaign.daysLeft"
+      additional-class="cursor-pointer"
+      @click="$router.push(`/campaigns/${campaign.id}`)"
     ></CampaignCard>
   </div>
   <div
