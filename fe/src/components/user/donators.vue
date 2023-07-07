@@ -14,7 +14,7 @@
         :key="id"
         class="items-center min-h-[56px] border-b border-disabled"
       >
-        <td class="px-4 text-center bg-primary-200">
+        <td class="min-w-[56px] px-4 text-center bg-primary-200">
           {{ index + 1 }}
         </td>
         <td class="px-4 py-2">
