@@ -54,7 +54,7 @@ const useWallet: any = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
 const { id } = route.params;
 
-const donateCampaign = async (amount: number) => {
+const donateCampaign = async (amount: number): Promise<void> => {
   isLoading.value = true;
   const smartContract = await getSmartContract();
   if (smartContract !== null) {

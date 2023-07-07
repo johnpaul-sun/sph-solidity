@@ -26,11 +26,9 @@
       </div>
       <BaseButton
         type="submit"
-        :class="
-          isLoading
-            ? 'bg-disabled h-9 px-4 rounded-[6px] text-white'
-            : 'btn-gradient-hr'
-        "
+        loading-class="bg-disabled h-9 px-4 rounded-[6px] text-white"
+        default-class="btn-gradient-hr"
+        :is-loading="isLoading"
         :disabled="isLoading"
       >
         Fund Campaign
@@ -75,10 +73,6 @@ const handleChange = (e: any) => {
   validateField(e.target.name);
 };
 
-const warning = () => {
-  toast.info("Connect wallet first!", { autoClose: 1500 });
-};
-
 const { value: amount } = useField<FundCampaignRequest["amount"]>("amount");
 
 const onSubmit = handleSubmit(() => {
@@ -86,7 +80,7 @@ const onSubmit = handleSubmit(() => {
     emit("fund-campaign", values.amount);
     resetForm();
   } else {
-    warning();
+    toast.info("Connect wallet first!", { autoClose: 1500 });
   }
 });
 </script>
