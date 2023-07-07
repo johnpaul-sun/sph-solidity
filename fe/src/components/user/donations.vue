@@ -12,7 +12,8 @@
       <tr
         v-for="({ id, campaignId, title, amount }, index) in donations"
         :key="id"
-        class="items-center min-h-[56px] border-b border-disabled"
+        w
+        class="items-center h-14 min-h-[56px] border-b border-disabled"
       >
         <td class="px-4 text-center bg-primary-200">
           {{ index + 1 }}
