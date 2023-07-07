@@ -22,6 +22,9 @@
     <div v-if="activeTab === 'Donators'">
       <UserDonators />
     </div>
+    <div v-if="activeTab === 'Donations'">
+      <UserDonations />
+    </div>
   </div>
 </template>
 
