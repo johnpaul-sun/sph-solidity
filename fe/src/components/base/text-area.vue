@@ -24,7 +24,7 @@ type Props = {
   id: string;
   name: string;
   label?: string;
-  modelValue?: any;
+  modelValue?: string;
   placeholder?: string;
   error?: string;
 };

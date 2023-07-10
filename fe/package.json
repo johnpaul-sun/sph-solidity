@@ -13,6 +13,7 @@
     "lint:prettier": "../node_modules/.bin/prettier --write **/*.vue **/*.ts **/*.js"
   },
   "devDependencies": {
+    "@metamask/providers": "^11.1.0",
     "@nuxtjs/eslint-config-typescript": "^12.0.0",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/tailwindcss": "^6.7.0",

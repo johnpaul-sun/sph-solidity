@@ -96,8 +96,8 @@ const {
   validationSchema,
 });
 
-const handleChange = (e: any) => {
-  const { name, type, value } = e.target;
+const handleChange = (e: InputEvent) => {
+  const { name, type, value } = e.target as HTMLInputElement;
 
   if (type === "number") {
     setFieldValue(name, parseFloat(value));

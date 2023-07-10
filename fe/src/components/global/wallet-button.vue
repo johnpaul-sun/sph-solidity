@@ -41,16 +41,17 @@
 import { storeToRefs } from "pinia";
 import { toast } from "vue3-toastify";
 
+import { ProviderRpcError } from "~/types/ProviderRpcError";
 import { useWalletStore } from "~/store/wallet";
 const { middleTruncate } = useUtils();
 
 const isDropdownOpen = ref<boolean>(false);
-const useWallet: any = useWalletStore();
+const useWallet = useWalletStore();
 const { updateStatus } = useWallet;
 const { isConnected, address } = storeToRefs(useWallet);
 
 const connectWallet = async () => {
-  const ethereum = (window as any).ethereum;
+  const ethereum = window.ethereum;
 
   if (ethereum) {
     try {
@@ -64,11 +65,11 @@ const connectWallet = async () => {
       }
 
       localStorage.setItem("is-connected", "true");
-      updateStatus(true, account[0]);
-    } catch (error: any) {
+      updateStatus(true, (account as string)[0]);
+    } catch (error) {
       const processingErrorCode = -32002;
 
-      if (error.code === processingErrorCode) {
+      if ((error as ProviderRpcError).code === processingErrorCode) {
         toast.error("Please unlock your MetaMask wallet!", { autoClose: 1500 });
       } else {
         toast.error("Something went wrong!", { autoClose: 1500 });
@@ -80,7 +81,7 @@ const connectWallet = async () => {
 };
 
 const disconnectWallet = () => {
-  updateStatus(false);
+  updateStatus(false, "");
   toast.success("Wallet disconnected successfully!", { autoClose: 1500 });
   localStorage.removeItem("is-connected");
 };

@@ -69,12 +69,12 @@ const {
   validationSchema,
 });
 
-const handleChange = (e: any) => {
-  const { name, value } = e.target;
+const handleChange = (e: InputEvent) => {
+  const { name, value } = e.target as HTMLInputElement;
 
   setFieldValue(name, parseFloat(value));
 
-  validateField(e.target.name);
+  validateField(name);
 };
 
 const { value: amount } = useField<FundCampaignRequest["amount"]>("amount");

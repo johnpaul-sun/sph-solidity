@@ -116,8 +116,8 @@ const {
   validationSchema,
 });
 
-const handleChange = (e: any) => {
-  const { name, value, type } = e.target;
+const handleChange = (e: InputEvent) => {
+  const { name, value, type } = e.target as HTMLInputElement;
 
   if (type === "number") {
     setFieldValue(name, parseFloat(value));
@@ -136,7 +136,7 @@ const { value: goal } = useField<CreateCampaignRequest["goal"]>("goal");
 const { value: date } = useField<CreateCampaignRequest["date"]>("date");
 
 const isLoading = ref<boolean>(false);
-const useWallet: any = useWalletStore();
+const useWallet = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
 
 const warning = () => {
