@@ -117,11 +117,11 @@ REPORT_GAS=true npx hardhat test
   npx ts-node scripts/getCampaign.ts 0
   ```
 
-- Get donator list by campaign ID
+- Get donator list by campaign owner wallet address
 
   ```
-  npx ts-node scripts/getDonatorsByCampaignId.ts <campaign id>
+  npx ts-node scripts/getDonatorsByWalletAddress.ts <campaign owner wallet address> <page size> <page number>
 
   # Example
-  npx ts-node scripts/getDonatorsByCampaignId.ts 0
+  npx ts-node scripts/getDonatorsByWalletAddress.ts <campaign owner wallet address> 5 1
   ```

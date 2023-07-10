@@ -34,6 +34,20 @@ contract CrowdFunding {
         uint timestamp;
     }
 
+    struct DonationData {
+        address donator;
+        string campaignTitle;
+        uint donationAmount;
+    }
+
+    struct PaginationData {
+        uint256 totalPages;
+        uint256 nextPage;
+        uint256 previousPage;
+        uint256 startIndex;
+        uint256 endIndex;
+    }
+
     // State variables
     mapping(address => User) public users;
     mapping(uint => Campaign) public campaigns;
@@ -65,6 +79,33 @@ contract CrowdFunding {
     constructor() payable {
         owner = payable(msg.sender);
         totalCampaigns = 0;
+    }
+
+    function paginate(
+        uint256 totalItems,
+        uint256 pageSize,
+        uint256 pageNumber
+    ) internal pure returns (PaginationData memory) {
+        require(pageSize > 0, "Page size cannot be 0");
+        require(pageNumber > 0, "Page number cannot be 0");
+
+        PaginationData memory pagination;
+        pagination.totalPages = (totalItems + pageSize - 1) / pageSize;
+        pagination.startIndex = pagination.totalPages > 0
+            ? pageSize * (pageNumber - 1)
+            : 0;
+        pagination.endIndex = pageSize + pagination.startIndex > totalItems
+            ? totalItems
+            : pageSize + pagination.startIndex;
+        pagination.nextPage = (pageNumber < pagination.totalPages)
+            ? (pageNumber + 1)
+            : pagination.totalPages;
+        pagination.previousPage = (pageNumber > 1) ? (pageNumber - 1) : 1;
+        pagination.previousPage = (pagination.totalPages > 0)
+            ? pagination.previousPage
+            : 0;
+
+        return pagination;
     }
 
     function createCampaign(
@@ -106,41 +147,41 @@ contract CrowdFunding {
     }
 
     function getUserCampaigns(
-        uint _pageSize,
-        uint _pageNumber
-    ) public view returns (Campaign[] memory, uint, uint, uint, uint) {
-        require(_pageSize > 0, "Page size cannot be 0");
-        require(_pageNumber > 0, "Page number cannot be 0");
-
+        uint256 _pageSize,
+        uint256 _pageNumber
+    )
+        public
+        view
+        returns (
+            Campaign[] memory allCampaigns,
+            uint256 userTotalCampaigns,
+            uint256 totalPages,
+            uint256 nextPage,
+            uint256 previousPage
+        )
+    {
         User storage user = users[msg.sender];
-        uint totalPages = (user.totalCampaigns + _pageSize - 1) / _pageSize;
-        uint startIndex = totalPages > 0 ? _pageSize * (_pageNumber - 1) : 0;
-        uint endIndex = _pageSize + startIndex > user.totalCampaigns
-            ? user.totalCampaigns
-            : _pageSize + startIndex;
+        PaginationData memory pagination = paginate(
+            user.totalCampaigns,
+            _pageSize,
+            _pageNumber
+        );
 
-        Campaign[] memory allCampaigns = new Campaign[](endIndex - startIndex);
+        allCampaigns = new Campaign[](
+            pagination.endIndex - pagination.startIndex
+        );
 
-        for (uint i = 0; i < allCampaigns.length; i++) {
+        for (uint256 i = 0; i < allCampaigns.length; i++) {
             Campaign memory campaign = campaigns[
-                user.campaignIds[startIndex + i]
+                user.campaignIds[pagination.startIndex + i]
             ];
             allCampaigns[i] = campaign;
         }
 
-        uint nextPage = (_pageNumber < totalPages)
-            ? (_pageNumber + 1)
-            : totalPages;
-        uint previousPage = (_pageNumber > 1) ? (_pageNumber - 1) : 1;
-        previousPage = (totalPages > 0) ? previousPage : 0;
-
-        return (
-            allCampaigns,
-            user.totalCampaigns,
-            totalPages,
-            nextPage,
-            previousPage
-        );
+        userTotalCampaigns = user.totalCampaigns;
+        totalPages = pagination.totalPages;
+        nextPage = pagination.nextPage;
+        previousPage = pagination.previousPage;
     }
 
     function editCampaign(
@@ -240,5 +281,74 @@ contract CrowdFunding {
                 donationCount++;
             }
         }
+    }
+
+    function getDonatorsByWalletAddress(
+        address _walletAddress,
+        uint256 _pageSize,
+        uint256 _pageNumber
+    )
+        public
+        view
+        returns (
+            DonationData[] memory donations,
+            uint256 donatorCount,
+            uint256 totalPages,
+            uint256 nextPage,
+            uint256 previousPage
+        )
+    {
+        donatorCount = 0;
+        PaginationData memory pagination;
+
+        for (uint256 i = 0; i < totalCampaigns; i++) {
+            Campaign storage campaign = campaigns[i];
+            if (campaign.creator == _walletAddress) {
+                for (uint256 j = 0; j < totalDonations; j++) {
+                    DonationTransaction storage donation = donationTransactions[
+                        j
+                    ];
+                    if (donation.campaignId == campaign.id) {
+                        donatorCount++;
+                    }
+                }
+            }
+        }
+
+        pagination = paginate(donatorCount, _pageSize, _pageNumber);
+        donations = new DonationData[](
+            pagination.endIndex - pagination.startIndex
+        );
+        uint256 index = 0;
+
+        for (uint256 i = 0; i < totalCampaigns; i++) {
+            Campaign storage campaign = campaigns[i];
+            if (campaign.creator == _walletAddress) {
+                for (uint256 j = 0; j < totalDonations; j++) {
+                    DonationTransaction storage donation = donationTransactions[
+                        j
+                    ];
+                    if (donation.campaignId == campaign.id) {
+                        if (
+                            index >= pagination.startIndex &&
+                            index < pagination.endIndex
+                        ) {
+                            DonationData memory donatorData;
+                            donatorData.donator = donation.donor;
+                            donatorData.campaignTitle = campaign.title;
+                            donatorData.donationAmount = donation.amount;
+                            donations[
+                                index - pagination.startIndex
+                            ] = donatorData;
+                        }
+                        index++;
+                    }
+                }
+            }
+        }
+
+        totalPages = pagination.totalPages;
+        nextPage = pagination.nextPage;
+        previousPage = pagination.previousPage;
     }
 }
