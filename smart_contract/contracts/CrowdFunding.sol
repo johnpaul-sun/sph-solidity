@@ -34,6 +34,20 @@ contract CrowdFunding {
         uint timestamp;
     }
 
+    struct DonationData {
+        address donator;
+        string campaignTitle;
+        uint donationAmount;
+    }
+
+    struct PaginationData {
+        uint256 totalPages;
+        uint256 nextPage;
+        uint256 previousPage;
+        uint256 startIndex;
+        uint256 endIndex;
+    }
+
     // State variables
     mapping(address => User) public users;
     mapping(uint => Campaign) public campaigns;
@@ -67,27 +81,29 @@ contract CrowdFunding {
         totalCampaigns = 0;
     }
 
-    struct PaginationData {
-        uint256 totalPages;
-        uint256 nextPage;
-        uint256 previousPage;
-        uint256 startIndex;
-        uint256 endIndex;
-    }
-
-    function paginate(uint256 totalItems, uint256 pageSize, uint256 pageNumber) internal pure returns (PaginationData memory) {
+    function paginate(
+        uint256 totalItems,
+        uint256 pageSize,
+        uint256 pageNumber
+    ) internal pure returns (PaginationData memory) {
         require(pageSize > 0, "Page size cannot be 0");
         require(pageNumber > 0, "Page number cannot be 0");
 
         PaginationData memory pagination;
         pagination.totalPages = (totalItems + pageSize - 1) / pageSize;
-        pagination.startIndex = pagination.totalPages > 0 ? pageSize * (pageNumber - 1) : 0;
+        pagination.startIndex = pagination.totalPages > 0
+            ? pageSize * (pageNumber - 1)
+            : 0;
         pagination.endIndex = pageSize + pagination.startIndex > totalItems
             ? totalItems
             : pageSize + pagination.startIndex;
-        pagination.nextPage = (pageNumber < pagination.totalPages) ? (pageNumber + 1) : pagination.totalPages;
+        pagination.nextPage = (pageNumber < pagination.totalPages)
+            ? (pageNumber + 1)
+            : pagination.totalPages;
         pagination.previousPage = (pageNumber > 1) ? (pageNumber - 1) : 1;
-        pagination.previousPage = (pagination.totalPages > 0) ? pagination.previousPage : 0;
+        pagination.previousPage = (pagination.totalPages > 0)
+            ? pagination.previousPage
+            : 0;
 
         return pagination;
     }
@@ -130,36 +146,43 @@ contract CrowdFunding {
         emit CampaignCreated(msg.sender, newCampaign.title);
     }
 
-    function getUserCampaigns(uint256 _pageSize, uint256 _pageNumber)
+    function getUserCampaigns(
+        uint256 _pageSize,
+        uint256 _pageNumber
+    )
         public
         view
         returns (
-            Campaign[] memory,
-            uint256,
-            uint256,
-            uint256,
-            uint256
+            Campaign[] memory allCampaigns,
+            uint256 userTotalCampaigns,
+            uint256 totalPages,
+            uint256 nextPage,
+            uint256 previousPage
         )
     {
         User storage user = users[msg.sender];
-        PaginationData memory pagination = paginate(user.totalCampaigns, _pageSize, _pageNumber);
+        PaginationData memory pagination = paginate(
+            user.totalCampaigns,
+            _pageSize,
+            _pageNumber
+        );
 
-        Campaign[] memory allCampaigns = new Campaign[](pagination.endIndex - pagination.startIndex);
+        allCampaigns = new Campaign[](
+            pagination.endIndex - pagination.startIndex
+        );
 
         for (uint256 i = 0; i < allCampaigns.length; i++) {
-            Campaign memory campaign = campaigns[user.campaignIds[pagination.startIndex + i]];
+            Campaign memory campaign = campaigns[
+                user.campaignIds[pagination.startIndex + i]
+            ];
             allCampaigns[i] = campaign;
         }
 
-        return (
-            allCampaigns,
-            user.totalCampaigns,
-            pagination.totalPages,
-            pagination.nextPage,
-            pagination.previousPage
-        );
+        userTotalCampaigns = user.totalCampaigns;
+        totalPages = pagination.totalPages;
+        nextPage = pagination.nextPage;
+        previousPage = pagination.previousPage;
     }
-
 
     function editCampaign(
         uint _campaignId,
@@ -260,26 +283,31 @@ contract CrowdFunding {
         }
     }
 
-    struct DonationData {
-        address donator;
-        string campaignTitle;
-        uint donationAmount;
-    }
-
     function getDonatorsByWalletAddress(
         address _walletAddress,
         uint256 _pageSize,
         uint256 _pageNumber
-    ) public view returns (DonationData[] memory, uint256, uint256, uint256, uint256) {
-        uint256 donatorCount = 0;
-        DonationData[] memory donations;
+    )
+        public
+        view
+        returns (
+            DonationData[] memory donations,
+            uint256 donatorCount,
+            uint256 totalPages,
+            uint256 nextPage,
+            uint256 previousPage
+        )
+    {
+        donatorCount = 0;
         PaginationData memory pagination;
 
         for (uint256 i = 0; i < totalCampaigns; i++) {
             Campaign storage campaign = campaigns[i];
             if (campaign.creator == _walletAddress) {
                 for (uint256 j = 0; j < totalDonations; j++) {
-                    DonationTransaction storage donation = donationTransactions[j];
+                    DonationTransaction storage donation = donationTransactions[
+                        j
+                    ];
                     if (donation.campaignId == campaign.id) {
                         donatorCount++;
                     }
@@ -288,21 +316,30 @@ contract CrowdFunding {
         }
 
         pagination = paginate(donatorCount, _pageSize, _pageNumber);
-        donations = new DonationData[](pagination.endIndex - pagination.startIndex);
+        donations = new DonationData[](
+            pagination.endIndex - pagination.startIndex
+        );
         uint256 index = 0;
 
         for (uint256 i = 0; i < totalCampaigns; i++) {
             Campaign storage campaign = campaigns[i];
             if (campaign.creator == _walletAddress) {
                 for (uint256 j = 0; j < totalDonations; j++) {
-                    DonationTransaction storage donation = donationTransactions[j];
+                    DonationTransaction storage donation = donationTransactions[
+                        j
+                    ];
                     if (donation.campaignId == campaign.id) {
-                        if (index >= pagination.startIndex && index < pagination.endIndex) {
+                        if (
+                            index >= pagination.startIndex &&
+                            index < pagination.endIndex
+                        ) {
                             DonationData memory donatorData;
                             donatorData.donator = donation.donor;
                             donatorData.campaignTitle = campaign.title;
                             donatorData.donationAmount = donation.amount;
-                            donations[index - pagination.startIndex] = donatorData;
+                            donations[
+                                index - pagination.startIndex
+                            ] = donatorData;
                         }
                         index++;
                     }
@@ -310,13 +347,8 @@ contract CrowdFunding {
             }
         }
 
-        return (
-            donations,
-            donatorCount,
-            pagination.totalPages,
-            pagination.nextPage,
-            pagination.previousPage
-        );
+        totalPages = pagination.totalPages;
+        nextPage = pagination.nextPage;
+        previousPage = pagination.previousPage;
     }
-
 }
