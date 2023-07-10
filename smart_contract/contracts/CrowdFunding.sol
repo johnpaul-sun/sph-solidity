@@ -213,7 +213,6 @@ contract CrowdFunding {
         emit DonationSent(msg.sender, campaign.title, campaign.currentAmount);
     }
 
-<<<<<<< HEAD
     function getCampaign(
         uint _campaignId
     ) public view returns (Campaign memory) {
@@ -241,7 +240,8 @@ contract CrowdFunding {
                 donationCount++;
             }
         }
-=======
+    }
+
     struct DonationData {
         address donator;
         string campaignTitle;
@@ -291,6 +291,5 @@ contract CrowdFunding {
         }
 
         return donations;
->>>>>>> 6fce191 (SOL-46 [BE] Create smart contract function for viewing donators on user's campaigns)
     }
 }
