@@ -12,6 +12,7 @@ export default defineNuxtPlugin(async () => {
   const provider = new ethers.BrowserProvider(ethereum);
   const contractInterface = new ethers.BrowserProvider(ethereum);
   let smartContract: ethers.Contract | null = null;
+  let isListenerExecuted = false;
   let signer = null;
 
   const getSmartContract = async () => {
@@ -54,7 +55,13 @@ export default defineNuxtPlugin(async () => {
 
   smartContract?.on("DonationSent", (sender) => {
     if (sender.toLowerCase() === ethereum.selectedAddress.toLowerCase()) {
-      toast.success(`Fund successfully send!`);
+      if (!isListenerExecuted) {
+        isListenerExecuted = true;
+        toast.success(`Fund successfully sent!`);
+        setTimeout(() => {
+          isListenerExecuted = false;
+        }, 3000);
+      }
     }
   });
 
