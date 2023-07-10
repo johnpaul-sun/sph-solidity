@@ -4,9 +4,9 @@ import { toast } from "vue3-toastify";
 import contract from "../assets/contract/CrowdFunding.json";
 import { useWalletStore } from "~/store/wallet";
 
-export default defineNuxtPlugin(async (app) => {
+export default defineNuxtPlugin(async () => {
   const { isConnected } = storeToRefs(useWalletStore());
-  const CONTRACT_ADDRESS = app.$config.public.CONTRACT_ADDRESS;
+  const CONTRACT_ADDRESS = "0xb31B842605e94EfA3202caCC9a86B32b6F8592A2";
 
   const ethereum = window.ethereum;
 

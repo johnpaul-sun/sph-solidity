@@ -23,6 +23,7 @@ contract CrowdFunding {
         uint goalAmount;
         uint currentAmount;
         uint deadline;
+        uint totalDonations;
     }
 
     struct DonationTransaction {
@@ -90,7 +91,8 @@ contract CrowdFunding {
             story: _story,
             goalAmount: _goalAmount,
             currentAmount: 0,
-            deadline: _deadline
+            deadline: _deadline,
+            totalDonations: 0
         });
 
         campaigns[totalCampaigns] = newCampaign;
@@ -206,7 +208,37 @@ contract CrowdFunding {
         campaign.currentAmount += msg.value;
         totalDonations++;
         sender.totalDonations++;
+        campaign.totalDonations++;
 
         emit DonationSent(msg.sender, campaign.title, campaign.currentAmount);
+    }
+
+    function getCampaign(
+        uint _campaignId
+    ) public view returns (Campaign memory) {
+        return campaigns[_campaignId];
+    }
+
+    function getCampaignDonations(
+        uint _campaignId
+    )
+        public
+        view
+        returns (
+            DonationTransaction[] memory allDonations,
+            uint totalCampaignDonations
+        )
+    {
+        Campaign memory campaign = campaigns[_campaignId];
+        totalCampaignDonations = campaign.totalDonations;
+        allDonations = new DonationTransaction[](totalCampaignDonations);
+        uint donationCount = 0;
+
+        for (uint i = 0; i < totalDonations; i++) {
+            if (donationTransactions[i].campaignId == campaign.id) {
+                allDonations[donationCount] = donationTransactions[i];
+                donationCount++;
+            }
+        }
     }
 }
