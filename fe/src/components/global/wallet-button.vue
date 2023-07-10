@@ -47,7 +47,7 @@ const { middleTruncate } = useUtils();
 
 const isDropdownOpen = ref<boolean>(false);
 const useWallet = useWalletStore();
-const { updateStatus } = useWallet;
+const { updateStatus, updateIsShowModal } = useWallet;
 const { isConnected, address } = storeToRefs(useWallet);
 
 const connectWallet = async () => {
@@ -77,6 +77,7 @@ const connectWallet = async () => {
     }
   } else {
     toast.info("Please install MetaMask extension.", { autoClose: 1500 });
+    updateIsShowModal(true);
   }
 };
 
