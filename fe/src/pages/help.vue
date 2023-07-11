@@ -147,11 +147,12 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 const router = useRouter();
 const activeStep = ref(1);
 const totalSteps = ref(6);
-const handleNext = () => {
+
+const handleNext = (): void => {
   if (activeStep.value < totalSteps.value) {
     activeStep.value = activeStep.value + 1;
   } else {
@@ -159,13 +160,13 @@ const handleNext = () => {
   }
 };
 
-const handlePrevious = () => {
+const handlePrevious = (): void => {
   if (activeStep.value > 1) {
     activeStep.value = activeStep.value - 1;
   }
 };
 
-const handleBack = () => {
+const handleBack = (): void => {
   router.back();
 };
 </script>

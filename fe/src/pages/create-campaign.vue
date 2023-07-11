@@ -129,7 +129,7 @@ const {
   validationSchema,
 });
 
-const handleChange = (e: InputEvent) => {
+const handleChange = (e: InputEvent): void => {
   const { name, value, type } = e.target as HTMLInputElement;
 
   if (type === "number") {
@@ -153,11 +153,11 @@ const useWallet = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
 const { updateIsShowModal } = useWallet;
 
-const handleCloseModal = () => {
+const handleCloseModal = (): void => {
   updateIsShowModal(false);
 };
 
-const warning = () => {
+const warning = (): void => {
   toast.warning("Connect wallet first!", { autoClose: 1500 });
 };
 

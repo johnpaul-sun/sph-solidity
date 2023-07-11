@@ -20,7 +20,7 @@
     </div>
   </div>
 </template>
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useWalletStore } from "~/store/wallet";
 
@@ -29,7 +29,7 @@ const walletStore = useWalletStore();
 const { updateIsShowModal } = walletStore;
 const { isShowModal } = storeToRefs(walletStore);
 
-const handleClose = () => {
+const handleClose = (): void => {
   updateIsShowModal(false);
 };
 </script>
