@@ -50,7 +50,7 @@ const campaignValueSample = ref<CampaignProps>(CampaignSample);
 
 const isLoading = ref<boolean>(false);
 
-const useWallet: any = useWalletStore();
+const useWallet = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
 const { id } = route.params;
 
