@@ -30,5 +30,9 @@ export const useUtils = () => {
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
   };
 
-  return { truncate, middleTruncate, getDaysLeft };
+  const getAvatarUrl = (id: string): string => {
+    return `https://api.multiavatar.com/${id.toLowerCase()}.png`;
+  };
+
+  return { truncate, middleTruncate, getDaysLeft, getAvatarUrl };
 };

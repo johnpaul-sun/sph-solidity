@@ -20,7 +20,10 @@
       <UserCampaigns />
     </div>
     <div v-if="activeTab === 'Donators'">
-      <UserDonators />
+      <UserDonators
+        :donators-data="donatorsData"
+        :call-new-data="callNewData"
+      />
     </div>
     <div v-if="activeTab === 'Donations'">
       <UserDonations />
@@ -30,17 +33,84 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { toast } from "vue3-toastify";
 
 import { useWalletStore } from "~/store/wallet";
+import DonatorsData from "~/types/DonatorsData";
+
 const useWallet = useWalletStore();
 const { isConnected, address, balance } = storeToRefs(useWallet);
 
-const { middleTruncate } = useUtils();
+const { $getSmartContract: getSmartContract } = useNuxtApp();
+const { middleTruncate, getAvatarUrl } = useUtils();
 
 const isLoading = ref<boolean>(false);
-const imgSrc = `https://api.multiavatar.com/${address}.png`;
+const imgSrc = ref<string>("");
+const donatorsData = ref<DonatorsData>({
+  donatorsList: [],
+  totalDonators: 0,
+  totalPages: 0,
+  nextPage: 0,
+  previousPage: 0,
+});
+const itemsPerPage = 5;
+const currentPage = 1;
 
 const profileTabs = ["My Campaigns", "Donators", "Donations"];
-
 const activeTab = ref("My Campaigns");
+
+const getDonatorsByWalletAddress = async (
+  walletAddress: string,
+  pageSize: number,
+  pageNumber: number,
+): Promise<void> => {
+  try {
+    const smartContract = await getSmartContract();
+    if (smartContract !== null) {
+      const result = await smartContract.getDonatorsByWalletAddress(
+        walletAddress,
+        pageSize,
+        pageNumber,
+      );
+      const donators = result[0];
+      const totalDonators = Number(result[1]);
+      const totalPages = Number(result[2]);
+      const nextPage = Number(result[3]);
+      const previousPage = Number(result[4]);
+
+      const donatorsInfo = donators?.map(
+        (donator: [string, string, number]) => ({
+          donator: donator[0],
+          campaignTitle: donator[1],
+          donationAmount: donator[2].toString(),
+        }),
+      );
+      const donatorsList = JSON.parse(JSON.stringify(donatorsInfo, null, 2));
+
+      donatorsData.value = {
+        donatorsList,
+        totalDonators,
+        totalPages,
+        nextPage,
+        previousPage,
+      };
+    }
+  } catch (error: { code: string }) {
+    if (error.code === "UNCONFIGURED_NAME") return;
+    toast.error("Something went wrong!");
+  }
+};
+
+const callNewData = (currentPage: number): void => {
+  getDonatorsByWalletAddress(address.value, itemsPerPage, currentPage);
+};
+
+watch(
+  [activeTab, address],
+  () => {
+    getDonatorsByWalletAddress(address.value, itemsPerPage, currentPage);
+    imgSrc.value = getAvatarUrl(address.value);
+  },
+  { immediate: true },
+);
 </script>

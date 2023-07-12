@@ -30,6 +30,6 @@ body {
   }
 
   .dropdown-item {
-    @apply p-2 text-left hover: bg-gray-200;
+    @apply p-2 text-left hover:bg-gray-200;
   }
 }
