@@ -47,10 +47,10 @@ const { middleTruncate } = useUtils();
 
 const isDropdownOpen = ref<boolean>(false);
 const useWallet = useWalletStore();
-const { updateStatus } = useWallet;
+const { updateStatus, updateIsShowModal } = useWallet;
 const { isConnected, address } = storeToRefs(useWallet);
 
-const connectWallet = async () => {
+const connectWallet = async (): Promise<void> => {
   const ethereum = window.ethereum;
 
   if (ethereum) {
@@ -77,10 +77,11 @@ const connectWallet = async () => {
     }
   } else {
     toast.info("Please install MetaMask extension.", { autoClose: 1500 });
+    updateIsShowModal(true);
   }
 };
 
-const disconnectWallet = () => {
+const disconnectWallet = (): void => {
   updateStatus(false, "");
   toast.success("Wallet disconnected successfully!", { autoClose: 1500 });
   localStorage.removeItem("is-connected");
@@ -96,7 +97,7 @@ if (process.client) {
   });
 }
 
-const copyAddress = () => {
+const copyAddress = (): void => {
   navigator.clipboard
     .writeText(address.value)
     .then(() => {

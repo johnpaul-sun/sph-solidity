@@ -1,5 +1,18 @@
 <template>
   <div class="flex flex-grow">
+    <BaseModal>
+      <div>
+        You need to setup and connect your wallet in order to proceed with the
+        transaction.
+      </div>
+      <NuxtLink
+        to="/help"
+        class="flex w-full justify-center items-center rounded-md px-4 py-2 bg-clip-text text-sm font-bold text-transparent bg-linear-gradient-primary border border-primary-400"
+        @click="handleCloseModal"
+      >
+        Setup MetaMask wallet
+      </NuxtLink></BaseModal
+    >
     <div class="w-1/2 sm:flex hidden">
       <img
         src="../assets/img/be-the-change.jpg"
@@ -116,7 +129,7 @@ const {
   validationSchema,
 });
 
-const handleChange = (e: InputEvent) => {
+const handleChange = (e: InputEvent): void => {
   const { name, value, type } = e.target as HTMLInputElement;
 
   if (type === "number") {
@@ -138,8 +151,11 @@ const { value: date } = useField<CreateCampaignRequest["date"]>("date");
 const isLoading = ref<boolean>(false);
 const useWallet = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
+const { updateIsShowModal } = useWallet;
 
-const warning = () => {
+const handleCloseModal = () => updateIsShowModal(false);
+
+const warning = (): void => {
   toast.warning("Connect wallet first!", { autoClose: 1500 });
 };
 

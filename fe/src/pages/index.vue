@@ -1,5 +1,18 @@
 <template>
   <div>
+    <BaseModal>
+      <div>
+        You need to setup and connect your wallet in order to proceed with the
+        transaction.
+      </div>
+      <NuxtLink
+        to="/help"
+        class="flex w-full justify-center items-center rounded-md px-4 py-2 bg-clip-text text-sm font-bold text-transparent bg-linear-gradient-primary border border-primary-400"
+        @click="handleCloseModal"
+      >
+        Setup MetaMask wallet
+      </NuxtLink></BaseModal
+    >
     <div
       class="h-[560px] grid grid-cols-3 grid-rows-1 gap-4 text-center bg-gradient-container"
     >
@@ -67,10 +80,16 @@
 <script setup lang="ts">
 import CampaignCardProps from "~/types/CampaignCardProps";
 import CardSample from "~/mocks/card-sample.json";
+import { useWalletStore } from "~/store/wallet";
 
 const itemsPerPage = ref(5);
 const currentPage = ref(1);
 const cardValueSample = ref<CampaignCardProps>(CardSample);
+
+const walletStore = useWalletStore();
+const { updateIsShowModal } = walletStore;
+
+const handleCloseModal = () => updateIsShowModal(false);
 
 const { title, imgSrc, description, ethValue, daysLeft } =
   cardValueSample.value;

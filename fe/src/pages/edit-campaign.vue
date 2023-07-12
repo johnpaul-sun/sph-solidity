@@ -96,7 +96,7 @@ const {
   validationSchema,
 });
 
-const handleChange = (e: InputEvent) => {
+const handleChange = (e: InputEvent): void => {
   const { name, type, value } = e.target as HTMLInputElement;
 
   if (type === "number") {
@@ -118,9 +118,7 @@ const { value: story } = useField<CreateCampaignRequest["story"]>("story");
 const { value: goal } = useField<CreateCampaignRequest["goal"]>("goal");
 const { value: date } = useField<CreateCampaignRequest["date"]>("date");
 
-const handleBack = () => {
-  router.back();
-};
+const handleBack = () => router.back();
 
 const onSubmit = handleSubmit(() => {
   console.log(values);
