@@ -387,4 +387,27 @@ contract CrowdFunding {
             count++;
         }
     }
+
+    function getRecentCampaigns(
+        uint _size
+    )
+        public
+        view
+        returns (
+            Campaign[] memory recentCampaigns,
+            uint totalFetchedCampaigns,
+            uint totalAllCampaigns
+        )
+    {
+        uint startIndex = _size < totalCampaigns ? (totalCampaigns - _size) : 0;
+        uint arraySize = _size < totalCampaigns ? _size : totalCampaigns;
+        recentCampaigns = new Campaign[](arraySize);
+
+        for (uint i = 0; i < arraySize; i++) {
+            recentCampaigns[i] = campaigns[startIndex + i];
+        }
+
+        totalFetchedCampaigns = totalCampaigns > 0 ? arraySize : 0;
+        totalAllCampaigns = totalCampaigns;
+    }
 }

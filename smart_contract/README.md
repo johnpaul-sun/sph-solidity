@@ -117,6 +117,15 @@ REPORT_GAS=true npx hardhat test
   npx ts-node scripts/getCampaign.ts 0
   ```
 
+- Get campaign donation list by campaign ID
+
+  ```bash
+  npx ts-node scripts/getCampaignDonations.ts <campaign id>
+
+  # Example
+  npx ts-node scripts/getCampaignDonations.ts  0
+  ```
+
 - Get donator list by campaign owner wallet address
 
   ```
@@ -133,4 +142,13 @@ REPORT_GAS=true npx hardhat test
 
   # Example
   npx ts-node scripts/getUserDonations.ts 0xE5c5f1C02F62EeEB4F135161Fd9Af7b7BA1af4B8 2 1
+  ```
+
+- Get recent campaigns
+
+  ```bash
+  npx ts-node scripts/getRecentCampaigns.ts <size>
+
+  # Example
+  npx ts-node scripts/getRecentCampaigns.ts 6
   ```
