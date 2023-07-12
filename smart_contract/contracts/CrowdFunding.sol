@@ -35,7 +35,7 @@ contract CrowdFunding {
     }
 
     struct DonationData {
-        address donator;
+        address userAddress;
         string campaignTitle;
         uint donationAmount;
     }
@@ -81,7 +81,7 @@ contract CrowdFunding {
         totalCampaigns = 0;
     }
 
-    function paginate(
+    function _paginate(
         uint256 totalItems,
         uint256 pageSize,
         uint256 pageNumber
@@ -161,7 +161,7 @@ contract CrowdFunding {
         )
     {
         User storage user = users[msg.sender];
-        PaginationData memory pagination = paginate(
+        PaginationData memory pagination = _paginate(
             user.totalCampaigns,
             _pageSize,
             _pageNumber
@@ -315,7 +315,7 @@ contract CrowdFunding {
             }
         }
 
-        pagination = paginate(donatorCount, _pageSize, _pageNumber);
+        pagination = _paginate(donatorCount, _pageSize, _pageNumber);
         donations = new DonationData[](
             pagination.endIndex - pagination.startIndex
         );
@@ -334,7 +334,7 @@ contract CrowdFunding {
                             index < pagination.endIndex
                         ) {
                             DonationData memory donatorData;
-                            donatorData.donator = donation.donor;
+                            donatorData.userAddress = donation.donor;
                             donatorData.campaignTitle = campaign.title;
                             donatorData.donationAmount = donation.amount;
                             donations[
@@ -350,5 +350,41 @@ contract CrowdFunding {
         totalPages = pagination.totalPages;
         nextPage = pagination.nextPage;
         previousPage = pagination.previousPage;
+    }
+
+    function getUserDonations(
+        address _userAddress,
+        uint _pageSize,
+        uint _pageNumber
+    )
+        public
+        view
+        returns (
+            DonationData[] memory userDonations,
+            PaginationData memory pagination
+        )
+    {
+        uint count = 0;
+        User storage user = users[_userAddress];
+
+        pagination = _paginate(user.totalDonations, _pageSize, _pageNumber);
+        userDonations = new DonationData[](
+            pagination.endIndex - pagination.startIndex
+        );
+
+        for (uint i = pagination.startIndex; i < pagination.endIndex; i++) {
+            DonationTransaction memory transaction = donationTransactions[
+                user.donationTransactionIds[i]
+            ];
+            Campaign memory campaign = campaigns[transaction.campaignId];
+            DonationData memory donationData = DonationData({
+                userAddress: campaign.creator,
+                campaignTitle: campaign.title,
+                donationAmount: transaction.amount
+            });
+
+            userDonations[count] = donationData;
+            count++;
+        }
     }
 }

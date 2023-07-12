@@ -1,40 +1,105 @@
-import { ethers } from "hardhat";
-import contract from "../artifacts/contracts/CrowdFunding.sol/CrowdFunding.json";
+import promptSync from "prompt-sync";
 
-const API_URL = process.env.API_URL;
-const USER_KEY = process.env.USER_KEY;
-const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-
-console.log("CONTRACT ADDRESS: ", CONTRACT_ADDRESS);
-
-const httpProvider = new ethers.providers.JsonRpcProvider(API_URL);
-const signer = new ethers.Wallet(USER_KEY as string, httpProvider);
-
-// Contract
-const crowdFundingContract = new ethers.Contract(
-  CONTRACT_ADDRESS as string,
-  contract.abi,
-  signer,
-);
+import createCampaign from "./createCampaign";
+import getUserDonations from "./getUserDonations";
+import getCampaign from "./getCampaign";
+import getUserCampaigns from "./getUserCampaigns";
+import editCampaign from "./editCampaign";
+import sendDonation from "./sendDonation";
+import getCampaignDonations from "./getCampaignDonations";
+import getDonatorsByWalletAddress from "./getDonatorsByWalletAddress";
 
 async function main() {
-  await crowdFundingContract.createCampaign(
-    "arden",
-    "sample title",
-    "sample story",
-    100,
-    1687392000000,
-  );
+  const prompt = promptSync();
+  let input = "";
+  let address, id, name, title, story, deadline, amount, pageSize, pageNumber;
 
-  const totalCampaigns = await crowdFundingContract.totalCampaigns();
-  const newCampaign = await crowdFundingContract.campaigns(totalCampaigns - 1);
-  console.log("Id: " + newCampaign[0]);
-  console.log("Creator: " + newCampaign[1]);
-  console.log("Full Name: " + newCampaign[2]);
-  console.log("Title: " + newCampaign[3]);
-  console.log("Story: " + newCampaign[4]);
-  console.log("Goal Amount: " + newCampaign[5]);
-  console.log("Current Amount: " + newCampaign[6]);
-  console.log("Deadline: " + new Date(newCampaign[7]));
+  while (input !== "q") {
+    console.log("-----------------MENU-----------------");
+    console.log("[1] - Create campaign");
+    console.log("[2] - Edit campaign");
+    console.log("[3] - Get specific campaign");
+    console.log("[4] - Get user's campaigns");
+    console.log("[5] - Send donation to a campaign");
+    console.log("[6] - Get user's donations");
+    console.log("[7] - Get campaign's donations");
+    console.log("[8] - Get donators by wallet address");
+    console.log("[q] - Quit");
+    console.log("--------------------------------------");
+
+    input = prompt("Choice: ");
+
+    switch (input) {
+      case "1":
+        name = prompt("Full Name: ");
+        title = prompt("Campaign Title: ");
+        story = prompt("Story: ");
+        amount = prompt("Goal: ");
+        deadline = prompt("Date: ");
+
+        await createCampaign(name, title, story, amount, deadline);
+
+        break;
+      case "2":
+        id = prompt("Campaign ID: ");
+        name = prompt("Full Name: ");
+        title = prompt("Campaign Title: ");
+        story = prompt("Story: ");
+        amount = prompt("Goal: ");
+        deadline = prompt("Date: ");
+
+        await editCampaign(id, name, title, story, amount, deadline);
+
+        break;
+      case "3":
+        id = prompt("Campaign ID: ");
+
+        await getCampaign(id);
+
+        break;
+      case "4":
+        pageSize = prompt("Page size: ");
+        pageNumber = prompt("Page number: ");
+
+        await getUserCampaigns(pageSize, pageNumber);
+
+        break;
+      case "5":
+        id = prompt("Campaign ID: ");
+        amount = prompt("Amount in ETH: ");
+
+        await sendDonation(id, amount);
+
+        break;
+      case "6":
+        address = prompt("User Address: ");
+        pageSize = Number(prompt("Page Size: "));
+        pageNumber = Number(prompt("Page Number: "));
+
+        await getUserDonations(address, pageSize, pageNumber);
+        break;
+      case "7":
+        id = prompt("Campaign ID: ");
+
+        await getCampaignDonations(id);
+
+        break;
+      case "8":
+        address = prompt("User Address: ");
+        pageSize = prompt("Page size: ");
+        pageNumber = prompt("Page number: ");
+
+        await getDonatorsByWalletAddress(address, pageSize, pageNumber);
+
+        break;
+      case "q":
+        console.log("Exiting...");
+        process.exit();
+      default:
+        console.log("Invalid input. Please try again.");
+        break;
+    }
+  }
 }
+
 main();

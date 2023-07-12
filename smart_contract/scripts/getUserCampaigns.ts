@@ -10,13 +10,22 @@ type UserCampaignsResult = [
   BigNumber,
 ];
 
-async function getUserCampaigns() {
+async function main() {
+  if (
+    process.argv[2] !== undefined && // page size
+    process.argv[3] !== undefined // page number
+  ) {
+    await getUserCampaigns(process.argv[2], process.argv[3]);
+  }
+}
+
+export default async function getUserCampaigns(
+  pageSize: string,
+  pageNumber: string,
+) {
   console.log("FETCHING...");
   await crowdFundingContract
-    .getUserCampaigns(
-      process.argv[2], // page size
-      process.argv[3], // page number
-    )
+    .getUserCampaigns(pageSize, pageNumber)
     .then((result: UserCampaignsResult) => {
       console.log(result[0]);
       console.log("User total campaigns: ", result[1].toNumber());
@@ -28,4 +37,5 @@ async function getUserCampaigns() {
       console.log("ERROR!", error);
     });
 }
-getUserCampaigns();
+
+main();

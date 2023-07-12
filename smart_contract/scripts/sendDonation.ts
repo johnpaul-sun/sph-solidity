@@ -1,9 +1,18 @@
 import { ContractTransaction, utils } from "ethers";
 import { crowdFundingContract, signer } from "./createContract";
 
-async function sendDonation() {
-  const campaignId = Number(process.argv[2]);
-  const donationWeiAmount = utils.parseEther(process.argv[3]);
+async function main() {
+  if (
+    process.argv[2] !== undefined && // user address
+    process.argv[3] !== undefined // page size
+  ) {
+    await sendDonation(process.argv[2], process.argv[3]);
+  }
+}
+
+export default async function sendDonation(id: string, amount: string) {
+  const campaignId = Number(id);
+  const donationWeiAmount = utils.parseEther(amount);
   console.log("USER ADDRESS: ", await signer.getAddress());
   console.log(
     "INITIAL BALANCE: ",
@@ -37,4 +46,4 @@ crowdFundingContract?.on(
   },
 );
 
-sendDonation();
+main();

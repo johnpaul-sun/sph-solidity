@@ -125,3 +125,12 @@ REPORT_GAS=true npx hardhat test
   # Example
   npx ts-node scripts/getDonatorsByWalletAddress.ts <campaign owner wallet address> 5 1
   ```
+
+- Get user's donations list
+
+  ```
+  npx ts-node scripts/getUserDonations.ts <user address> <page size> <page number>
+
+  # Example
+  npx ts-node scripts/getUserDonations.ts 0xE5c5f1C02F62EeEB4F135161Fd9Af7b7BA1af4B8 2 1
+  ```

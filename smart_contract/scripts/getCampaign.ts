@@ -1,12 +1,18 @@
 import { crowdFundingContract } from "./createContract";
 import { CrowdFunding } from "../typechain-types/CrowdFunding";
 
-async function getCampaign() {
+async function main() {
+  if (
+    process.argv[2] !== undefined // campaign id
+  ) {
+    await getCampaign(process.argv[2]);
+  }
+}
+
+export default async function getCampaign(id: string) {
   console.log("FETCHING...");
   await crowdFundingContract
-    .getCampaign(
-      process.argv[2] // campaign id
-    )
+    .getCampaign(id)
     .then((result: CrowdFunding.CampaignStructOutput) => {
       console.log(result);
     })
@@ -14,4 +20,5 @@ async function getCampaign() {
       console.log("ERROR!", error);
     });
 }
-getCampaign();
+
+main();

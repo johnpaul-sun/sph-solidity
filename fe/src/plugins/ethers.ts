@@ -6,7 +6,7 @@ import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
   const { isConnected } = storeToRefs(useWalletStore());
-  const CONTRACT_ADDRESS = "0x98668C834ca6A0317bC94702fcf589D5bCFb1Fa5";
+  const CONTRACT_ADDRESS = "0xc493A109BE8BFbEa5b779fa0135Cb87fb544679c";
 
   const ethereum = window.ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
@@ -54,7 +54,7 @@ export default defineNuxtPlugin(async () => {
   });
 
   smartContract?.on("DonationSent", (sender) => {
-    if (sender.toLowerCase() === ethereum.selectedAddress.toLowerCase()) {
+    if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
       toast.success("Fund successfully sent!");
       smartContract?.removeAllListeners("DonationSent");
     }

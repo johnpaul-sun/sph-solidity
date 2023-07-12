@@ -4,10 +4,27 @@ import { BigNumber } from "ethers";
 type DonatorsResult = [Donator[], BigNumber, BigNumber, BigNumber, BigNumber];
 type Donator = [string, string, BigNumber];
 
-async function getDonatorsByWalletAddress() {
-  const walletAddress = process.argv[2];
-  const pageSize = parseInt(process.argv[3]);
-  const pageNumber = parseInt(process.argv[4]);
+async function main() {
+  if (
+    process.argv[2] !== undefined && // wallet address
+    process.argv[3] !== undefined && // page size
+    process.argv[4] !== undefined // page number
+  ) {
+    await getDonatorsByWalletAddress(
+      process.argv[2],
+      process.argv[3],
+      process.argv[4],
+    );
+  }
+}
+
+export default async function getDonatorsByWalletAddress(
+  walletAddress: string,
+  size: string,
+  pageNum: string,
+) {
+  const pageSize = parseInt(size);
+  const pageNumber = parseInt(pageNum);
 
   console.log("FETCHING DONATORS...");
   try {
@@ -34,4 +51,4 @@ async function getDonatorsByWalletAddress() {
   }
 }
 
-getDonatorsByWalletAddress();
+main();

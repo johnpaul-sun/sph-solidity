@@ -7,12 +7,18 @@ type CampaignDonationsResult = [
   BigNumber,
 ];
 
-async function getCampaignDonations() {
+async function main() {
+  if (
+    process.argv[2] !== undefined // campaign id
+  ) {
+    await getCampaignDonations(process.argv[2]);
+  }
+}
+
+export default async function getCampaignDonations(id: string) {
   console.log("FETCHING...");
   await crowdFundingContract
-    .getCampaignDonations(
-      process.argv[2] // campaign id
-    )
+    .getCampaignDonations(id)
     .then((result: CampaignDonationsResult) => {
       console.log(result[0]);
       console.log("Campaign total donations: ", result[1].toNumber());
@@ -21,4 +27,5 @@ async function getCampaignDonations() {
       console.log("ERROR!", error);
     });
 }
-getCampaignDonations();
+
+main();
