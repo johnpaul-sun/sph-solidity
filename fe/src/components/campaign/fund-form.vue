@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col gap-6 sm:w-full lg:w-[396px] xl:min-w-[396px]">
-    <p class="label">Fund</p>
     <form
       class="bg-primary-100 p-4 flex flex-col gap-2 rounded-md"
       @submit.prevent="onSubmit"
@@ -44,7 +43,6 @@
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
 import { useField, useForm } from "vee-validate";
-import { toast } from "vue3-toastify";
 import {
   FundCampaignRequest,
   FundCampaignRequestSchema,
@@ -55,6 +53,7 @@ const campaignFundFormProps = defineProps<CampaignFundFormProps>();
 const emit = defineEmits(["fund-campaign"]);
 
 const { isLoading, isConnected } = toRefs(campaignFundFormProps);
+const { notConnectedWarning } = useUtils();
 
 const validationSchema = toTypedSchema(FundCampaignRequestSchema);
 
@@ -84,7 +83,7 @@ const onSubmit = handleSubmit(() => {
     emit("fund-campaign", values.amount);
     resetForm();
   } else {
-    toast.info("Connect wallet first!", { autoClose: 1500 });
+    notConnectedWarning();
   }
 });
 </script>

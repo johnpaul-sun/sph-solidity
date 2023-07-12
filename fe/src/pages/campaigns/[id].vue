@@ -20,6 +20,7 @@
 
     <div class="bg-white p-4 flex gap-6 sm:flex-col lg:flex-row">
       <CampaignContent
+        :id="id"
         :title="title"
         :creator="creator"
         :story="story"
