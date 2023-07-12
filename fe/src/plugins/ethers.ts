@@ -49,12 +49,14 @@ export default defineNuxtPlugin(async () => {
   smartContract?.on("CampaignCreated", (sender, title) => {
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
       toast.success(`Campaign ${title} was successfully created!`);
+      smartContract?.removeAllListeners("CampaignCreated");
     }
   });
 
   smartContract?.on("DonationSent", (sender) => {
     if (sender.toLowerCase() === ethereum.selectedAddress.toLowerCase()) {
-      toast.success(`Fund successfully send!`);
+      toast.success("Fund successfully sent!");
+      smartContract?.removeAllListeners("DonationSent");
     }
   });
 
