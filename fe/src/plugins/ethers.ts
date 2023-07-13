@@ -6,7 +6,8 @@ import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
   const { isConnected } = storeToRefs(useWalletStore());
-  const CONTRACT_ADDRESS = "0x768635155c9EBD1C0b2A21EA1f3831df84C8FCF6";
+  const router = useRouter();
+  const CONTRACT_ADDRESS = "0xb31B842605e94EfA3202caCC9a86B32b6F8592A2";
 
   const ethereum = window.ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
@@ -21,7 +22,7 @@ export default defineNuxtPlugin(async () => {
         smartContract = new ethers.Contract(
           CONTRACT_ADDRESS as string,
           contract.abi,
-          signer
+          signer,
         );
 
         return smartContract;
@@ -41,7 +42,7 @@ export default defineNuxtPlugin(async () => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        signer
+        signer,
       );
     } catch (error) {}
   }
@@ -57,6 +58,16 @@ export default defineNuxtPlugin(async () => {
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
       toast.success("Fund successfully sent!");
       smartContract?.removeAllListeners("DonationSent");
+    }
+  });
+
+  smartContract?.on("CampaignEdited", (sender, title) => {
+    if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
+      setTimeout(function () {
+        toast.success(`Campaign ${title} was successfully updated!`);
+      }, 300);
+      router.back();
+      smartContract?.removeAllListeners("CampaignEdited");
     }
   });
 

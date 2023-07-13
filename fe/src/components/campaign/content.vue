@@ -1,7 +1,13 @@
 <template>
   <div class="flex flex-col gap-6 sm:w-full lg:w-full">
-    <div>
+    <div class="flex items-center">
       <p class="label">Title: {{ title }}</p>
+      <Icon
+        class="ml-4 cursor-pointer"
+        name="heroicons-solid:pencil-square"
+        size="16"
+        @click="editCampaign"
+      />
     </div>
     <div class="group flex-col">
       <p class="label">Creator:</p>
@@ -45,12 +51,21 @@
 <script setup lang="ts">
 import { Donator, Creator } from "~/types/CampaignProps";
 type Props = {
+  id: number;
   title: string;
   creator: Creator;
   story: string;
   donators: Donator[];
 };
-defineProps<Props>();
+
+const campaignContentProps = defineProps<Props>();
+const { id, title, creator, story, donators } = toRefs(campaignContentProps);
+
+const router = useRouter();
+
+const editCampaign = (): void => {
+  router.push(`/edit-campaign/${id.value}`);
+};
 
 const { middleTruncate } = useUtils();
 </script>

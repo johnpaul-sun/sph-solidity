@@ -1,4 +1,5 @@
 import { BigNumberish } from "ethers";
+import { Id, toast } from "vue3-toastify";
 
 export const useUtils = () => {
   const truncate = (text: string, length: number): string => {
@@ -30,5 +31,21 @@ export const useUtils = () => {
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
   };
 
-  return { truncate, middleTruncate, getDaysLeft };
+  const getDateYMD = (dateInt: BigNumberish): string => {
+    const date: Date = new Date(Number(dateInt) * 1000);
+
+    return date.toISOString().split("T")[0];
+  };
+
+  const notConnectedWarning = (duration = 1500): Id => {
+    return toast.warning("Connect wallet first!", { autoClose: duration });
+  };
+
+  return {
+    truncate,
+    middleTruncate,
+    getDaysLeft,
+    getDateYMD,
+    notConnectedWarning,
+  };
 };

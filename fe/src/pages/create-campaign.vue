@@ -95,7 +95,7 @@
         <div
           v-else
           class="flex w-fit items-center justify-center text-sm uppercase btn-gradient cursor-pointer"
-          @click="warning"
+          @click="() => notConnectedWarning()"
         >
           Submit Application
         </div>
@@ -117,6 +117,7 @@ import { useWalletStore } from "~/store/wallet";
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
 const { $getSmartContract: getSmartContract } = useNuxtApp();
+const { notConnectedWarning } = useUtils();
 
 const {
   handleSubmit,
@@ -155,10 +156,6 @@ const { updateIsShowModal } = useWallet;
 
 const handleCloseModal = () => updateIsShowModal(false);
 
-const warning = (): void => {
-  toast.warning("Connect wallet first!", { autoClose: 1500 });
-};
-
 const onSubmit = handleSubmit(async () => {
   isLoading.value = true;
   const deadline = new Date(values.date as string);
@@ -192,7 +189,7 @@ const onSubmit = handleSubmit(async () => {
         isLoading.value = false;
       });
   } else {
-    warning();
+    notConnectedWarning();
     isLoading.value = false;
   }
 });
