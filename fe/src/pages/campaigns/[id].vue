@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <div class="bg-white p-4 flex gap-6 sm:flex-col lg:flex-row">
+    <div class="bg-white p-4 flex gap-6 sm:flex-col lg:flex-row rounded-lg">
       <CampaignContent
         :id="id"
         :title="title"
@@ -42,6 +42,11 @@ import { ethers } from "ethers";
 import CampaignProps from "~/types/CampaignProps";
 import CampaignSample from "~/mocks/campaign-sample.json";
 import { useWalletStore } from "~/store/wallet";
+
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const route = useRoute();
 const { truncate } = useUtils();
 

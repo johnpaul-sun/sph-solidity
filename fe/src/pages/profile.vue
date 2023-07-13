@@ -38,6 +38,10 @@ import { toast } from "vue3-toastify";
 import { useWalletStore } from "~/store/wallet";
 import DonatorsData from "~/types/DonatorsData";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const useWallet = useWalletStore();
 const { isConnected, address, balance } = storeToRefs(useWallet);
 
