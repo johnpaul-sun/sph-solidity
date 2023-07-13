@@ -1,22 +1,23 @@
 export interface Creator {
   address: string;
-  totalCampaigns: number;
+  fullName: string;
   imgSrc: string;
 }
 
-export interface Donator {
+export interface Donation {
+  donationId: number;
   address: string;
   amount: number;
 }
 
 export default interface CampaignProps {
-  id: number;
+  campaignId: number;
   creator: Creator;
   title: string;
   imgSrc: string;
   story: string;
   daysLeft: number;
-  donations: number;
+  totalDonation: number;
   totalBackers: number;
-  donators: Donator[];
+  donations: Donation[];
 }

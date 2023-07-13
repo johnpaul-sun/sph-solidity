@@ -1,6 +1,7 @@
 import { crowdFundingContract } from "./createContract";
 import { CrowdFunding } from "../typechain-types/CrowdFunding";
 import type { BigNumber } from "ethers";
+import { utils } from "ethers";
 
 type CampaignDonationsResult = [
   CrowdFunding.DonationTransactionStructOutput[],
@@ -20,8 +21,13 @@ export default async function getCampaignDonations(id: string) {
   await crowdFundingContract
     .getCampaignDonations(id)
     .then((result: CampaignDonationsResult) => {
-      console.log(result[0]);
-      console.log("Campaign total donations: ", result[1].toNumber());
+      result[0].forEach((donation) => {
+        console.log("ID: ", donation.id.toNumber());
+        console.log("DONOR: ", donation.donor);
+        console.log("AMOUNT: ", utils.formatEther(donation.amount));
+        console.log("----------------------------------");
+      });
+      console.log("TOTAL DONATIONS: ", result[1].toNumber());
     })
     .catch((error: Error) => {
       console.log("ERROR!", error);

@@ -3,6 +3,7 @@
     <div class="flex items-center">
       <p class="label">Title: {{ title }}</p>
       <Icon
+        v-show="canEdit"
         class="ml-4 cursor-pointer"
         name="heroicons-solid:pencil-square"
         size="16"
@@ -17,7 +18,7 @@
           <p class="font-bold">
             {{ middleTruncate(creator.address, 8, 5) }}
           </p>
-          <p class="text-disabled">{{ creator.totalCampaigns }} campaigns</p>
+          <p class="text-disabled">{{ creator.fullName }}</p>
         </div>
       </div>
     </div>
@@ -29,17 +30,17 @@
       <p class="label">Donators</p>
       <ol>
         <div
-          v-for="donator in donators"
-          :key="donator.address"
-          class="flex space-y-2 justify-between text-sm"
+          v-for="donation in donations"
+          :key="donation.donationId"
+          class="flex justify-between text-sm"
         >
           <li class="text-disabled">
             <span class="text-dark">
-              {{ middleTruncate(donator.address, 8, 5) }}
+              {{ middleTruncate(donation.address, 8, 5) }}
             </span>
           </li>
           <span class="text-primary-10">
-            {{ donator.amount }}
+            {{ donation.amount }}
             <span class="font-bold"> ETH</span>
           </span>
         </div>
@@ -49,17 +50,19 @@
 </template>
 
 <script setup lang="ts">
-import { Donator, Creator } from "~/types/CampaignProps";
+import { Donation, Creator } from "~/types/CampaignProps";
 type Props = {
   id: number;
   title: string;
   creator: Creator;
   story: string;
-  donators: Donator[];
+  donations: Donation[];
+  canEdit: boolean;
 };
 
 const campaignContentProps = defineProps<Props>();
-const { id, title, creator, story, donators } = toRefs(campaignContentProps);
+const { id, title, creator, story, donations, canEdit } =
+  toRefs(campaignContentProps);
 
 const router = useRouter();
 

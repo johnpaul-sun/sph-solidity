@@ -256,8 +256,17 @@ contract CrowdFunding {
 
     function getCampaign(
         uint _campaignId
-    ) public view returns (Campaign memory) {
-        return campaigns[_campaignId];
+    )
+        public
+        view
+        returns (
+            Campaign memory campaign,
+            DonationTransaction[] memory allDonations
+        )
+    {
+        campaign = campaigns[_campaignId];
+
+        (allDonations, ) = getCampaignDonations(_campaignId);
     }
 
     function getCampaignDonations(
