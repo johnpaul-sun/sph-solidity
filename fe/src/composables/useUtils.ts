@@ -41,11 +41,16 @@ export const useUtils = () => {
     return toast.warning("Connect wallet first!", { autoClose: duration });
   };
 
+  const getAvatarUrl = (id: string): string => {
+    return `https://api.multiavatar.com/${id.toLowerCase()}.png`;
+  };
+
   return {
     truncate,
     middleTruncate,
     getDaysLeft,
     getDateYMD,
+    getAvatarUrl,
     notConnectedWarning,
   };
 };
