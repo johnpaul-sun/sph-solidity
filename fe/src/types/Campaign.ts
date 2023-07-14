@@ -10,7 +10,7 @@ export interface Donation {
   amount: number;
 }
 
-export default interface CampaignProps {
+export default interface Campaign {
   campaignId: number;
   creator: Creator;
   title: string;

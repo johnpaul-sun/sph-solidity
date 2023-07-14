@@ -50,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { Donation, Creator } from "~/types/CampaignProps";
+import { Donation, Creator } from "~/types/Campaign";
 type Props = {
   id: number;
   title: string;

@@ -46,12 +46,12 @@
 import { storeToRefs } from "pinia";
 import { toast } from "vue3-toastify";
 import { ethers } from "ethers";
-import CampaignProps from "~/types/CampaignProps";
+import Campaign from "~/types/Campaign";
+import {
+  SmartContractCampaign,
+  SmartContractDonationTransaction,
+} from "~/types/SmartContract";
 import { useWalletStore } from "~/store/wallet";
-
-definePageMeta({
-  middleware: ["auth"],
-});
 
 const route = useRoute();
 const { truncate, getDaysLeft } = useUtils();
@@ -61,9 +61,9 @@ const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isLoading = ref<boolean>(false);
 const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
-const { isConnected, address } = storeToRefs(useWallet);
-const { id } = route.params;
-const campaign = ref<CampaignProps>({
+const { isConnected } = storeToRefs(useWallet);
+const id = Number(route.params.id);
+const campaign = ref<Campaign>({
   campaignId: 0,
   title: "",
   creator: {
@@ -79,53 +79,43 @@ const campaign = ref<CampaignProps>({
   donations: [],
 });
 
-const getCampaign = async (id: number): Promise<void> => {
-  isLoading.value = true;
+const setCampaign = (
+  data: [SmartContractCampaign, SmartContractDonationTransaction[]],
+): Campaign => {
+  const donations = data[1].map(
+    (donation: SmartContractDonationTransaction) => {
+      return {
+        donationId: Number(donation.id),
+        address: donation.donor,
+        amount: Number(ethers.formatEther(donation.amount)),
+      };
+    },
+  );
+  return {
+    campaignId: Number(data[0].id),
+    title: data[0].title,
+    creator: {
+      address: data[0].creator,
+      fullName: data[0].fullname,
+      imgSrc:
+        "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
+    },
+    imgSrc: "https://images.unsplash.com/photo-1529390079861-591de354faf5",
+    story: data[0].story,
+    daysLeft: getDaysLeft(data[0].deadline),
+    totalDonation: Number(ethers.formatEther(data[0].currentAmount)),
+    totalBackers: Number(data[0].totalDonations),
+    donations,
+  };
+};
+
+const getCampaign = async (id: number) => {
   const smartContract = await getSmartContract();
+  let result;
   if (smartContract !== null) {
-    smartContract
-      .getCampaign(id)
-      .then((result) => {
-        campaign.value = {
-          campaignId: Number(result[0][0]),
-          title: result[0][3],
-          creator: {
-            address: result[0][1],
-            fullName: result[0][2],
-            imgSrc:
-              "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
-          },
-          imgSrc:
-            "https://images.unsplash.com/photo-1529390079861-591de354faf5",
-          story: result[0][4],
-          daysLeft: getDaysLeft(result[0][7]),
-          totalDonation: Number(ethers.formatEther(result[0][6])),
-          totalBackers: Number(result[0][8]),
-          donations: [],
-        };
-        result[1].map((donation: ethers.BigNumberish[]) =>
-          campaign.value.donations.push({
-            donationId: Number(donation[0]),
-            address: donation[2].toString(),
-            amount: Number(ethers.formatEther(donation[3])),
-          })
-        );
-        if (
-          address.value.toLowerCase() ===
-          campaign.value.creator.address.toLowerCase()
-        ) {
-          canEdit.value = true;
-        }
-      })
-      .catch((error) => {
-        toast.error(error.reason);
-      })
-      .finally(() => {
-        isLoading.value = false;
-      });
-  } else {
-    isLoading.value = false;
+    result = await smartContract.getCampaign(id);
   }
+  return result;
 };
 
 const donateCampaign = async (amount: number): Promise<void> => {
@@ -147,7 +137,7 @@ const donateCampaign = async (amount: number): Promise<void> => {
         } else {
           toast.error(
             "There was an error from your request. Details :" +
-              truncate(error.message, 10)
+              truncate(error.message, 10),
           );
         }
       })
@@ -160,6 +150,12 @@ const donateCampaign = async (amount: number): Promise<void> => {
 };
 
 onMounted(() => {
-  getCampaign(Number(id));
+  getCampaign(id)
+    .then((result) => {
+      campaign.value = setCampaign(result);
+    })
+    .catch((error) => {
+      toast.error(error.reason);
+    });
 });
 </script>
