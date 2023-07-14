@@ -1,17 +1,19 @@
 <template>
-  <table class="table-auto mt-6">
+  <table class="table-auto mt-6 w-full">
     <thead class="border-b border-primary-10">
       <tr class="h-10 items-center">
-        <th class="text-center px-4 text-primary-500">#</th>
-        <th class="text-left px-4 w-60">Campaign ID</th>
-        <th class="text-left px-4 flex-1">Campaign Title</th>
-        <th class="text-left px-4 w-40">Amount</th>
+        <th class="text-center px-4 text-primary-500 w-1/12">#</th>
+        <th class="text-left px-4 w-3/12">Creator ID</th>
+        <th class="text-left px-4 flex-1 w-6/12">Campaign Title</th>
+        <th class="text-left px-4 w-2/12">Amount</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody v-if="!isLoading">
       <tr
-        v-for="({ id, campaignId, title, amount }, index) in donations"
-        :key="id"
+        v-for="(
+          { userAddress, campaignTitle, donationAmount }, index
+        ) in donations"
+        :key="index"
         w
         class="items-center h-14 min-h-[56px] border-b border-disabled"
       >
@@ -21,16 +23,16 @@
         <td class="px-4 py-2">
           <div class="flex items-center space-x-2">
             <span>
-              {{ middleTruncate(campaignId, 6, 4) }}
+              {{ middleTruncate(userAddress, 6, 4) }}
             </span>
           </div>
         </td>
-        <td class="px-4 py-2">{{ title }}</td>
-        <td class="px-4 w-40">{{ amount }} ETH</td>
+        <td class="px-4 py-2">{{ campaignTitle }}</td>
+        <td class="px-4 w-40">{{ donationAmount }} ETH</td>
       </tr>
     </tbody>
   </table>
-  <div class="mt-8 h-14 flex items-center justify-center">
+  <div v-if="lastPage > 1" class="mt-8 h-14 flex items-center justify-center">
     <BasePaginator
       :current-page="currentPage"
       :last-page="lastPage"
@@ -40,16 +42,64 @@
   </div>
 </template>
 <script setup lang="ts">
-import donations from "~/mocks/campaign-donations.json";
+import { storeToRefs } from "pinia";
+import { ethers } from "ethers";
+import { toast } from "vue3-toastify";
 import { useUtils } from "~/composables/useUtils";
+import { useWalletStore } from "~/store/wallet";
+
+type DonationType = {
+  campaignTitle: string;
+  userAddress: string;
+  donationAmount: string;
+};
 
 const { middleTruncate } = useUtils();
-const currentPage = ref(1);
-const itemsPerPage = ref(5);
+const itemsPerPage = ref<number>(6);
+const currentPage = ref<number>(1);
+const lastPage = ref<number>(1);
+const isLoading = ref<boolean>(false);
+const donations = ref<DonationType[]>([]);
+const { $getSmartContract: getSmartContract } = useNuxtApp();
+const useWallet = useWalletStore();
+const { address } = storeToRefs(useWallet);
 
-const lastPage = Math.ceil(donations.length / itemsPerPage.value);
+const getUserDonations = async (pageNumber: number) => {
+  isLoading.value = true;
+  const smartContract = await getSmartContract();
+  if (smartContract !== null) {
+    smartContract
+      .getUserDonations(address.value, itemsPerPage.value, pageNumber)
+      .then((result) => {
+        donations.value = result[0].map(
+          (donation: DonationType): DonationType => {
+            const { campaignTitle, userAddress, donationAmount } = donation;
+            return {
+              campaignTitle,
+              userAddress,
+              donationAmount: ethers.formatEther(donationAmount),
+            };
+          },
+        );
+        lastPage.value = Number(result[1].totalPages);
+      })
+      .catch((error) => {
+        toast.error(error.reason + "gsgsgs");
+      })
+      .finally(() => {
+        isLoading.value = false;
+      });
+  } else {
+    isLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  getUserDonations(currentPage.value);
+});
 
 const setPage = (_itemsPerPage: number, pageNumber: number): void => {
   currentPage.value = pageNumber;
+  getUserDonations(currentPage.value);
 };
 </script>
