@@ -1,11 +1,11 @@
 <template>
-  <table class="table-auto mt-6">
+  <table class="table-auto mt-6 w-full">
     <thead class="border-b border-primary-10">
       <tr class="h-10 items-center">
-        <th class="text-center px-4 text-primary-500">#</th>
-        <th class="text-left px-4 w-60">Creator ID</th>
-        <th class="text-left px-4 flex-1 w-96">Campaign Title</th>
-        <th class="text-left px-4 w-40">Amount</th>
+        <th class="text-center px-4 text-primary-500 w-1/12">#</th>
+        <th class="text-left px-4 w-3/12">Creator ID</th>
+        <th class="text-left px-4 flex-1 w-6/12">Campaign Title</th>
+        <th class="text-left px-4 w-2/12">Amount</th>
       </tr>
     </thead>
     <tbody v-if="!isLoading">
