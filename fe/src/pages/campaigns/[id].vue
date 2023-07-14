@@ -61,7 +61,7 @@ const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isLoading = ref<boolean>(false);
 const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
-const { isConnected } = storeToRefs(useWallet);
+const { isConnected, address } = storeToRefs(useWallet);
 const id = Number(route.params.id);
 const campaign = ref<Campaign>({
   campaignId: 0,
@@ -153,6 +153,12 @@ onMounted(() => {
   getCampaign(id)
     .then((result) => {
       campaign.value = setCampaign(result);
+      if (
+        address.value.toLowerCase() ===
+        campaign.value.creator.address.toLowerCase()
+      ) {
+        canEdit.value = true;
+      }
     })
     .catch((error) => {
       toast.error(error.reason);
