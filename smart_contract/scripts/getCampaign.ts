@@ -1,11 +1,7 @@
 import { crowdFundingContract } from "./createContract";
 import { CrowdFunding } from "../typechain-types/CrowdFunding";
 import { utils } from "ethers";
-
-type CampaignResult = [
-  CrowdFunding.CampaignStructOutput,
-  CrowdFunding.DonationTransactionStructOutput[],
-];
+import getCampaignDonations from './getCampaignDonations';
 
 async function main() {
   if (
@@ -19,26 +15,20 @@ export default async function getCampaign(id: string) {
   console.log("FETCHING...");
   await crowdFundingContract
     .getCampaign(id)
-    .then((result: CampaignResult) => {
-      console.log("ID: ", result[0].id.toNumber());
-      console.log("CREATOR ADDRESS: ", result[0].creator);
-      console.log("FULL NAME: ", result[0].fullname);
-      console.log("TITLE: ", result[0].title);
-      console.log("STORY: ", result[0].story);
-      console.log("GOAL AMOUNT: ", utils.formatEther(result[0].goalAmount));
-      console.log("CURRENT AMOUNT: ", utils.formatEther(result[0].currentAmount));
-      console.log("DEADLINE: ", result[0].deadline.toNumber());
-      console.log("TOTAL DONATIONS: ", result[0].totalDonations.toNumber());
-      result[1].forEach((donation) => {
-        console.log("----------------------------------");
-        console.log("ID: ", donation.id.toNumber());
-        console.log("DONOR: ", donation.donor);
-        console.log("AMOUNT: ", utils.formatEther(donation.amount));
-      });
+    .then((result: CrowdFunding.CampaignStructOutput) => {
+      console.log("ID: ", result.id.toNumber());
+      console.log("CREATOR ADDRESS: ", result.creator);
+      console.log("FULL NAME: ", result.fullname);
+      console.log("TITLE: ", result.title);
+      console.log("STORY: ", result.story);
+      console.log("GOAL AMOUNT: ", utils.formatEther(result.goalAmount));
+      console.log("CURRENT AMOUNT: ", utils.formatEther(result.currentAmount));
+      console.log("DEADLINE: ", result.deadline.toNumber());
     })
     .catch((error: Error) => {
       console.log("ERROR!", error);
     });
+  await getCampaignDonations(id);
 }
 
 main();
