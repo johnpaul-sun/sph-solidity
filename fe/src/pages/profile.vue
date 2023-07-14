@@ -81,7 +81,6 @@ const getDonatorsByWalletAddress = async (
       const totalPages = Number(result[2]);
       const nextPage = Number(result[3]);
       const previousPage = Number(result[4]);
-
       const donatorsInfo = donators?.map(
         (donator: [string, string, number]) => ({
           donator: donator[0],
@@ -90,7 +89,6 @@ const getDonatorsByWalletAddress = async (
         }),
       );
       const donatorsList = JSON.parse(JSON.stringify(donatorsInfo, null, 2));
-
       donatorsData.value = {
         donatorsList,
         totalDonators,
@@ -100,8 +98,10 @@ const getDonatorsByWalletAddress = async (
       };
     }
   } catch (error) {
-    if ((error as { code: string }).code === "UNCONFIGURED_NAME") return;
-    toast.error("Something went wrong!");
+    if (process.client) {
+      if ((error as { code: string }).code === "UNCONFIGURED_NAME") return;
+      toast.error("Something went wrong!");
+    }
   }
 };
 
