@@ -99,8 +99,8 @@ const getDonatorsByWalletAddress = async (
         previousPage,
       };
     }
-  } catch (error: { code: string }) {
-    if (error.code === "UNCONFIGURED_NAME") return;
+  } catch (error) {
+    if ((error as { code: string }).code === "UNCONFIGURED_NAME") return;
     toast.error("Something went wrong!");
   }
 };
