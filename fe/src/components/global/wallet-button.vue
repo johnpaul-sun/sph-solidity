@@ -86,6 +86,7 @@ const connectWallet = async (): Promise<void> => {
 const disconnectWallet = (): void => {
   updateStatus(false, "");
   useCookie("is-connected").value = null;
+  localStorage.removeItem("is-connected");
 
   toast.success("Wallet disconnected successfully!", {
     autoClose: 1500,
@@ -93,7 +94,6 @@ const disconnectWallet = (): void => {
   setTimeout(() => {
     router.push("/");
   }, 1500);
-  localStorage.removeItem("is-connected");
 };
 
 if (process.client) {
