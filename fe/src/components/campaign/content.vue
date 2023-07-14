@@ -31,7 +31,7 @@
         <div
           v-for="donator in donators"
           :key="donator.address"
-          class="flex justify-between text-sm"
+          class="flex space-y-2 justify-between text-sm"
         >
           <li class="text-disabled">
             <span class="text-dark">

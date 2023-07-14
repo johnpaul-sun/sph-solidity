@@ -45,6 +45,7 @@ import { ProviderRpcError } from "~/types/ProviderRpcError";
 import { useWalletStore } from "~/store/wallet";
 const { middleTruncate } = useUtils();
 
+const router = useRouter();
 const isDropdownOpen = ref<boolean>(false);
 const useWallet = useWalletStore();
 const { updateStatus, updateIsShowModal } = useWallet;
@@ -65,6 +66,7 @@ const connectWallet = async (): Promise<void> => {
       }
 
       localStorage.setItem("is-connected", "true");
+      useCookie("is-connected").value = "true";
       updateStatus(true, (account as string)[0]);
     } catch (error) {
       const processingErrorCode = -32002;
@@ -83,8 +85,15 @@ const connectWallet = async (): Promise<void> => {
 
 const disconnectWallet = (): void => {
   updateStatus(false, "");
-  toast.success("Wallet disconnected successfully!", { autoClose: 1500 });
+  useCookie("is-connected").value = null;
   localStorage.removeItem("is-connected");
+
+  toast.success("Wallet disconnected successfully!", {
+    autoClose: 1500,
+  });
+  setTimeout(() => {
+    router.push("/");
+  }, 1500);
 };
 
 if (process.client) {
