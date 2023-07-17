@@ -22,7 +22,7 @@ export default defineNuxtPlugin(async () => {
         smartContract = new ethers.Contract(
           CONTRACT_ADDRESS as string,
           contract.abi,
-          signer
+          signer,
         );
 
         return smartContract;
@@ -42,7 +42,7 @@ export default defineNuxtPlugin(async () => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        signer
+        signer,
       );
     } catch (error) {}
   }
