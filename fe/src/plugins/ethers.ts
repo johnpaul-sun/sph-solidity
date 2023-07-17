@@ -6,7 +6,8 @@ import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
   const { isConnected } = storeToRefs(useWalletStore());
-  const CONTRACT_ADDRESS = "0x98668C834ca6A0317bC94702fcf589D5bCFb1Fa5";
+  const router = useRouter();
+  const CONTRACT_ADDRESS = "0xbDCd2efc543c5996F17cDA26d6F7197D730F81EE";
 
   const ethereum = window.ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
@@ -21,7 +22,7 @@ export default defineNuxtPlugin(async () => {
         smartContract = new ethers.Contract(
           CONTRACT_ADDRESS as string,
           contract.abi,
-          signer,
+          signer
         );
 
         return smartContract;
@@ -41,7 +42,7 @@ export default defineNuxtPlugin(async () => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        signer,
+        signer
       );
     } catch (error) {}
   }

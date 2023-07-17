@@ -5,26 +5,33 @@
     <div class="flex gap-[22px]">
       <div class="w-full h-[420px]">
         <img
-          :src="imgSrc"
+          :src="campaign.imgSrc"
           alt="Boy writing on paper"
           class="object-cover w-full h-[420px]"
         />
       </div>
 
       <div class="flex flex-col gap-[24px]">
-        <CampaignDetailCard label="Days left" :content="daysLeft" />
-        <CampaignDetailCard label="Donations" :content="`${donations} ETH`" />
-        <CampaignDetailCard label="Total backers" :content="totalBackers" />
+        <CampaignDetailCard label="Days left" :content="campaign.daysLeft" />
+        <CampaignDetailCard
+          label="Donations"
+          :content="`${campaign.totalDonation} ETH`"
+        />
+        <CampaignDetailCard
+          label="Total backers"
+          :content="campaign.totalBackers"
+        />
       </div>
     </div>
 
     <div class="bg-white p-4 flex gap-6 sm:flex-col lg:flex-row rounded-lg">
       <CampaignContent
-        :id="id"
-        :title="title"
-        :creator="creator"
-        :story="story"
-        :donators="donators"
+        :id="campaign.campaignId"
+        :title="campaign.title"
+        :creator="campaign.creator"
+        :story="campaign.story"
+        :donations="campaign.donations"
+        :can-edit="canEdit"
       />
       <CampaignFundForm
         :is-connected="isConnected"
@@ -39,26 +46,80 @@
 import { storeToRefs } from "pinia";
 import { toast } from "vue3-toastify";
 import { ethers } from "ethers";
-import CampaignProps from "~/types/CampaignProps";
-import CampaignSample from "~/mocks/campaign-sample.json";
+import Campaign from "~/types/Campaign";
+import {
+  SmartContractCampaign,
+  SmartContractDonationTransaction,
+} from "~/types/SmartContract";
 import { useWalletStore } from "~/store/wallet";
 
-definePageMeta({
-  middleware: ["auth"],
-});
-
 const route = useRoute();
-const { truncate } = useUtils();
+const { truncate, getDaysLeft } = useUtils();
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
-const campaignValueSample = ref<CampaignProps>(CampaignSample);
-
 const isLoading = ref<boolean>(false);
-
+const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
-const { isConnected } = storeToRefs(useWallet);
-const { id } = route.params;
+const { isConnected, address } = storeToRefs(useWallet);
+const id = Number(route.params.id);
+const campaign = ref<Campaign>({
+  campaignId: 0,
+  title: "",
+  creator: {
+    address: "",
+    fullName: "",
+    imgSrc: "",
+  },
+  imgSrc: "",
+  story: "",
+  daysLeft: 0,
+  totalDonation: 0,
+  totalBackers: 0,
+  donations: [],
+});
+
+const setCampaign = (
+  data: [SmartContractCampaign, SmartContractDonationTransaction[]]
+): Campaign => {
+  const donations = data[1].map(
+    (donation: SmartContractDonationTransaction) => {
+      return {
+        donationId: Number(donation.id),
+        address: donation.donor,
+        amount: Number(ethers.formatEther(donation.amount)),
+      };
+    }
+  );
+  return {
+    campaignId: Number(data[0].id),
+    title: data[0].title,
+    creator: {
+      address: data[0].creator,
+      fullName: data[0].fullname,
+      imgSrc:
+        "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
+    },
+    imgSrc: "https://images.unsplash.com/photo-1529390079861-591de354faf5",
+    story: data[0].story,
+    daysLeft: getDaysLeft(data[0].deadline),
+    totalDonation: Number(ethers.formatEther(data[0].currentAmount)),
+    totalBackers: Number(data[0].totalDonations),
+    donations,
+  };
+};
+
+const getCampaign = async (
+  id: number
+): Promise<[SmartContractCampaign, SmartContractDonationTransaction[]]> => {
+  const smartContract = await getSmartContract();
+  let campaign, donations;
+  if (smartContract !== null) {
+    campaign = await smartContract.getCampaign(id);
+    donations = await smartContract.getCampaignDonations(id);
+  }
+  return [campaign, donations[0]];
+};
 
 const donateCampaign = async (amount: number): Promise<void> => {
   isLoading.value = true;
@@ -79,7 +140,7 @@ const donateCampaign = async (amount: number): Promise<void> => {
         } else {
           toast.error(
             "There was an error from your request. Details :" +
-              truncate(error.message, 10),
+              truncate(error.message, 10)
           );
         }
       })
@@ -91,14 +152,19 @@ const donateCampaign = async (amount: number): Promise<void> => {
   }
 };
 
-const {
-  title,
-  creator,
-  imgSrc,
-  story,
-  daysLeft,
-  donations,
-  totalBackers,
-  donators,
-} = campaignValueSample.value;
+onMounted(() => {
+  getCampaign(id)
+    .then((result) => {
+      campaign.value = setCampaign(result);
+      if (
+        address.value.toLowerCase() ===
+        campaign.value.creator.address.toLowerCase()
+      ) {
+        canEdit.value = true;
+      }
+    })
+    .catch((error) => {
+      toast.error(error.reason);
+    });
+});
 </script>
