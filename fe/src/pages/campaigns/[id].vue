@@ -80,7 +80,7 @@ const campaign = ref<Campaign>({
 });
 
 const setCampaign = (
-  data: [SmartContractCampaign, SmartContractDonationTransaction[]]
+  data: [SmartContractCampaign, SmartContractDonationTransaction[]],
 ): Campaign => {
   const donations = data[1].map(
     (donation: SmartContractDonationTransaction) => {
@@ -89,7 +89,7 @@ const setCampaign = (
         address: donation.donor,
         amount: Number(ethers.formatEther(donation.amount)),
       };
-    }
+    },
   );
   return {
     campaignId: Number(data[0].id),
@@ -110,7 +110,7 @@ const setCampaign = (
 };
 
 const getCampaign = async (
-  id: number
+  id: number,
 ): Promise<[SmartContractCampaign, SmartContractDonationTransaction[]]> => {
   const smartContract = await getSmartContract();
   let campaign, donations;
@@ -140,7 +140,7 @@ const donateCampaign = async (amount: number): Promise<void> => {
         } else {
           toast.error(
             "There was an error from your request. Details :" +
-              truncate(error.message, 10)
+              truncate(error.message, 10),
           );
         }
       })
