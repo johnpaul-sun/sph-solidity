@@ -48,7 +48,7 @@ contract CrowdFunding {
         uint256 endIndex;
     }
 
-    struct SearchIndexData {
+    struct ResultIndexData {
         bool isLastPage;
         uint nextIndex;
     }
@@ -476,7 +476,7 @@ contract CrowdFunding {
         view
         returns (
             Campaign[] memory matchingCampaigns,
-            SearchIndexData memory searchIndexData
+            ResultIndexData memory searchIndexData
         )
     {
         require(pageSize > 0, "Page size cannot be 0");
@@ -525,6 +525,36 @@ contract CrowdFunding {
                 matchingCampaigns[index] = campaigns[i];
                 index++;
             }
+        }
+    }
+
+    function getAllCampaigns(
+        uint _size,
+        uint _startIndex
+    )
+        public
+        view
+        returns (
+            Campaign[] memory allCampaigns,
+            ResultIndexData memory indexData
+        )
+    {
+        require(_size > 0, "Size cannot be 0");
+
+        indexData.nextIndex = _startIndex + _size;
+        if (_size >= totalCampaigns - _startIndex) {
+            _size = totalCampaigns - _startIndex;
+            indexData.isLastPage = true;
+            indexData.nextIndex = 0;
+        }
+
+        uint index = 0;
+
+        allCampaigns = new Campaign[](_size);
+
+        for (uint i = _startIndex; i < _startIndex + _size; i++) {
+            allCampaigns[index] = campaigns[i];
+            index++;
         }
     }
 }

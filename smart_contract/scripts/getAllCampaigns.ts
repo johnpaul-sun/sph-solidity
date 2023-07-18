@@ -1,38 +1,29 @@
 import { crowdFundingContract } from "./createContract";
 import { CrowdFunding } from "../typechain-types/CrowdFunding";
 
-type SearchResult = [
+type AllCampaignsResult = [
   CrowdFunding.CampaignStructOutput[],
   CrowdFunding.ResultIndexDataStructOutput,
 ] & {
-  matchingCampaigns: CrowdFunding.CampaignStructOutput[];
-  searchIndexData: CrowdFunding.ResultIndexDataStructOutput;
+  allCampaigns: CrowdFunding.CampaignStructOutput[];
+  indexData: CrowdFunding.ResultIndexDataStructOutput;
 };
 
 async function main() {
   if (
-    process.argv[2] !== undefined && // search string
-    process.argv[3] !== undefined && // page size
-    process.argv[4] !== undefined // start index
+    process.argv[2] !== undefined && // size
+    process.argv[3] !== undefined // start index
   ) {
-    await searchByTitle(
-      process.argv[2], // search string
-      process.argv[3], // page size
-      process.argv[4], // start index
-    );
+    await getAllCampaigns(process.argv[2], process.argv[3]);
   }
 }
 
-export default async function searchByTitle(
-  searchString: string,
-  pageSize: string,
-  startIndex: string,
-) {
-  console.log("FETCHING...\n");
+export default async function getAllCampaigns(size: string, index: string) {
+  console.log("FETCHING...");
   await crowdFundingContract
-    .searchByTitle(searchString, pageSize, startIndex)
-    .then((result: SearchResult) => {
-      result.matchingCampaigns.forEach((campaign) => {
+    .getAllCampaigns(size, index)
+    .then((result: AllCampaignsResult) => {
+      result.allCampaigns.forEach((campaign) => {
         console.log("----------------------------------------------------");
         console.log("ID: ", campaign.id.toNumber());
         console.log("TITLE: ", campaign.title);
@@ -44,8 +35,8 @@ export default async function searchByTitle(
       });
 
       console.log("******************************************************");
-      console.log("LAST PAGE: ", result.searchIndexData.isLastPage);
-      console.log("NEXT INDEX: ", result.searchIndexData.nextIndex.toNumber());
+      console.log("LAST PAGE: ", result.indexData.isLastPage);
+      console.log("NEXT INDEX: ", result.indexData.nextIndex.toNumber());
     })
     .catch((error: Error) => {
       console.log("ERROR!", error);

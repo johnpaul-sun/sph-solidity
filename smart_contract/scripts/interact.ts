@@ -10,6 +10,7 @@ import getCampaignDonations from "./getCampaignDonations";
 import getDonatorsByWalletAddress from "./getDonatorsByWalletAddress";
 import getRecentCampaigns from "./getRecentCampaigns";
 import searchByTitle from "./searchByTitle";
+import getAllCampaigns from "./getAllCampaigns";
 
 async function main() {
   const prompt = promptSync();
@@ -23,7 +24,9 @@ async function main() {
     amount,
     pageSize,
     pageNumber,
-    size;
+    size,
+    search,
+    index;
 
   while (input !== "q") {
     console.log("-----------------MENU-----------------");
@@ -37,6 +40,7 @@ async function main() {
     console.log("[8] - Get donators by wallet address");
     console.log("[9] - Get recent campaigns");
     console.log("[10] - Search by campaign title");
+    console.log("[11] - Get all campaigns");
     console.log("[q] - Quit");
     console.log("--------------------------------------");
 
@@ -111,11 +115,18 @@ async function main() {
         await getRecentCampaigns(size);
 
       case "10":
-        let search = prompt("Search: ");
+        search = prompt("Search: ");
         pageSize = prompt("Page Size: ");
-        let index = prompt("Start Index: ");
+        index = prompt("Start Index: ");
 
         await searchByTitle(search, pageSize, index);
+
+        break;
+      case "11":
+        size = prompt("Number of campaigns: ");
+        index = prompt("Start Index: ");
+
+        await getAllCampaigns(size, index);
 
         break;
       case "q":
