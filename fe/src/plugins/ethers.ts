@@ -1,6 +1,5 @@
 import { ethers } from "ethers";
 import { toast } from "vue3-toastify";
-import { storeToRefs } from "pinia";
 import contract from "../assets/contract/CrowdFunding.json";
 import { useWalletStore } from "~/store/wallet";
 
@@ -13,7 +12,7 @@ export default defineNuxtPlugin(async () => {
   let smartContract: ethers.Contract | null = null;
   let signer = null;
 
-  const walletStore = storeToRefs(useWalletStore());
+  const walletStore = useWalletStore();
   const { getRecentCampaigns } = walletStore;
 
   const getSmartContract = async () => {
