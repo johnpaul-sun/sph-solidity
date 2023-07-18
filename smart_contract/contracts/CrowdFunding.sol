@@ -48,6 +48,11 @@ contract CrowdFunding {
         uint256 endIndex;
     }
 
+    struct SearchIndexData {
+        bool isLastPage;
+        uint nextIndex;
+    }
+
     // State variables
     mapping(address => User) public users;
     mapping(uint => Campaign) public campaigns;
@@ -79,6 +84,57 @@ contract CrowdFunding {
     constructor() payable {
         owner = payable(msg.sender);
         totalCampaigns = 0;
+    }
+
+    function _toLowerCase(
+        string memory str
+    ) private pure returns (string memory) {
+        bytes memory strBytes = bytes(str);
+        bytes memory lowercaseBytes = new bytes(strBytes.length);
+
+        for (uint256 i = 0; i < strBytes.length; i++) {
+            lowercaseBytes[i] = _lowercase(strBytes[i]);
+        }
+
+        return string(lowercaseBytes);
+    }
+
+    function _lowercase(bytes1 b) private pure returns (bytes1) {
+        if (uint8(b) >= 65 && uint8(b) <= 90) {
+            return bytes1(uint8(b) + 32);
+        }
+        return b;
+    }
+
+    function _contains(
+        string memory fullString,
+        string memory substring
+    ) private pure returns (bool) {
+        bytes memory fullstringBytes = bytes(fullString);
+        bytes memory substringBytes = bytes(substring);
+
+        if (fullstringBytes.length < substringBytes.length) {
+            return false;
+        }
+
+        for (
+            uint i = 0;
+            i <= fullstringBytes.length - substringBytes.length;
+            i++
+        ) {
+            bool found = true;
+            for (uint j = 0; j < substringBytes.length; j++) {
+                if (fullstringBytes[i + j] != substringBytes[j]) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     function _paginate(
@@ -409,5 +465,66 @@ contract CrowdFunding {
 
         totalFetchedCampaigns = totalCampaigns > 0 ? arraySize : 0;
         totalAllCampaigns = totalCampaigns;
+    }
+
+    function searchByTitle(
+        string memory searchTerm,
+        uint pageSize,
+        uint startIndex
+    )
+        public
+        view
+        returns (
+            Campaign[] memory matchingCampaigns,
+            SearchIndexData memory searchIndexData
+        )
+    {
+        require(pageSize > 0, "Page size cannot be 0");
+        uint matchingCount = 0;
+
+        // Count the number of campaigns that contain the search term
+        for (
+            uint i = startIndex;
+            i < totalCampaigns && matchingCount != pageSize;
+            i++
+        ) {
+            if (
+                _contains(
+                    _toLowerCase(campaigns[i].title),
+                    _toLowerCase(searchTerm)
+                )
+            ) {
+                matchingCount++;
+            }
+
+            if (matchingCount == pageSize) {
+                searchIndexData.nextIndex = i + 1;
+            }
+
+            if (i + 1 == totalCampaigns) {
+                searchIndexData.isLastPage = true;
+                searchIndexData.nextIndex = 0;
+            }
+        }
+
+        matchingCampaigns = new Campaign[](matchingCount);
+        uint index = 0;
+
+        // Add the matching campaigns to the new array
+        for (
+            uint i = startIndex;
+            i < totalCampaigns && index < matchingCount;
+            i++
+        ) {
+            if (
+                _contains(
+                    _toLowerCase(campaigns[i].title),
+                    _toLowerCase(searchTerm)
+                )
+            ) {
+                matchingCampaigns[index] = campaigns[i];
+                index++;
+            }
+        }
     }
 }

@@ -152,3 +152,12 @@ REPORT_GAS=true npx hardhat test
   # Example
   npx ts-node scripts/getRecentCampaigns.ts 6
   ```
+
+- Search campaigns by title
+
+  ```bash
+  npx ts-node scripts/searchByTitle.ts <search string> <page size> <start index>
+
+  # Example
+  npx ts-node scripts/searchByTitle.ts "i am" 6 0
+  ```
