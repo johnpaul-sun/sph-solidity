@@ -52,17 +52,19 @@ const getUserCampaings = async (pageNumber: number) => {
     smartContract
       .getUserCampaigns(itemsPerPage.value, pageNumber)
       .then((result) => {
-        userCampaigns.value = result[0].map((campaign: BigNumberish[]) => {
-          return {
-            id: campaign[0],
-            imgSrc,
-            title: campaign[3],
-            description: campaign[4],
-            ethValue: ethers.formatEther(campaign[6]),
-            daysLeft: getDaysLeft(campaign[7]),
-          };
-        });
-        lastPage.value = Number(result[2]);
+        if (result[0].length > 0) {
+          userCampaigns.value = result[0].map((campaign: BigNumberish[]) => {
+            return {
+              id: campaign[0],
+              imgSrc,
+              title: campaign[3],
+              description: campaign[4],
+              ethValue: ethers.formatEther(campaign[6]),
+              daysLeft: getDaysLeft(campaign[7]),
+            };
+          });
+          lastPage.value = Number(result[2]);
+        }
       })
       .catch((error) => {
         toast.error(error.reason);

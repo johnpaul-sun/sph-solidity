@@ -66,7 +66,7 @@ const activeTab = ref("My Campaigns");
 const getDonatorsByWalletAddress = async (
   walletAddress: string,
   pageSize: number,
-  pageNumber: number,
+  pageNumber: number
 ): Promise<void> => {
   try {
     const smartContract = await getSmartContract();
@@ -74,28 +74,31 @@ const getDonatorsByWalletAddress = async (
       const result = await smartContract.getDonatorsByWalletAddress(
         walletAddress,
         pageSize,
-        pageNumber,
+        pageNumber
       );
       const donators = result[0];
       const totalDonators = Number(result[1]);
       const totalPages = Number(result[2]);
       const nextPage = Number(result[3]);
       const previousPage = Number(result[4]);
-      const donatorsInfo = donators?.map(
-        (donator: [string, string, number]) => ({
-          donator: donator[0],
-          campaignTitle: donator[1],
-          donationAmount: donator[2].toString(),
-        }),
-      );
-      const donatorsList = JSON.parse(JSON.stringify(donatorsInfo, null, 2));
-      donatorsData.value = {
-        donatorsList,
-        totalDonators,
-        totalPages,
-        nextPage,
-        previousPage,
-      };
+
+      if (donators.length > 0) {
+        const donatorsInfo = donators?.map(
+          (donator: [string, string, number]) => ({
+            donator: donator[0],
+            campaignTitle: donator[1],
+            donationAmount: donator[2].toString(),
+          })
+        );
+        const donatorsList = JSON.parse(JSON.stringify(donatorsInfo, null, 2));
+        donatorsData.value = {
+          donatorsList,
+          totalDonators,
+          totalPages,
+          nextPage,
+          previousPage,
+        };
+      }
     }
   } catch (error) {
     if (process.client) {
@@ -115,6 +118,6 @@ watch(
     getDonatorsByWalletAddress(address.value, itemsPerPage, currentPage);
     imgSrc.value = getAvatarUrl(address.value);
   },
-  { immediate: true },
+  { immediate: true }
 );
 </script>

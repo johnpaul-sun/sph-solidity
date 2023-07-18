@@ -71,20 +71,22 @@ const getUserDonations = async (pageNumber: number) => {
     smartContract
       .getUserDonations(address.value, itemsPerPage.value, pageNumber)
       .then((result) => {
-        donations.value = result[0].map(
-          (donation: DonationType): DonationType => {
-            const { campaignTitle, userAddress, donationAmount } = donation;
-            return {
-              campaignTitle,
-              userAddress,
-              donationAmount: ethers.formatEther(donationAmount),
-            };
-          },
-        );
-        lastPage.value = Number(result[1].totalPages);
+        if (result[0].length > 0) {
+          donations.value = result[0].map(
+            (donation: DonationType): DonationType => {
+              const { campaignTitle, userAddress, donationAmount } = donation;
+              return {
+                campaignTitle,
+                userAddress,
+                donationAmount: ethers.formatEther(donationAmount),
+              };
+            }
+          );
+          lastPage.value = Number(result[1].totalPages);
+        }
       })
       .catch((error) => {
-        toast.error(error.reason + "gsgsgs");
+        toast.error(error.reason);
       })
       .finally(() => {
         isLoading.value = false;
