@@ -5,7 +5,7 @@ import contract from "../assets/contract/CrowdFunding.json";
 import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
-  const CONTRACT_ADDRESS = "0x402BFe8c29aC35947416a94b42de8e87CE20FAB4";
+  const CONTRACT_ADDRESS = "0x9A746F3652006d42c6C3677099205b56Be257017";
 
   const ethereum = window.ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
