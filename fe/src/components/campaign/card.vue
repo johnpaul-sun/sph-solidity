@@ -1,6 +1,6 @@
 <template>
   <div
-    class="rounded-2xl overflow-hidden bg-white shadow-card"
+    class="rounded-2xl overflow-hidden bg-white shadow-card flex flex-col w-80 flex-grow max-w-[400px]"
     :class="additionalClass ?? ''"
   >
     <img :src="imgSrc" class="h-44 w-full object-cover" />

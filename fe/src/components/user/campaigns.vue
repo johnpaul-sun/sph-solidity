@@ -1,29 +1,32 @@
 <template>
-  <div
-    class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 campaigns"
-  >
-    <CampaignCard
-      v-for="campaign in userCampaigns"
-      :key="campaign.id"
-      :title="campaign.title"
-      :description="campaign.description"
-      :eth-value="campaign.ethValue"
-      :img-src="campaign.imgSrc"
-      :days-left="campaign.daysLeft"
-      additional-class="cursor-pointer"
-      @click="$router.push(`/campaigns/${campaign.id}`)"
-    ></CampaignCard>
-  </div>
-  <div
-    v-if="lastPage > 1"
-    class="w-full mt-8 h-14 flex items-center justify-center"
-  >
-    <BasePaginator
-      :current-page="currentPage"
-      :last-page="lastPage"
-      :items-per-page="itemsPerPage"
-      :on-page-change="setPage"
-    />
+  <div class="mt-6">
+    <div class="flex gap-6 flex-wrap">
+      <CampaignCard
+        v-for="campaign in userCampaigns"
+        :key="campaign.id"
+        :title="campaign.title"
+        :description="campaign.description"
+        :eth-value="campaign.ethValue"
+        :img-src="campaign.imgSrc"
+        :days-left="campaign.daysLeft"
+        additional-class="cursor-pointer"
+        @click="$router.push(`/campaigns/${campaign.id}`)"
+      ></CampaignCard>
+    </div>
+    <div
+      v-if="currentPage !== lastPage && userCampaigns.length > 1"
+      class="w-full mt-8 h-14 flex items-center justify-center"
+    >
+      <BasePaginator
+        :current-page="currentPage"
+        :last-page="lastPage"
+        :items-per-page="itemsPerPage"
+        :on-page-change="setPage"
+      />
+    </div>
+    <div v-if="userCampaigns.length < 1" class="flex justify-center mt-6">
+      <p>No campaigns to show.</p>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
