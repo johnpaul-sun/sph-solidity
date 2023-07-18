@@ -34,7 +34,7 @@
       </tbody>
     </table>
     <div
-      v-if="currentPage !== lastPage && donations.length < 1"
+      v-if="currentPage !== lastPage && donations.length > 1"
       class="mt-8 h-14 flex items-center justify-center"
     >
       <BasePaginator

@@ -14,7 +14,7 @@
       ></CampaignCard>
     </div>
     <div
-      v-if="currentPage !== lastPage && userCampaigns.length < 1"
+      v-if="currentPage !== lastPage && userCampaigns.length > 1"
       class="w-full mt-8 h-14 flex items-center justify-center"
     >
       <BasePaginator
