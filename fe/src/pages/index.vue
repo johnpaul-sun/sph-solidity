@@ -63,7 +63,10 @@
             v-if="recentCampaign?.length === 0"
             class="h-40 flex justify-center items-center"
           >
-            No campaigns available
+            <span v-if="!isConnected"
+              >Connect wallet to view new campaigns</span
+            >
+            <span v-else> No campaigns available</span>
           </div>
           <div v-else>
             <div
@@ -117,7 +120,7 @@ const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const walletStore = useWalletStore();
 const { updateIsShowModal, getRecentCampaigns } = walletStore;
-const { recentCampaign } = storeToRefs(walletStore);
+const { recentCampaign, isConnected } = storeToRefs(walletStore);
 
 const handleCloseModal = () => updateIsShowModal(false);
 const { getDaysLeft } = useUtils();
