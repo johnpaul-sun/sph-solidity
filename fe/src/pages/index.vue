@@ -105,71 +105,29 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { formatEther } from "ethers";
-import { toast } from "vue3-toastify";
 
 import CampaignCardProps from "~/types/CampaignCardProps";
 import CardSample from "~/mocks/card-sample.json";
 import { useWalletStore } from "~/store/wallet";
-import RecentCampaignData from "~/types/RecentCampaignData";
-
-type ResultData = [
-  number,
-  string,
-  string,
-  string,
-  string,
-  number,
-  number,
-  number,
-  number,
-][];
 
 const cardValueSample = ref<CampaignCardProps>(CardSample);
+const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const walletStore = useWalletStore();
-const { updateIsShowModal } = walletStore;
+const { updateIsShowModal, getRecentCampaigns } = walletStore;
+const { recentCampaign } = storeToRefs(walletStore);
 
 const handleCloseModal = () => updateIsShowModal(false);
-const { $getSmartContract: getSmartContract } = useNuxtApp();
 const { getDaysLeft } = useUtils();
 
 const { imgSrc } = cardValueSample.value;
 
-const recentCampaign = ref<RecentCampaignData[]>([]);
 const isLoading = ref<boolean>(true);
 
-const getRecentCampaigns = async (pageSize: number): Promise<void> => {
-  try {
-    const smartContract = await getSmartContract();
-
-    if (smartContract !== null) {
-      const result = await smartContract.getRecentCampaigns(pageSize);
-      const campaignData: RecentCampaignData[] = (result[0] as ResultData).map(
-        (item) => ({
-          id: item[0],
-          creator: item[1],
-          fullname: item[2],
-          title: item[3],
-          story: item[4],
-          goalAmount: item[5],
-          currentAmount: item[6],
-          deadline: item[7],
-          totalDonations: item[8],
-        }),
-      );
-      recentCampaign.value = campaignData.reverse();
-    }
-  } catch (error) {
-    if (process.client) {
-      if ((error as { code: string }).code === "UNCONFIGURED_NAME") return;
-      toast.error("Something went wrong!");
-    }
-  }
-};
-
 onMounted(() => {
-  getRecentCampaigns(6);
+  getRecentCampaigns(6, getSmartContract);
   isLoading.value = false;
 });
 </script>

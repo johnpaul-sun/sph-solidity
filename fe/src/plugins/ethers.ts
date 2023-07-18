@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { toast } from "vue3-toastify";
 import contract from "../assets/contract/CrowdFunding.json";
+import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
   const CONTRACT_ADDRESS = "0x402BFe8c29aC35947416a94b42de8e87CE20FAB4";
@@ -10,6 +11,9 @@ export default defineNuxtPlugin(async () => {
   const contractInterface = new ethers.BrowserProvider(ethereum);
   let smartContract: ethers.Contract | null = null;
   let signer = null;
+
+  const walletStore = useWalletStore();
+  const { getRecentCampaigns } = walletStore;
 
   const getSmartContract = async () => {
     try {
@@ -47,6 +51,7 @@ export default defineNuxtPlugin(async () => {
   smartContract?.on("CampaignCreated", (sender, title) => {
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
       toast.success(`Campaign ${title} was successfully created!`);
+      getRecentCampaigns(6, getSmartContract);
       smartContract?.removeAllListeners("CampaignCreated");
     }
   });
