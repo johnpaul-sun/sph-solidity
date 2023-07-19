@@ -57,7 +57,7 @@ const donatorsData = ref<DonatorsData>({
   nextPage: 0,
   previousPage: 0,
 });
-const itemsPerPage = 5;
+const itemsPerPage = 6;
 const currentPage = 1;
 
 const profileTabs = ["My Campaigns", "Donators", "Donations"];
@@ -66,7 +66,7 @@ const activeTab = ref("My Campaigns");
 const getDonatorsByWalletAddress = async (
   walletAddress: string,
   pageSize: number,
-  pageNumber: number
+  pageNumber: number,
 ): Promise<void> => {
   try {
     const smartContract = await getSmartContract();
@@ -74,7 +74,7 @@ const getDonatorsByWalletAddress = async (
       const result = await smartContract.getDonatorsByWalletAddress(
         walletAddress,
         pageSize,
-        pageNumber
+        pageNumber,
       );
       const donators = result[0];
       const totalDonators = Number(result[1]);
@@ -88,7 +88,7 @@ const getDonatorsByWalletAddress = async (
             donator: donator[0],
             campaignTitle: donator[1],
             donationAmount: donator[2].toString(),
-          })
+          }),
         );
         const donatorsList = JSON.parse(JSON.stringify(donatorsInfo, null, 2));
         donatorsData.value = {
@@ -118,6 +118,6 @@ watch(
     getDonatorsByWalletAddress(address.value, itemsPerPage, currentPage);
     imgSrc.value = getAvatarUrl(address.value);
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
