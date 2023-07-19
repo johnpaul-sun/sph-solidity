@@ -49,28 +49,58 @@
         <div
           class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
         >
-          All Campaigns
+          New campaigns
         </div>
-        <div
-          class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
-        >
-          <CampaignCard
-            v-for="i in 6"
-            :key="i"
-            :title="title"
-            :description="description"
-            :eth-value="ethValue"
-            :img-src="imgSrc"
-            :days-left="daysLeft"
-          ></CampaignCard>
-        </div>
-        <div class="w-full mt-8 h-14 flex items-center justify-center">
-          <BasePaginator
-            :current-page="currentPage"
-            :last-page="10"
-            :items-per-page="itemsPerPage"
-            :on-page-change="setPage"
-          />
+        <div>
+          <div v-if="isLoading" class="h-40 flex justify-center items-center">
+            <div class="flex justify-center items-center">
+              <div
+                class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
+              ></div>
+            </div>
+          </div>
+          <div
+            v-if="recentCampaign?.length === 0"
+            class="h-40 flex justify-center items-center"
+          >
+            <span v-if="!isConnected"
+              >Connect wallet to view new campaigns</span
+            >
+            <span v-else> No campaigns available</span>
+          </div>
+          <div v-else>
+            <div
+              class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
+            >
+              <CampaignCard
+                v-for="{
+                  id,
+                  title,
+                  story,
+                  currentAmount,
+                  deadline,
+                } in recentCampaign"
+                :key="id"
+                :title="title"
+                :description="story"
+                :eth-value="formatEther(currentAmount)"
+                :img-src="imgSrc"
+                :days-left="getDaysLeft(deadline)"
+                :to-link="`/campaigns/${id}`"
+              ></CampaignCard>
+            </div>
+            <div
+              v-if="!isLoading && recentCampaign?.length >= 6"
+              class="w-full mt-8 h-14 flex items-center justify-center"
+            >
+              <NuxtLink
+                to="/campaigns"
+                class="rounded-lg border py-2 px-4 border-primary-10 text-primary-10"
+              >
+                View more campaigns
+              </NuxtLink>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -78,22 +108,29 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { formatEther } from "ethers";
+
 import CampaignCardProps from "~/types/CampaignCardProps";
 import CardSample from "~/mocks/card-sample.json";
 import { useWalletStore } from "~/store/wallet";
 
-const itemsPerPage = ref(5);
-const currentPage = ref(1);
 const cardValueSample = ref<CampaignCardProps>(CardSample);
+const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const walletStore = useWalletStore();
-const { updateIsShowModal } = walletStore;
+const { updateIsShowModal, getRecentCampaigns } = walletStore;
+const { recentCampaign, isConnected } = storeToRefs(walletStore);
 
 const handleCloseModal = () => updateIsShowModal(false);
+const { getDaysLeft } = useUtils();
 
-const { title, imgSrc, description, ethValue, daysLeft } =
-  cardValueSample.value;
-const setPage = (_itemsPerPage: number, pageNumber: number): void => {
-  currentPage.value = pageNumber;
-};
+const { imgSrc } = cardValueSample.value;
+
+const isLoading = ref<boolean>(true);
+
+onMounted(() => {
+  getRecentCampaigns(6, getSmartContract);
+  isLoading.value = false;
+});
 </script>

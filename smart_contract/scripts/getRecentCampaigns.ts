@@ -2,7 +2,7 @@ import { crowdFundingContract } from "./createContract";
 import { CrowdFunding } from "../typechain-types/CrowdFunding";
 import type { BigNumber } from "ethers";
 
-type RecentCampaignsResult = [
+export type RecentCampaignsResult = [
   CrowdFunding.CampaignStructOutput[],
   BigNumber,
   BigNumber,

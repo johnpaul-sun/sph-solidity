@@ -1,12 +1,9 @@
 import { ethers } from "ethers";
-import { storeToRefs } from "pinia";
 import { toast } from "vue3-toastify";
 import contract from "../assets/contract/CrowdFunding.json";
 import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
-  const { isConnected } = storeToRefs(useWalletStore());
-  const router = useRouter();
   const CONTRACT_ADDRESS = "0x9A746F3652006d42c6C3677099205b56Be257017";
 
   const ethereum = window.ethereum;
@@ -15,6 +12,9 @@ export default defineNuxtPlugin(async () => {
   let smartContract: ethers.Contract | null = null;
   let signer = null;
 
+  const walletStore = useWalletStore();
+  const { getRecentCampaigns } = walletStore;
+
   const getSmartContract = async () => {
     if (ethereum?.selectedAddress !== null) {
       try {
@@ -22,17 +22,28 @@ export default defineNuxtPlugin(async () => {
         smartContract = new ethers.Contract(
           CONTRACT_ADDRESS as string,
           contract.abi,
-          signer
+          signer,
         );
 
         return smartContract;
       } catch (error) {
-        toast.error("Something went wrong!");
+        const walletConnectionError = "UNKNOWN_ERROR";
+
+        if ((error as { code: string }).code === walletConnectionError) {
+          toast.error("Wallet connection failed!");
+        } else {
+          toast.error("Something went wrong!");
+        }
         return null;
       }
     } else {
-      isConnected.value = false;
-      return null;
+      smartContract = new ethers.Contract(
+        CONTRACT_ADDRESS as string,
+        contract.abi,
+        provider,
+      );
+
+      return smartContract;
     }
   };
 
@@ -42,7 +53,7 @@ export default defineNuxtPlugin(async () => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        signer
+        signer,
       );
     } catch (error) {}
   }
@@ -50,6 +61,7 @@ export default defineNuxtPlugin(async () => {
   smartContract?.on("CampaignCreated", (sender, title) => {
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
       toast.success(`Campaign ${title} was successfully created!`);
+      getRecentCampaigns(6, getSmartContract);
       smartContract?.removeAllListeners("CampaignCreated");
     }
   });
