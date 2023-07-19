@@ -1,6 +1,6 @@
 <template>
   <div class="mt-6">
-    <div class="flex gap-6 flex-wrap">
+    <div class="flex gap-6 flex-wrap justify-center">
       <CampaignCard
         v-for="campaign in userCampaigns"
         :key="campaign.id"
