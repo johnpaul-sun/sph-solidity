@@ -15,59 +15,22 @@
         </div>
         <BaseViewToggle :type="viewType" @change-type="changeViewType" />
       </div>
-      <div
-        v-if="viewType === 'cards'"
-        class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
-      >
-        <CampaignCard
-          v-for="(
-            { title, description, ethValue, imgSrc, daysLeft }, i
-          ) in cardValueSamples"
-          :key="i"
-          :title="title"
-          :description="description"
-          :eth-value="ethValue"
-          :img-src="imgSrc"
-          :days-left="daysLeft"
-        />
-      </div>
-      <div v-else-if="viewType === 'table'">
-        <table class="table-auto mt-6 w-full">
-          <thead class="border-b border-primary-10">
-            <tr class="h-10 items-center">
-              <th class="text-center px-4 text-primary-500 w-1/12">#</th>
-              <th class="text-left px-4 w-3/12">Creator ID</th>
-              <th class="text-left px-4 flex-1 w-6/12">Campaign Title</th>
-              <th class="text-left px-4 w-2/12">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              v-for="({ id, campaignId, title, amount }, index) in donations"
-              :key="id"
-              w
-              class="items-center h-14 min-h-[56px] border-b border-disabled"
-            >
-              <td class="min-w-[56px] px-4 text-center bg-primary-200">
-                {{ index + 1 }}
-              </td>
-              <td class="px-4 py-2">
-                <div class="flex items-center space-x-2">
-                  <span>
-                    {{ middleTruncate(campaignId, 6, 4) }}
-                  </span>
-                </div>
-              </td>
-              <td class="px-4 py-2">{{ title }}</td>
-              <td class="px-4 w-40">{{ amount }} ETH</td>
-            </tr>
-          </tbody>
-        </table>
+
+      <div v-if="viewType === 'cards'">
+        <CampaignCardView :campaigns="allCampaigns" />
       </div>
 
-      <div class="w-full mt-6 h-14 flex items-center justify-center">
+      <div v-else-if="viewType === 'table'">
+        <CampaignTableView :campaigns="allCampaigns" />
+      </div>
+
+      <div
+        v-show="!resultIndex.isLastPage && !isLoading"
+        class="w-full mt-6 h-14 flex items-center justify-center"
+      >
         <BaseButton
           class="rounded-lg border-primary-10 font-bold text-sm border px-4 py-2 h-10"
+          @click="loadCampaigns"
         >
           Load more campaigns
         </BaseButton>
@@ -77,20 +40,94 @@
 </template>
 
 <script setup lang="ts">
-import donations from "~/mocks/campaign-donations.json";
-import CampaignCardProps from "~/types/CampaignCardProps";
-import CardArray from "~/mocks/campaing-card-array-sample.json";
+import { ethers } from "ethers";
+import { toast } from "vue3-toastify";
 import ViewToggleType from "@/types/ViewToggleType";
+import Campaign from "~/types/Campaign";
+import {
+  SmartContractCampaign,
+  SmartContractResultIndex,
+} from "~/types/SmartContract";
 
 const route = useRoute();
-const { middleTruncate } = useUtils();
-const viewType = ref<ViewToggleType>("cards");
-const cardValueSamples = ref<CampaignCardProps[]>(CardArray);
 const {
   query: { search },
 } = route;
 
+const { getDaysLeft } = useUtils();
+const { $getSmartContract: getSmartContract } = useNuxtApp();
+
+const viewType = ref<ViewToggleType>("cards");
+const isLoading = ref<boolean>(true);
+const allCampaigns = ref<Campaign[]>([]);
+const resultIndex = ref<SmartContractResultIndex>({
+  isLastPage: false,
+  nextIndex: 0,
+});
+
 const changeViewType = (type: ViewToggleType): void => {
   viewType.value = type;
 };
+
+const getAllCampaignsResult = async (
+  size: number,
+  startIndex: number
+): Promise<[SmartContractCampaign[], SmartContractResultIndex]> => {
+  const smartContract = await getSmartContract();
+  let campaigns, resultIndex;
+  if (smartContract !== null) {
+    const result = await smartContract.getAllCampaigns(size, startIndex);
+    campaigns = result[0];
+    resultIndex = result[1];
+  }
+  return [campaigns, resultIndex];
+};
+
+const setAllCampaigns = (data: SmartContractCampaign[]): Campaign[] => {
+  const campaigns = data.map((campaign: SmartContractCampaign) => {
+    return {
+      campaignId: Number(campaign.id),
+      title: campaign.title,
+      creator: {
+        address: campaign.creator,
+        fullName: campaign.fullname,
+        imgSrc:
+          "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
+      },
+      imgSrc: "https://images.unsplash.com/photo-1529390079861-591de354faf5",
+      story: campaign.story,
+      daysLeft: getDaysLeft(campaign.deadline),
+      totalDonation: Number(ethers.formatEther(campaign.currentAmount)),
+      totalBackers: Number(campaign.totalDonations),
+    };
+  });
+  return campaigns;
+};
+
+const setResultIndex = (data: SmartContractResultIndex) => {
+  return {
+    isLastPage: data.isLastPage,
+    nextIndex: data.nextIndex,
+  };
+};
+
+const loadCampaigns = () => {
+  isLoading.value = true;
+  getAllCampaignsResult(6, resultIndex.value.nextIndex)
+    .then((result) => {
+      const fetchedCampaigns = setAllCampaigns(result[0]);
+      allCampaigns.value = allCampaigns.value.concat(fetchedCampaigns);
+      resultIndex.value = setResultIndex(result[1]);
+    })
+    .catch((error) => {
+      toast.error(error.reason);
+    })
+    .finally(() => {
+      isLoading.value = false;
+    });
+};
+
+onMounted(() => {
+  loadCampaigns();
+});
 </script>

@@ -19,3 +19,8 @@ export interface SmartContractDonationTransaction {
   amount: BigNumberish;
   timestamp: BigNumberish;
 }
+
+export interface SmartContractResultIndex {
+  isLastPage: boolean;
+  nextIndex: number;
+}

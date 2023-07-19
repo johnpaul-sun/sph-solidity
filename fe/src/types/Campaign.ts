@@ -19,5 +19,5 @@ export default interface Campaign {
   daysLeft: number;
   totalDonation: number;
   totalBackers: number;
-  donations: Donation[];
+  donations?: Donation[];
 }
