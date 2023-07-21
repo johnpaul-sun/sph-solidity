@@ -23,6 +23,11 @@
           </td>
           <td class="px-4 py-2">
             <div class="flex items-center space-x-2">
+              <UserAvatar
+                :img-src="getAvatarUrl(userAddress)"
+                :height="40"
+                :width="40"
+              />
               <span>
                 {{ middleTruncate(userAddress, 6, 4) }}
               </span>
@@ -33,10 +38,7 @@
         </tr>
       </tbody>
     </table>
-    <div
-      v-if="currentPage !== lastPage && donations.length > 1"
-      class="mt-8 h-14 flex items-center justify-center"
-    >
+    <div v-if="lastPage > 1" class="mt-8 h-14 flex items-center justify-center">
       <BasePaginator
         :current-page="currentPage"
         :last-page="lastPage"
@@ -62,7 +64,7 @@ type DonationType = {
   donationAmount: string;
 };
 
-const { middleTruncate } = useUtils();
+const { middleTruncate, getAvatarUrl } = useUtils();
 const itemsPerPage = ref<number>(6);
 const currentPage = ref<number>(1);
 const lastPage = ref<number>(1);
@@ -88,7 +90,7 @@ const getUserDonations = async (pageNumber: number) => {
                 userAddress,
                 donationAmount: ethers.formatEther(donationAmount),
               };
-            }
+            },
           );
           lastPage.value = Number(result[1].totalPages);
         }

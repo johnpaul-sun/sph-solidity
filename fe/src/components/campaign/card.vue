@@ -1,7 +1,7 @@
 <template>
   <NuxtLink
     :to="toLink"
-    class="rounded-2xl overflow-hidden bg-white shadow-card flex flex-col w-80 flex-grow max-w-[400px]"
+    class="rounded-2xl overflow-hidden bg-white shadow-card flex flex-col w-80"
     :class="additionalClass ?? ''"
   >
     <div>

@@ -4,9 +4,9 @@
       <thead class="border-b border-primary-10">
         <tr class="h-10 items-center">
           <th class="text-center px-4 text-primary-500 w-1/12">#</th>
-          <th class="text-left px-4 w-72">Donator</th>
-          <th class="text-left px-4 flex-1">Campaign Title</th>
-          <th class="text-left px-4 w-40">Amount</th>
+          <th class="text-left px-4 w-3/12">Donator</th>
+          <th class="text-left px-4 flex-6/12">Campaign Title</th>
+          <th class="text-left px-4 w-2/12">Amount</th>
         </tr>
       </thead>
       <tbody>
@@ -37,10 +37,7 @@
         </tr>
       </tbody>
     </table>
-    <div
-      v-if="currentPage !== lastPage && donatorsData.donatorsList.length > 1"
-      class="mt-8 h-14 flex items-center justify-center"
-    >
+    <div v-if="lastPage > 1" class="mt-8 h-14 flex items-center justify-center">
       <BasePaginator
         :current-page="currentPage"
         :last-page="lastPage"
@@ -71,7 +68,7 @@ const { donatorsData } = toRefs(props);
 
 const { middleTruncate, getAvatarUrl } = useUtils();
 const currentPage = ref(1);
-const itemsPerPage = ref(5);
+const itemsPerPage = ref(6);
 const lastPage = ref(donatorsData.value.totalPages);
 
 const setPage = (_itemsPerPage: number, pageNumber: number): void => {
