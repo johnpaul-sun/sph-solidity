@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-primary-50">
+  <div class="bg-primary-50 flex-1">
     <div class="max-w-[960px] mx-auto py-6">
       <div
         class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
