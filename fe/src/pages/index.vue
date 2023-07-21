@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="flex-1">
     <BaseModal>
       <div>
         You need to setup and connect your wallet in order to proceed with the
