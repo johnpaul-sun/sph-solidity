@@ -62,7 +62,7 @@ const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isLoading = ref<boolean>(false);
 const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
-const { isConnected, address } = storeToRefs(useWallet);
+const { isConnected, address, refresher } = storeToRefs(useWallet);
 const id = Number(route.params.id);
 const campaign = ref<Campaign>({
   campaignId: 0,
@@ -156,19 +156,23 @@ const donateCampaign = async (amount: number): Promise<void> => {
   }
 };
 
-onMounted(() => {
-  getCampaign(id)
-    .then((result) => {
-      campaign.value = setCampaign(result);
-      if (
-        address.value.toLowerCase() ===
-        campaign.value.creator.address.toLowerCase()
-      ) {
-        canEdit.value = true;
-      }
-    })
-    .catch((error) => {
-      toast.error(error.reason);
-    });
-});
+watch(
+  refresher,
+  () => {
+    getCampaign(id)
+      .then((result) => {
+        campaign.value = setCampaign(result);
+        if (
+          address.value.toLowerCase() ===
+          campaign.value.creator.address.toLowerCase()
+        ) {
+          canEdit.value = true;
+        }
+      })
+      .catch((error) => {
+        toast.error(error.reason);
+      });
+  },
+  { immediate: true },
+);
 </script>

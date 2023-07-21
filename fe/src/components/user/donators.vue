@@ -55,7 +55,9 @@
 </template>
 <script setup lang="ts">
 import { formatEther } from "ethers";
+import { storeToRefs } from "pinia";
 import { useUtils } from "~/composables/useUtils";
+import { useWalletStore } from "~/store/wallet";
 
 import DonatorsData from "~/types/DonatorsData";
 
@@ -65,6 +67,8 @@ const props = defineProps<{
 }>();
 
 const { donatorsData } = toRefs(props);
+const useWallet = useWalletStore();
+const { refresher } = storeToRefs(useWallet);
 
 const { middleTruncate, getAvatarUrl } = useUtils();
 const currentPage = ref(1);
@@ -75,4 +79,12 @@ const setPage = (_itemsPerPage: number, pageNumber: number): void => {
   currentPage.value = pageNumber;
   props.callNewData(currentPage.value);
 };
+
+watch(
+  refresher,
+  () => {
+    props.callNewData(currentPage.value);
+  },
+  { immediate: true },
+);
 </script>

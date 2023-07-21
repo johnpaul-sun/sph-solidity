@@ -109,7 +109,7 @@ const route = useRoute();
 const { getDateYMD, notConnectedWarning } = useUtils();
 
 const useWallet = useWalletStore();
-const { isConnected } = storeToRefs(useWallet);
+const { isConnected, refresher } = storeToRefs(useWallet);
 const { id } = route.params;
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isLoading = ref<boolean>(false);
@@ -175,9 +175,13 @@ const getCampaign = async (): Promise<void> => {
   }
 };
 
-onMounted((): void => {
-  getCampaign();
-});
+watch(
+  refresher,
+  () => {
+    getCampaign();
+  },
+  { immediate: true },
+);
 
 const handleValidateImageUrl = async (
   e: InputEvent,
