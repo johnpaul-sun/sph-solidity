@@ -40,6 +40,7 @@ export const useWalletStore = defineStore("walletStore", {
         string,
         string,
         string,
+        string,
         number,
         number,
         number,
@@ -59,10 +60,11 @@ export const useWalletStore = defineStore("walletStore", {
             fullname: item[2],
             title: item[3],
             story: item[4],
-            goalAmount: item[5],
-            currentAmount: item[6],
-            deadline: item[7],
-            totalDonations: item[8],
+            imageUrl: item[5],
+            goalAmount: item[6],
+            currentAmount: item[7],
+            deadline: item[8],
+            totalDonations: item[9],
           }));
 
           this.recentCampaign = campaignData.reverse();

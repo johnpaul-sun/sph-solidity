@@ -13,7 +13,7 @@ export const CreateCampaignRequestSchema = z.object({
     .string()
     .min(20, { message: "Minimum character requirement is 20 " })
     .max(250, { message: "Maximum character limit is 250" }),
-  upload: z.string().optional(),
+  imageUrl: z.string().url({ message: "Invalid url" }),
   goal: z
     .number({
       required_error: "Goal is required",

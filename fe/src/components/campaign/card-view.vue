@@ -8,14 +8,14 @@
         title,
         story,
         totalDonation,
-        imgSrc,
+        imageUrl,
         daysLeft,
       } in campaigns"
       :key="campaignId"
       :title="title"
       :description="story"
       :eth-value="totalDonation"
-      :img-src="imgSrc"
+      :image-url="imageUrl"
       :days-left="daysLeft"
       :to-link="`/campaigns/${campaignId}`"
     />

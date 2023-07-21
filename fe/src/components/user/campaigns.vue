@@ -2,14 +2,22 @@
   <div class="mt-6">
     <div class="flex gap-6 flex-wrap">
       <CampaignCard
-        v-for="campaign in userCampaigns"
-        :key="campaign.id"
-        :title="campaign.title"
-        :description="campaign.description"
-        :eth-value="campaign.ethValue"
-        :img-src="campaign.imgSrc"
-        :days-left="campaign.daysLeft"
-        :to-link="`/campaigns/${campaign.id}`"
+        v-for="{
+          id,
+          title,
+          imageUrl,
+          description,
+          ethValue,
+          daysLeft,
+        } in userCampaigns"
+        :key="id"
+        :title="title"
+        :description="description"
+        :eth-value="ethValue"
+        :image-url="imageUrl"
+        :days-left="daysLeft"
+        additional-class="cursor-pointer"
+        @click="$router.push(`/campaigns/${id}`)"
       ></CampaignCard>
     </div>
     <div
@@ -29,25 +37,20 @@
   </div>
 </template>
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { BigNumberish, ethers } from "ethers";
 import { toast } from "vue3-toastify";
-import { useWalletStore } from "~/store/wallet";
+import { BigNumberish, ethers } from "ethers";
 import CampaignCardProps from "~/types/CampaignCardProps";
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const { getDaysLeft } = useUtils();
-const useWallet = useWalletStore();
 
 const itemsPerPage = ref<number>(6);
 const currentPage = ref<number>(1);
 const lastPage = ref<number>(1);
-const { address } = storeToRefs(useWallet);
 const isLoading = ref<boolean>(false);
-const imgSrc = `https://api.multiavatar.com/${address}.png`;
 const userCampaigns = ref<CampaignCardProps[]>([]);
 
-const getUserCampaings = async (pageNumber: number) => {
+const getUserCampaigns = async (pageNumber: number) => {
   isLoading.value = true;
   const smartContract = await getSmartContract();
   if (smartContract !== null) {
@@ -58,9 +61,9 @@ const getUserCampaings = async (pageNumber: number) => {
           userCampaigns.value = result[0].map((campaign: BigNumberish[]) => {
             return {
               id: campaign[0],
-              imgSrc,
               title: campaign[3],
               description: campaign[4],
+              imageUrl: campaign[5],
               ethValue: ethers.formatEther(campaign[6]),
               daysLeft: getDaysLeft(campaign[7]),
             };
@@ -80,11 +83,11 @@ const getUserCampaings = async (pageNumber: number) => {
 };
 
 onMounted(() => {
-  getUserCampaings(currentPage.value);
+  getUserCampaigns(currentPage.value);
 });
 
 const setPage = (_itemsPerPage: number, pageNumber: number): void => {
   currentPage.value = pageNumber;
-  getUserCampaings(currentPage.value);
+  getUserCampaigns(currentPage.value);
 };
 </script>

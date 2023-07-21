@@ -45,7 +45,7 @@
       </div>
     </div>
     <div class="bg-primary-50">
-      <div class="max-w-[960px] mx-auto py-6">
+      <div class="px-36 py-6 mx-auto space-y-6">
         <div
           class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
         >
@@ -69,14 +69,13 @@
             <span v-else> No campaigns available</span>
           </div>
           <div v-else>
-            <div
-              class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
-            >
+            <div class="flex flex-wrap gap-6">
               <CampaignCard
                 v-for="{
                   id,
                   title,
                   story,
+                  imageUrl,
                   currentAmount,
                   deadline,
                 } in recentCampaign"
@@ -84,7 +83,7 @@
                 :title="title"
                 :description="story"
                 :eth-value="formatEther(currentAmount)"
-                :img-src="imgSrc"
+                :image-url="imageUrl"
                 :days-left="getDaysLeft(deadline)"
                 :to-link="`/campaigns/${id}`"
               ></CampaignCard>
@@ -111,11 +110,8 @@
 import { storeToRefs } from "pinia";
 import { formatEther } from "ethers";
 
-import CampaignCardProps from "~/types/CampaignCardProps";
-import CardSample from "~/mocks/card-sample.json";
 import { useWalletStore } from "~/store/wallet";
 
-const cardValueSample = ref<CampaignCardProps>(CardSample);
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const walletStore = useWalletStore();
@@ -124,8 +120,6 @@ const { recentCampaign, isConnected } = storeToRefs(walletStore);
 
 const handleCloseModal = () => updateIsShowModal(false);
 const { getDaysLeft } = useUtils();
-
-const { imgSrc } = cardValueSample.value;
 
 const isLoading = ref<boolean>(true);
 

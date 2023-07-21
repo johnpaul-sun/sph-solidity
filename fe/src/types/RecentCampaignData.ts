@@ -4,6 +4,7 @@ export default interface RecentCampaignData {
   fullname: string;
   title: string;
   story: string;
+  imageUrl: string;
   goalAmount: number;
   currentAmount: number;
   deadline: number;

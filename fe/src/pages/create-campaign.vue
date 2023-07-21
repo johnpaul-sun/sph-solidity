@@ -56,7 +56,15 @@
             :model-value="story"
             @change="handleChange"
           />
-          <BaseFileUpload />
+          <BaseInput
+            id="image-url"
+            label="Image URL"
+            name="imageUrl"
+            placeholder="Enter an image link"
+            :error="errors.imageUrl"
+            :model-value="imageUrl"
+            @change="handleChange"
+          />
           <div class="flex w-full space-x-4">
             <BaseInput
               id="goal"
@@ -146,6 +154,8 @@ const { value: fullname } =
 const { value: campaign } =
   useField<CreateCampaignRequest["campaign"]>("campaign");
 const { value: story } = useField<CreateCampaignRequest["story"]>("story");
+const { value: imageUrl } =
+  useField<CreateCampaignRequest["imageUrl"]>("imageUrl");
 const { value: goal } = useField<CreateCampaignRequest["goal"]>("goal");
 const { value: date } = useField<CreateCampaignRequest["date"]>("date");
 
@@ -171,6 +181,7 @@ const onSubmit = handleSubmit(async () => {
         values.fullname,
         values.campaign,
         values.story,
+        values.imageUrl,
         ethers.parseEther((values.goal as number).toString()),
         deadline.getTime() / 1000, // convert from milliseconds to secsonds
       )

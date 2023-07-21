@@ -5,7 +5,12 @@
     :class="additionalClass ?? ''"
   >
     <div>
-      <img :src="imgSrc" class="h-44 w-full object-cover" />
+      <img
+        :src="imageUrl"
+        alt="Image"
+        class="h-44 w-full object-cover"
+        @error="replaceByDefault"
+      />
       <div class="m-4 leading-[150%]">
         <div class="text-dark text-base font-bold">{{ title }}</div>
         <div class="mt-2 text-disabled text-sm font-normal flex items-center">
@@ -30,11 +35,12 @@
 
 <script setup lang="ts">
 import CampaignCardProps from "@/types/CampaignCardProps";
+import placeholderImage from "@/assets/img/placeholder.png";
 
 const { truncate } = useUtils();
 const campaignCardProps = defineProps<CampaignCardProps>();
 const {
-  imgSrc,
+  imageUrl,
   ethValue,
   title,
   description,
@@ -42,4 +48,8 @@ const {
   additionalClass,
   toLink,
 } = toRefs(campaignCardProps);
+
+const replaceByDefault = (e: Event) => {
+  (e.target as HTMLImageElement).src = placeholderImage;
+};
 </script>

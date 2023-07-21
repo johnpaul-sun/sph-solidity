@@ -14,7 +14,7 @@ export default interface Campaign {
   campaignId: number;
   creator: Creator;
   title: string;
-  imgSrc: string;
+  imageUrl: string;
   story: string;
   daysLeft: number;
   totalDonation: number;
