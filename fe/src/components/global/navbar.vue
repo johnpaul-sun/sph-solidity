@@ -9,7 +9,10 @@
             class="h-6 w-6 text-disabled"
           />
         </BaseButton>
-        <BaseSearchBar />
+        <BaseSearchBar
+          :search-default="router.currentRoute.value.query.search"
+          @on-sumbit="handleSearch"
+        />
         <WalletButton />
       </div>
     </nav>
@@ -20,5 +23,9 @@ const router = useRouter();
 
 const handleHelp = () => {
   router.push("/help");
+};
+
+const handleSearch = (searchKey: string) => {
+  router.push(`campaigns${searchKey ? `?search=${searchKey}` : ""}`);
 };
 </script>

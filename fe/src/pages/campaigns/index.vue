@@ -50,9 +50,7 @@ import {
 } from "~/types/SmartContract";
 
 const route = useRoute();
-const {
-  query: { search },
-} = route;
+const search = ref<string>(route.query.search?.toString() ?? "");
 
 const { getDaysLeft } = useUtils();
 const { $getSmartContract: getSmartContract } = useNuxtApp();
@@ -77,6 +75,25 @@ const getAllCampaignsResult = async (
   let campaigns, resultIndex;
   if (smartContract !== null) {
     const result = await smartContract.getAllCampaigns(size, startIndex);
+    campaigns = result[0];
+    resultIndex = result[1];
+  }
+  return [campaigns, resultIndex];
+};
+
+const searchCampaignResult = async (
+  searchKey: string,
+  size: number,
+  startIndex: number,
+): Promise<[SmartContractCampaign[], SmartContractResultIndex]> => {
+  const smartContract = await getSmartContract();
+  let campaigns, resultIndex;
+  if (smartContract !== null) {
+    const result = await smartContract.searchByTitle(
+      searchKey,
+      size,
+      startIndex,
+    );
     campaigns = result[0];
     resultIndex = result[1];
   }
@@ -111,12 +128,18 @@ const setResultIndex = (data: SmartContractResultIndex) => {
   };
 };
 
-const loadCampaigns = () => {
+const loadCampaigns = (fromLoadMore = false) => {
   isLoading.value = true;
-  getAllCampaignsResult(6, resultIndex.value.nextIndex)
+  const getCampaignsQuery = search.value
+    ? searchCampaignResult(search.value, 6, resultIndex.value.nextIndex)
+    : getAllCampaignsResult(6, resultIndex.value.nextIndex);
+
+  getCampaignsQuery
     .then((result) => {
       const fetchedCampaigns = setAllCampaigns(result[0]);
-      allCampaigns.value = allCampaigns.value.concat(fetchedCampaigns);
+      allCampaigns.value = fromLoadMore
+        ? allCampaigns.value.concat(fetchedCampaigns)
+        : fetchedCampaigns;
       resultIndex.value = setResultIndex(result[1]);
     })
     .catch((error) => {
@@ -126,6 +149,14 @@ const loadCampaigns = () => {
       isLoading.value = false;
     });
 };
+
+watch(
+  () => route.query,
+  (value) => {
+    search.value = value.search?.toString() ?? "";
+    loadCampaigns();
+  },
+);
 
 onMounted(() => {
   loadCampaigns();
