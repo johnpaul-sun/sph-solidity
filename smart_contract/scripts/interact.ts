@@ -20,6 +20,7 @@ async function main() {
     name,
     title,
     story,
+    imageUrl,
     deadline,
     amount,
     pageSize,
@@ -51,10 +52,11 @@ async function main() {
         name = prompt("Full Name: ");
         title = prompt("Campaign Title: ");
         story = prompt("Story: ");
+        imageUrl = prompt("Image Url: ");
         amount = prompt("Goal: ");
         deadline = prompt("Date: ");
 
-        await createCampaign(name, title, story, amount, deadline);
+        await createCampaign(name, title, story, imageUrl, amount, deadline);
 
         break;
       case "2":
@@ -62,10 +64,11 @@ async function main() {
         name = prompt("Full Name: ");
         title = prompt("Campaign Title: ");
         story = prompt("Story: ");
+        imageUrl = prompt("Image Url: ");
         amount = prompt("Goal: ");
         deadline = prompt("Date: ");
 
-        await editCampaign(id, name, title, story, amount, deadline);
+        await editCampaign(id, name, title, story, imageUrl, amount, deadline);
 
         break;
       case "3":

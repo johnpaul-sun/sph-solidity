@@ -75,10 +75,10 @@ REPORT_GAS=true npx hardhat test
 - Create campaign
 
   ```
-  npx ts-node scripts/createCampaign.ts <name> <title> <story> <goal> <deadline>
+  npx ts-node scripts/createCampaign.ts <name> <title> <story> <image_url> <goal> <deadline>
 
   # Example
-  npx ts-node scripts/createCampaign.ts "sample name" "sample title" "sample story" 36510000000 1701360000
+  npx ts-node scripts/createCampaign.ts "sample name" "sample title" "sample story" "./assets/img/be-the-change.jpg" 36510000000 1701360000
   ```
 
 - Get user's created campaigns

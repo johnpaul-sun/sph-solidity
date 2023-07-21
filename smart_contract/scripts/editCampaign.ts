@@ -7,16 +7,18 @@ async function main() {
     process.argv[3] !== undefined && // name
     process.argv[4] !== undefined && // title
     process.argv[5] !== undefined && // story
-    process.argv[6] !== undefined && // goal
-    process.argv[7] !== undefined // deadline
+    process.argv[6] !== undefined && // image url
+    process.argv[7] !== undefined && // goal
+    process.argv[8] !== undefined // deadline
   ) {
     await editCampaign(
       process.argv[2], // id
       process.argv[3], // name
       process.argv[4], // title
       process.argv[5], // story
-      process.argv[6], // goal
-      process.argv[7], // deadline
+      process.argv[6], // image url
+      process.argv[7], // goal
+      process.argv[8], // deadline
     );
   }
 }
@@ -26,12 +28,13 @@ export default async function editCampaign(
   name: string,
   title: string,
   story: string,
+  imageUrl: string,
   goal: string,
   deadline: string,
 ) {
   console.log("EDITING...");
   await crowdFundingContract
-    .editCampaign(id, name, title, story, goal, deadline)
+    .editCampaign(id, name, title, story, imageUrl, goal, deadline)
     .then((result: ContractTransaction) => {
       console.log("SUCCESS!... Mining in progress..");
       console.log(result);

@@ -20,6 +20,7 @@ contract CrowdFunding {
         string fullname;
         string title;
         string story;
+        string imageUrl;
         uint goalAmount;
         uint currentAmount;
         uint deadline;
@@ -70,6 +71,7 @@ contract CrowdFunding {
         string memory _fullname,
         string memory _title,
         string memory _story,
+        string memory _imageUrl,
         uint _goalAmount,
         uint _deadline
     ) {
@@ -78,6 +80,10 @@ contract CrowdFunding {
         require(bytes(_fullname).length > 0, "Full name cannot be empty");
         require(bytes(_title).length > 0, "Title cannot be empty");
         require(bytes(_story).length > 0, "Story cannot be empty");
+        require(
+            bytes(_imageUrl).length > 0,
+            "Campaign image url cannot be empty"
+        );
         _;
     }
 
@@ -168,6 +174,7 @@ contract CrowdFunding {
         string memory _fullname,
         string memory _title,
         string memory _story,
+        string memory _imageUrl,
         uint _goalAmount,
         uint _deadline
     )
@@ -176,6 +183,7 @@ contract CrowdFunding {
             _fullname,
             _title,
             _story,
+            _imageUrl,
             _goalAmount,
             _deadline
         )
@@ -186,6 +194,7 @@ contract CrowdFunding {
             fullname: _fullname,
             title: _title,
             story: _story,
+            imageUrl: _imageUrl,
             goalAmount: _goalAmount,
             currentAmount: 0,
             deadline: _deadline,
@@ -245,6 +254,7 @@ contract CrowdFunding {
         string memory _fullname,
         string memory _title,
         string memory _story,
+        string memory _imageUrl,
         uint _goalAmount,
         uint _deadline
     )
@@ -253,6 +263,7 @@ contract CrowdFunding {
             _fullname,
             _title,
             _story,
+            _imageUrl,
             _goalAmount,
             _deadline
         )
@@ -270,6 +281,7 @@ contract CrowdFunding {
         campaign.fullname = _fullname;
         campaign.title = _title;
         campaign.story = _story;
+        campaign.imageUrl = _imageUrl;
         campaign.goalAmount = _goalAmount;
         campaign.deadline = _deadline;
 
