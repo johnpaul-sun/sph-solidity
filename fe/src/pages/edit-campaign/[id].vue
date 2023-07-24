@@ -154,7 +154,7 @@ const getCampaign = async (): Promise<void> => {
         values.story = result[4];
         values.imageUrl = result[5];
         values.goal = +ethers.formatEther(result[6]);
-        values.date = getDateYMD(result[7]);
+        values.date = getDateYMD(result[8]);
 
         campaignData.value.fullname = values.fullname ?? "";
         campaignData.value.campaign = values.campaign ?? "";
