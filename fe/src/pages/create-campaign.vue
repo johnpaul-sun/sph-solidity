@@ -1,5 +1,15 @@
 <template>
-  <div class="flex flex-grow">
+  <div
+    v-if="isPageLoading"
+    class="flex justify-center items-center w-full h-screen"
+  >
+    <div class="flex justify-center items-center">
+      <div
+        class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
+      ></div>
+    </div>
+  </div>
+  <div v-else class="flex flex-grow">
     <BaseModal>
       <div>
         You need to setup and connect your wallet in order to proceed with the
@@ -224,5 +234,11 @@ const onSubmit = handleSubmit(async () => {
     notConnectedWarning();
     isLoading.value = false;
   }
+});
+
+const isPageLoading = ref<boolean>(true);
+
+onMounted(() => {
+  isPageLoading.value = false;
 });
 </script>

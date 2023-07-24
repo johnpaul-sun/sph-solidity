@@ -1,6 +1,17 @@
 <template>
   <div
-    class="flex flex-col gap-6 py-6 px-36 flex-1 bg-linear-gradient-white-to-light overflow-auto"
+    v-if="isPageLoading"
+    class="flex justify-center items-center w-full h-screen"
+  >
+    <div class="flex justify-center items-center">
+      <div
+        class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
+      ></div>
+    </div>
+  </div>
+  <div
+    v-else
+    class="flex flex-col gap-6 py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
   >
     <div class="flex gap-[22px]">
       <div class="w-full h-[420px]">
@@ -60,6 +71,7 @@ const { truncate, getDaysLeft, getAvatarUrl } = useUtils();
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const isLoading = ref<boolean>(false);
+const isPageLoading = ref<boolean>(true);
 const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
 const { isConnected, address, refresher } = storeToRefs(useWallet);
@@ -156,23 +168,26 @@ const donateCampaign = async (amount: number): Promise<void> => {
   }
 };
 
-watch(
-  refresher,
-  () => {
-    getCampaign(id)
-      .then((result) => {
-        campaign.value = setCampaign(result);
-        if (
-          address.value.toLowerCase() ===
-          campaign.value.creator.address.toLowerCase()
-        ) {
-          canEdit.value = true;
-        }
-      })
-      .catch((error) => {
-        toast.error(error.reason);
-      });
-  },
-  { immediate: true },
-);
+if (process.client) {
+  watch(
+    refresher,
+    () => {
+      getCampaign(id)
+        .then((result) => {
+          campaign.value = setCampaign(result);
+          if (
+            address.value.toLowerCase() ===
+            campaign.value.creator.address.toLowerCase()
+          ) {
+            canEdit.value = true;
+          }
+          isPageLoading.value = false;
+        })
+        .catch((error) => {
+          toast.error(error.reason);
+        });
+    },
+    { immediate: true },
+  );
+}
 </script>

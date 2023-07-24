@@ -1,32 +1,44 @@
 <template>
   <div
-    v-if="isConnected || !isLoading"
-    class="py-6 px-36 flex-1 bg-linear-gradient-white-to-light overflow-auto"
+    v-if="isPageLoading"
+    class="flex justify-center items-center w-full h-screen"
   >
-    <UserCard
-      :block-chain-value="balance"
-      block-chain-label="ETH"
-      :img-src="imgSrc"
-      :user-id="middleTruncate(address, 6, 3)"
-    />
-    <div class="mt-6">
-      <BaseTabs
-        :active-tab="activeTab"
-        :items="profileTabs"
-        @change-tab="activeTab = $event"
+    <div class="flex justify-center items-center">
+      <div
+        class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
+      ></div>
+    </div>
+  </div>
+  <div v-else>
+    <div
+      v-if="isConnected || !isLoading"
+      class="py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
+    >
+      <UserCard
+        :block-chain-value="balance"
+        block-chain-label="ETH"
+        :img-src="imgSrc"
+        :user-id="middleTruncate(address, 6, 3)"
       />
-    </div>
-    <div v-if="activeTab === 'My Campaigns'">
-      <UserCampaigns />
-    </div>
-    <div v-if="activeTab === 'Donators'">
-      <UserDonators
-        :donators-data="donatorsData"
-        :call-new-data="callNewData"
-      />
-    </div>
-    <div v-if="activeTab === 'Donations'">
-      <UserDonations />
+      <div class="mt-6">
+        <BaseTabs
+          :active-tab="activeTab"
+          :items="profileTabs"
+          @change-tab="activeTab = $event"
+        />
+      </div>
+      <div v-if="activeTab === 'My Campaigns'">
+        <UserCampaigns />
+      </div>
+      <div v-if="activeTab === 'Donators'">
+        <UserDonators
+          :donators-data="donatorsData"
+          :call-new-data="callNewData"
+        />
+      </div>
+      <div v-if="activeTab === 'Donations'">
+        <UserDonations />
+      </div>
     </div>
   </div>
 </template>
@@ -49,6 +61,7 @@ const { $getSmartContract: getSmartContract } = useNuxtApp();
 const { middleTruncate, getAvatarUrl } = useUtils();
 
 const isLoading = ref<boolean>(false);
+const isPageLoading = ref<boolean>(true);
 const imgSrc = ref<string>("");
 const donatorsData = ref<DonatorsData>({
   donatorsList: [],
@@ -99,6 +112,7 @@ const getDonatorsByWalletAddress = async (
           previousPage,
         };
       }
+      isPageLoading.value = false;
     }
   } catch (error) {
     if (process.client) {
