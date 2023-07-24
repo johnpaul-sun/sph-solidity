@@ -8,7 +8,11 @@
         <div class="font-bold text-2xl text-dark">EDIT CAMPAIGN</div>
       </div>
       <div class="relative h-60">
-        <img :src="imageUrl" class="w-full h-full object-cover" />
+        <img
+          :src="imageUrl"
+          class="w-full h-full object-cover"
+          @error="replaceByDefault"
+        />
       </div>
       <form class="flex flex-col space-y-6" @submit.prevent="onSubmit">
         <div class="space-y-2">
@@ -46,7 +50,7 @@
             placeholder="Enter an image link"
             :error="errors.imageUrl"
             :model-value="imageUrl"
-            @change="handleChange"
+            @change="handleValidateImageUrl"
           />
           <div class="flex w-full space-x-4">
             <BaseInput
@@ -95,7 +99,10 @@ import {
   CreateCampaignRequestSchema,
   CreateCampaignRequest,
 } from "../../schemas/create-campaign";
+import isImageUrl from "~/plugins/isImageUrl";
 import { useWalletStore } from "~/store/wallet";
+import placeholderImage from "@/assets/img/placeholder.png";
+
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
 const router = useRouter();
 const route = useRoute();
@@ -129,6 +136,7 @@ const {
   values,
   errors,
   setFieldValue,
+  setFieldError,
   validateField,
 } = useForm({
   validationSchema,
@@ -170,6 +178,28 @@ const getCampaign = async (): Promise<void> => {
 onMounted((): void => {
   getCampaign();
 });
+
+const handleValidateImageUrl = async (
+  e: InputEvent,
+): Promise<void | undefined> => {
+  isLoading.value = true;
+  const { name, value } = e.target as HTMLInputElement;
+
+  const val = await isImageUrl(value);
+  setFieldValue(name, value);
+
+  if (!val) {
+    setFieldError(name, "Invalid image url");
+  } else {
+    validateField(name);
+  }
+
+  isLoading.value = false;
+};
+
+const replaceByDefault = (e: Event) => {
+  (e.target as HTMLImageElement).src = placeholderImage;
+};
 
 const handleChange = (e: InputEvent): void => {
   const { name, type, value } = e.target as HTMLInputElement;

@@ -1,6 +1,8 @@
 <template>
   <div class="mt-6">
-    <div class="flex gap-6 flex-wrap">
+    <div
+      class="grid xxl:grid-cols-5 xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-6"
+    >
       <CampaignCard
         v-for="{
           id,

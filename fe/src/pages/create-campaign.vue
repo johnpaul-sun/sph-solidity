@@ -121,6 +121,7 @@ import {
   CreateCampaignRequest,
   CreateCampaignRequestSchema,
 } from "../schemas/create-campaign";
+import isImageUrl from "~/plugins/isImageUrl";
 import { useWalletStore } from "~/store/wallet";
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
@@ -156,26 +157,13 @@ const { updateIsShowModal } = useWallet;
 
 const handleCloseModal = () => updateIsShowModal(false);
 
-const isImageLink = async (url: string): Promise<boolean> => {
-  isLoading.value = true;
-  try {
-    const res = await fetch(url);
-    const contentType = res.headers.get("content-type");
-
-    const isImage = contentType && contentType.startsWith("image/");
-
-    return !!isImage;
-  } catch (e) {
-    return false;
-  }
-};
-
 const handleValidateImageUrl = async (
   e: InputEvent,
 ): Promise<void | undefined> => {
+  isLoading.value = true;
   const { name, value } = e.target as HTMLInputElement;
 
-  const val = await isImageLink(value);
+  const val = await isImageUrl(value);
   setFieldValue(name, value);
 
   if (!val) {

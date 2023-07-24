@@ -36,6 +36,7 @@ export default defineNuxtConfig({
   plugins: [
     { src: "~/plugins/toastify.ts", mode: "client" },
     { src: "~/plugins/ethers.ts", mode: "client" },
+    { src: "~/plugins/isImageUrl.ts", mode: "client" },
   ],
   runtimeConfig: {
     public: {
