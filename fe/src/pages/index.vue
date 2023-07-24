@@ -45,7 +45,7 @@
       </div>
     </div>
     <div class="bg-primary-50">
-      <div class="px-36 py-6 mx-auto space-y-6">
+      <div class="mx-auto px-36 py-6 space-y-6">
         <div
           class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
         >
@@ -69,7 +69,9 @@
             <span v-else> No campaigns available</span>
           </div>
           <div v-else>
-            <div class="flex flex-wrap gap-6">
+            <div
+              class="grid xxl:grid-cols-5 xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-6"
+            >
               <CampaignCard
                 v-for="{
                   id,

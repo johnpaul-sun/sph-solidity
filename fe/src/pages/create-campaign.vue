@@ -63,7 +63,7 @@
             placeholder="Enter an image link"
             :error="errors.imageUrl"
             :model-value="imageUrl"
-            @change="handleChange"
+            @change="handleValidateImageUrl"
           />
           <div class="flex w-full space-x-4">
             <BaseInput
@@ -133,21 +133,11 @@ const {
   values,
   errors,
   setFieldValue,
+  setFieldError,
   validateField,
 } = useForm({
   validationSchema,
 });
-
-const handleChange = (e: InputEvent): void => {
-  const { name, value, type } = e.target as HTMLInputElement;
-
-  if (type === "number") {
-    setFieldValue(name, parseFloat(value));
-  } else {
-    setFieldValue(name, value);
-  }
-  validateField(name);
-};
 
 const { value: fullname } =
   useField<CreateCampaignRequest["fullname"]>("fullname");
@@ -165,6 +155,49 @@ const { isConnected } = storeToRefs(useWallet);
 const { updateIsShowModal } = useWallet;
 
 const handleCloseModal = () => updateIsShowModal(false);
+
+const isImageLink = async (url: string): Promise<boolean> => {
+  isLoading.value = true;
+  try {
+    const res = await fetch(url);
+    const contentType = res.headers.get("content-type");
+
+    const isImage = contentType && contentType.startsWith("image/");
+
+    return !!isImage;
+  } catch (e) {
+    return false;
+  }
+};
+
+const handleValidateImageUrl = async (
+  e: InputEvent,
+): Promise<void | undefined> => {
+  const { name, value } = e.target as HTMLInputElement;
+
+  const val = await isImageLink(value);
+  setFieldValue(name, value);
+
+  if (!val) {
+    setFieldError(name, "Invalid image url");
+  } else {
+    validateField(name);
+  }
+
+  isLoading.value = false;
+};
+
+const handleChange = (e: InputEvent): void => {
+  const { name, value, type } = e.target as HTMLInputElement;
+
+  if (type === "number") {
+    setFieldValue(name, parseFloat(value));
+  } else {
+    setFieldValue(name, value);
+  }
+
+  validateField(name);
+};
 
 const onSubmit = handleSubmit(async () => {
   isLoading.value = true;
