@@ -66,8 +66,8 @@ const getUserCampaigns = async (pageNumber: number) => {
               title: campaign[3],
               description: campaign[4],
               imageUrl: campaign[5],
-              ethValue: ethers.formatEther(campaign[6]),
-              daysLeft: getDaysLeft(campaign[7]),
+              ethValue: ethers.formatEther(campaign[7]),
+              daysLeft: getDaysLeft(campaign[8]),
             };
           });
           lastPage.value = Number(result[2]);
