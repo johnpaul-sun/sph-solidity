@@ -5,21 +5,29 @@
       v-model="searchKey"
       placeholder="Search"
       class="bg-white outline-none"
-      @keyup.enter="handleSumbit"
+      @keyup.enter="handleSubmit"
+      @keyup.delete="handleSubmit"
     />
   </div>
 </template>
 
 <script setup lang="ts">
 type Props = {
-  searchDefault: string;
+  searchDefault?: string;
 };
 
 const searchBarProps = defineProps<Props>();
-const emit = defineEmits(["on-sumbit"]);
+const emit = defineEmits(["on-submit"]);
 const searchKey = ref<string>(searchBarProps.searchDefault ?? "");
 
-const handleSumbit = () => {
-  emit("on-sumbit", searchKey.value);
+const handleSubmit = () => {
+  emit("on-submit", searchKey.value);
 };
+
+watch(
+  () => searchBarProps.searchDefault,
+  (value) => {
+    searchKey.value = value?.toString() ?? "";
+  }
+);
 </script>

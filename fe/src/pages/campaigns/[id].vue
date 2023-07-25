@@ -70,7 +70,7 @@ const campaign = ref<Campaign>({
   creator: {
     address: "",
     fullName: "",
-    imgSrc: "",
+    imageUrl: "",
   },
   imageUrl: "",
   story: "",
@@ -85,7 +85,7 @@ const replaceByDefault = (e: Event) => {
 };
 
 const setCampaign = (
-  data: [SmartContractCampaign, SmartContractDonationTransaction[]],
+  data: [SmartContractCampaign, SmartContractDonationTransaction[]]
 ): Campaign => {
   const donations = data[1].map(
     (donation: SmartContractDonationTransaction) => {
@@ -94,7 +94,7 @@ const setCampaign = (
         address: donation.donor,
         amount: Number(ethers.formatEther(donation.amount)),
       };
-    },
+    }
   );
   return {
     campaignId: Number(data[0].id),
@@ -102,7 +102,7 @@ const setCampaign = (
     creator: {
       address: data[0].creator,
       fullName: data[0].fullname,
-      imgSrc:
+      imageUrl:
         "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
     },
     imageUrl: data[0].imageUrl,
@@ -115,7 +115,7 @@ const setCampaign = (
 };
 
 const getCampaign = async (
-  id: number,
+  id: number
 ): Promise<[SmartContractCampaign, SmartContractDonationTransaction[]]> => {
   const smartContract = await getSmartContract();
   let campaign, donations;
@@ -145,7 +145,7 @@ const donateCampaign = async (amount: number): Promise<void> => {
         } else {
           toast.error(
             "There was an error from your request. Details :" +
-              truncate(error.message, 10),
+              truncate(error.message, 10)
           );
         }
       })

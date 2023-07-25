@@ -30,10 +30,23 @@
       >
         <BaseButton
           class="rounded-lg border-primary-10 font-bold text-sm border px-4 py-2 h-10"
-          @click="loadCampaigns"
+          @click="loadCampaigns(true)"
         >
           Load more campaigns
         </BaseButton>
+      </div>
+
+      <div
+        v-show="allCampaigns.length < 1 && !isLoading"
+        class="mt-6 h-14 flex items-center justify-center"
+      >
+        No campaigns to show
+      </div>
+      <div
+        v-show="isLoading"
+        class="mt-6 h-14 flex items-center justify-center"
+      >
+        Loading campaigns...
       </div>
     </div>
   </div>
@@ -52,7 +65,7 @@ import {
 const route = useRoute();
 const search = ref<string>(route.query.search?.toString() ?? "");
 
-const { getDaysLeft } = useUtils();
+const { getDaysLeft, getAvatarUrl } = useUtils();
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const viewType = ref<ViewToggleType>("cards");
@@ -67,37 +80,28 @@ const changeViewType = (type: ViewToggleType): void => {
   viewType.value = type;
 };
 
-const getAllCampaignsResult = async (
-  size: number,
-  startIndex: number,
-): Promise<[SmartContractCampaign[], SmartContractResultIndex]> => {
+const getCampaignsResult = async (): Promise<
+  [SmartContractCampaign[], SmartContractResultIndex]
+> => {
   const smartContract = await getSmartContract();
-  let campaigns, resultIndex;
+  let result, fetchedCampaigns, fetchedResultIndex;
   if (smartContract !== null) {
-    const result = await smartContract.getAllCampaigns(size, startIndex);
-    campaigns = result[0];
-    resultIndex = result[1];
+    if (search.value) {
+      result = await smartContract.searchByTitle(
+        search.value,
+        6,
+        resultIndex.value.nextIndex
+      );
+    } else {
+      result = await smartContract.getAllCampaigns(
+        6,
+        resultIndex.value.nextIndex
+      );
+    }
+    fetchedCampaigns = result[0];
+    fetchedResultIndex = result[1];
   }
-  return [campaigns, resultIndex];
-};
-
-const searchCampaignResult = async (
-  searchKey: string,
-  size: number,
-  startIndex: number,
-): Promise<[SmartContractCampaign[], SmartContractResultIndex]> => {
-  const smartContract = await getSmartContract();
-  let campaigns, resultIndex;
-  if (smartContract !== null) {
-    const result = await smartContract.searchByTitle(
-      searchKey,
-      size,
-      startIndex,
-    );
-    campaigns = result[0];
-    resultIndex = result[1];
-  }
-  return [campaigns, resultIndex];
+  return [fetchedCampaigns, fetchedResultIndex];
 };
 
 const setAllCampaigns = (data: SmartContractCampaign[]): Campaign[] => {
@@ -108,8 +112,7 @@ const setAllCampaigns = (data: SmartContractCampaign[]): Campaign[] => {
       creator: {
         address: campaign.creator,
         fullName: campaign.fullname,
-        imageUrl:
-          "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
+        imageUrl: getAvatarUrl(campaign.creator),
       },
       imageUrl: campaign.imageUrl,
       story: campaign.story,
@@ -130,11 +133,8 @@ const setResultIndex = (data: SmartContractResultIndex) => {
 
 const loadCampaigns = (fromLoadMore = false) => {
   isLoading.value = true;
-  const getCampaignsQuery = search.value
-    ? searchCampaignResult(search.value, 6, resultIndex.value.nextIndex)
-    : getAllCampaignsResult(6, resultIndex.value.nextIndex);
 
-  getCampaignsQuery
+  getCampaignsResult()
     .then((result) => {
       const fetchedCampaigns = setAllCampaigns(result[0]);
       allCampaigns.value = fromLoadMore
@@ -151,11 +151,15 @@ const loadCampaigns = (fromLoadMore = false) => {
 };
 
 watch(
-  () => route.query,
+  () => route.query.search,
   (value) => {
-    search.value = value.search?.toString() ?? "";
+    search.value = value?.toString() ?? "";
+    resultIndex.value = setResultIndex({
+      isLastPage: false,
+      nextIndex: 0,
+    });
     loadCampaigns();
-  },
+  }
 );
 
 onMounted(() => {
