@@ -115,6 +115,7 @@ const getDonatorsByWalletAddress = async (
       isPageLoading.value = false;
     }
   } catch (error) {
+    isPageLoading.value = false;
     if (process.client) {
       if ((error as { code: string }).code === "UNCONFIGURED_NAME") return;
       toast.error("Something went wrong!");
