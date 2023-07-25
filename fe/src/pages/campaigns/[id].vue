@@ -14,12 +14,36 @@
     class="flex flex-col gap-6 py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
   >
     <div class="flex gap-[22px]">
-      <div class="w-full h-[420px]">
-        <img
-          :src="campaign.imageUrl"
-          class="object-cover w-full h-[420px]"
-          @error="replaceByDefault"
-        />
+      <div class="relative w-full h-[420px]" @click="viewImageFullscreen">
+        <div class="relative cursor-zoom-in">
+          <img
+            :src="campaign.imageUrl"
+            alt="Campaign Image"
+            class="object-cover w-full h-[420px]"
+            @error="replaceByDefault"
+          />
+        </div>
+
+        <div
+          v-if="showFullscreenImage"
+          class="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-70 cursor-zoom-out"
+        >
+          <div
+            class="w-[800px] h-[600px] rounded-lg shadow-lg bg-disabled relative cursor-zoom-out"
+          >
+            <img
+              :src="campaign.imageUrl"
+              alt="Campaign Image"
+              class="object-contain w-full h-full rounded-lg"
+              @error="replaceByDefault"
+            />
+            <button
+              class="absolute top-2 right-2 font-bold text-3xl cursor-pointer shadow-lg bg-white text-black rounded-full w-[35px] text-center"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="flex flex-col gap-[24px]">
@@ -72,6 +96,7 @@ const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const isLoading = ref<boolean>(false);
 const isPageLoading = ref<boolean>(true);
+const showFullscreenImage = ref(false);
 const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
 const { isConnected, address, refresher } = storeToRefs(useWallet);
@@ -190,4 +215,18 @@ if (process.client) {
     { immediate: true },
   );
 }
+
+const viewImageFullscreen = () => {
+  showFullscreenImage.value = !showFullscreenImage.value;
+};
 </script>
+
+<style>
+.zoomed {
+  @apply fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-70;
+}
+
+.zoomed img {
+  @apply max-w-[90%] max-h-[90%] cursor-zoom-out;
+}
+</style>

@@ -9,8 +9,8 @@
       ></div>
     </div>
   </div>
-  <div v-else class="bg-primary-50 flex-1">
-    <div class="max-w-[960px] mx-auto py-6">
+  <div v-else class="flex-1 bg-primary-50">
+    <div class="px-36 mx-auto py-6">
       <div
         class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
       >
