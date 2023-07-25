@@ -18,6 +18,6 @@ export default interface Campaign {
   story: string;
   daysLeft: number;
   totalDonation: number;
-  totalBackers: number;
+  campaignGoal: number;
   donations?: Donation[];
 }

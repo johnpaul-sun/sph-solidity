@@ -53,8 +53,8 @@
           :content="`${campaign.totalDonation} ETH`"
         />
         <CampaignDetailCard
-          label="Total backers"
-          :content="campaign.totalBackers"
+          label="Campaign Goal"
+          :content="`${campaign.campaignGoal} ETH`"
         />
       </div>
     </div>
@@ -113,7 +113,7 @@ const campaign = ref<Campaign>({
   story: "",
   daysLeft: 0,
   totalDonation: 0,
-  totalBackers: 0,
+  campaignGoal: 0,
   donations: [],
 });
 
@@ -133,6 +133,7 @@ const setCampaign = (
       };
     },
   );
+
   return {
     campaignId: Number(data[0].id),
     title: data[0].title,
@@ -145,7 +146,7 @@ const setCampaign = (
     story: data[0].story,
     daysLeft: getDaysLeft(data[0].deadline),
     totalDonation: Number(ethers.formatEther(data[0].currentAmount)),
-    totalBackers: Number(data[0].totalDonations),
+    campaignGoal: Number(ethers.formatEther(data[0].goalAmount)),
     donations,
   };
 };
@@ -220,13 +221,3 @@ const viewImageFullscreen = () => {
   showFullscreenImage.value = !showFullscreenImage.value;
 };
 </script>
-
-<style>
-.zoomed {
-  @apply fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-70;
-}
-
-.zoomed img {
-  @apply max-w-[90%] max-h-[90%] cursor-zoom-out;
-}
-</style>
