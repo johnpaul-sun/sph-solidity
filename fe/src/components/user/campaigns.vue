@@ -1,7 +1,7 @@
 <template>
   <div class="mt-6">
     <div
-      class="grid xxl:grid-cols-5 xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-6"
+      class="grid 3xl:grid-cols-6 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6"
     >
       <CampaignCard
         v-for="{
