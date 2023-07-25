@@ -28,6 +28,6 @@ watch(
   () => searchBarProps.searchDefault,
   (value) => {
     searchKey.value = value?.toString() ?? "";
-  }
+  },
 );
 </script>

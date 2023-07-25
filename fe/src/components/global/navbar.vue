@@ -18,7 +18,7 @@
 <script setup lang="ts">
 const router = useRouter();
 const search = ref<string>(
-  router.currentRoute.value.query.search?.toString() ?? ""
+  router.currentRoute.value.query.search?.toString() ?? "",
 );
 
 const handleHelp = () => {
@@ -33,6 +33,6 @@ watch(
   () => router.currentRoute.value.query.search,
   (value) => {
     search.value = value?.toString() ?? "";
-  }
+  },
 );
 </script>
