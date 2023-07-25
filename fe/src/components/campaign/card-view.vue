@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mt-6 grid grid-cols-3 gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
+    class="mt-6 grid 3xl:grid-cols-6 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6"
   >
     <CampaignCard
       v-for="{
@@ -8,14 +8,14 @@
         title,
         story,
         totalDonation,
-        imgSrc,
+        imageUrl,
         daysLeft,
       } in campaigns"
       :key="campaignId"
       :title="title"
       :description="story"
       :eth-value="totalDonation"
-      :img-src="imgSrc"
+      :image-url="imageUrl"
       :days-left="daysLeft"
       :to-link="`/campaigns/${campaignId}`"
     />

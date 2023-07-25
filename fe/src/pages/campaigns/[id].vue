@@ -1,13 +1,13 @@
 <template>
   <div
-    class="flex flex-col gap-6 py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
+    class="flex flex-col gap-6 py-6 px-36 flex-1 bg-linear-gradient-white-to-light overflow-auto"
   >
     <div class="flex gap-[22px]">
       <div class="w-full h-[420px]">
         <img
-          :src="campaign.imgSrc"
-          alt="Boy writing on paper"
+          :src="campaign.imageUrl"
           class="object-cover w-full h-[420px]"
+          @error="replaceByDefault"
         />
       </div>
 
@@ -52,6 +52,7 @@ import {
   SmartContractDonationTransaction,
 } from "~/types/SmartContract";
 import { useWalletStore } from "~/store/wallet";
+import placeholderImage from "@/assets/img/placeholder.png";
 
 const route = useRoute();
 const { truncate, getDaysLeft } = useUtils();
@@ -71,13 +72,17 @@ const campaign = ref<Campaign>({
     fullName: "",
     imgSrc: "",
   },
-  imgSrc: "",
+  imageUrl: "",
   story: "",
   daysLeft: 0,
   totalDonation: 0,
   totalBackers: 0,
   donations: [],
 });
+
+const replaceByDefault = (e: Event) => {
+  (e.target as HTMLImageElement).src = placeholderImage;
+};
 
 const setCampaign = (
   data: [SmartContractCampaign, SmartContractDonationTransaction[]],
@@ -100,7 +105,7 @@ const setCampaign = (
       imgSrc:
         "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
     },
-    imgSrc: "https://images.unsplash.com/photo-1529390079861-591de354faf5",
+    imageUrl: data[0].imageUrl,
     story: data[0].story,
     daysLeft: getDaysLeft(data[0].deadline),
     totalDonation: Number(ethers.formatEther(data[0].currentAmount)),

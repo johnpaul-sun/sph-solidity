@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-primary-50 flex-1">
-    <div class="max-w-[960px] mx-auto py-6">
+  <div class="flex-1 bg-primary-50">
+    <div class="px-36 mx-auto py-6">
       <div
         class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
       >
@@ -71,7 +71,7 @@ const changeViewType = (type: ViewToggleType): void => {
 
 const getAllCampaignsResult = async (
   size: number,
-  startIndex: number
+  startIndex: number,
 ): Promise<[SmartContractCampaign[], SmartContractResultIndex]> => {
   const smartContract = await getSmartContract();
   let campaigns, resultIndex;
@@ -91,10 +91,10 @@ const setAllCampaigns = (data: SmartContractCampaign[]): Campaign[] => {
       creator: {
         address: campaign.creator,
         fullName: campaign.fullname,
-        imgSrc:
+        imageUrl:
           "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
       },
-      imgSrc: "https://images.unsplash.com/photo-1529390079861-591de354faf5",
+      imageUrl: campaign.imageUrl,
       story: campaign.story,
       daysLeft: getDaysLeft(campaign.deadline),
       totalDonation: Number(ethers.formatEther(campaign.currentAmount)),

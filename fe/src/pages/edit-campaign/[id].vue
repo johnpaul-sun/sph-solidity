@@ -9,13 +9,10 @@
       </div>
       <div class="relative h-60">
         <img
-          src="../../assets/img/be-the-change.jpg"
+          :src="imageUrl"
           class="w-full h-full object-cover"
+          @error="replaceByDefault"
         />
-        <BaseButton
-          class="absolute bottom-0 right-0 -translate-x-4 -translate-y-4 flex items-center h-7 px-4 py-2 text-xs text-dark bg-white opacity-50 rounded-md"
-          >Edit</BaseButton
-        >
       </div>
       <form class="flex flex-col space-y-6" @submit.prevent="onSubmit">
         <div class="space-y-2">
@@ -45,6 +42,15 @@
             :error="errors.story"
             :model-value="story"
             @change="handleChange"
+          />
+          <BaseInput
+            id="image-url"
+            label="Image URL"
+            name="imageUrl"
+            placeholder="Enter an image link"
+            :error="errors.imageUrl"
+            :model-value="imageUrl"
+            @change="handleValidateImageUrl"
           />
           <div class="flex w-full space-x-4">
             <BaseInput
@@ -93,7 +99,10 @@ import {
   CreateCampaignRequestSchema,
   CreateCampaignRequest,
 } from "../../schemas/create-campaign";
+import isImageUrl from "~/plugins/isImageUrl";
 import { useWalletStore } from "~/store/wallet";
+import placeholderImage from "@/assets/img/placeholder.png";
+
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
 const router = useRouter();
 const route = useRoute();
@@ -109,12 +118,14 @@ const campaignData = ref<{
   campaign: string;
   story: string;
   goal: number;
+  imageUrl: string;
   date: string;
   upload?: string | undefined;
 }>({
   fullname: "",
   campaign: "",
   story: "",
+  imageUrl: "",
   goal: 0,
   date: "",
 });
@@ -125,6 +136,7 @@ const {
   values,
   errors,
   setFieldValue,
+  setFieldError,
   validateField,
 } = useForm({
   validationSchema,
@@ -140,12 +152,14 @@ const getCampaign = async (): Promise<void> => {
         values.fullname = result[2];
         values.campaign = result[3];
         values.story = result[4];
-        values.goal = +ethers.formatEther(result[5]);
-        values.date = getDateYMD(result[7]);
+        values.imageUrl = result[5];
+        values.goal = +ethers.formatEther(result[6]);
+        values.date = getDateYMD(result[8]);
 
         campaignData.value.fullname = values.fullname ?? "";
         campaignData.value.campaign = values.campaign ?? "";
         campaignData.value.story = values.story ?? "";
+        campaignData.value.imageUrl = values.imageUrl ?? "";
         campaignData.value.goal = values.goal;
         campaignData.value.date = values.date;
       })
@@ -164,6 +178,28 @@ const getCampaign = async (): Promise<void> => {
 onMounted((): void => {
   getCampaign();
 });
+
+const handleValidateImageUrl = async (
+  e: InputEvent,
+): Promise<void | undefined> => {
+  isLoading.value = true;
+  const { name, value } = e.target as HTMLInputElement;
+
+  const val = await isImageUrl(value);
+  setFieldValue(name, value);
+
+  if (!val) {
+    setFieldError(name, "Invalid image url");
+  } else {
+    validateField(name);
+  }
+
+  isLoading.value = false;
+};
+
+const replaceByDefault = (e: Event) => {
+  (e.target as HTMLImageElement).src = placeholderImage;
+};
 
 const handleChange = (e: InputEvent): void => {
   const { name, type, value } = e.target as HTMLInputElement;
@@ -184,6 +220,8 @@ const { value: fullname } =
 const { value: campaign } =
   useField<CreateCampaignRequest["campaign"]>("campaign");
 const { value: story } = useField<CreateCampaignRequest["story"]>("story");
+const { value: imageUrl } =
+  useField<CreateCampaignRequest["imageUrl"]>("imageUrl");
 const { value: goal } = useField<CreateCampaignRequest["goal"]>("goal");
 const { value: date } = useField<CreateCampaignRequest["date"]>("date");
 
@@ -196,6 +234,7 @@ const checkIfDirty = (): boolean => {
     campaignData.value.fullname === values.fullname &&
     campaignData.value.campaign === values.campaign &&
     campaignData.value.story === values.story &&
+    campaignData.value.imageUrl === values.imageUrl &&
     campaignData.value.goal === values.goal &&
     campaignData.value.date === values.date
   ) {
@@ -215,7 +254,7 @@ const onSubmit = handleSubmit(async (): Promise<void> => {
 
     return;
   }
-  // adjust date to handle time difference for epoch timestamp
+  // adjust date to handle time difference for each timestamp
   const offset = deadline.getTimezoneOffset();
   deadline.setMinutes(deadline.getMinutes() + offset);
 
@@ -227,6 +266,7 @@ const onSubmit = handleSubmit(async (): Promise<void> => {
         values.fullname,
         values.campaign,
         values.story,
+        values.imageUrl,
         ethers.parseEther((values.goal as number).toString()),
         deadline.getTime() / 1000, // convert from milliseconds to secsonds
       )

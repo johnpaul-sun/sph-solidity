@@ -6,6 +6,7 @@ export interface SmartContractCampaign {
   fullname: string;
   title: string;
   story: string;
+  imageUrl: string;
   goalAmount: BigNumberish;
   currentAmount: BigNumberish;
   deadline: BigNumberish;

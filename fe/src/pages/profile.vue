@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isConnected || !isLoading"
-    class="py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
+    class="py-6 px-36 flex-1 bg-linear-gradient-white-to-light overflow-auto"
   >
     <UserCard
       :block-chain-value="balance"
