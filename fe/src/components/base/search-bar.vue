@@ -5,8 +5,7 @@
       v-model="searchKey"
       placeholder="Search"
       class="bg-white outline-none"
-      @keyup.enter="handleSubmit"
-      @keyup.delete="handleSubmit"
+      @keyup="handleSubmit"
     />
   </div>
 </template>
@@ -17,10 +16,14 @@ type Props = {
 };
 
 const searchBarProps = defineProps<Props>();
+
+const { debounce } = useUtils();
+
 const emit = defineEmits(["on-submit"]);
 const searchKey = ref<string>(searchBarProps.searchDefault ?? "");
 
 const handleSubmit = () => {
+  debounce();
   emit("on-submit", searchKey.value);
 };
 

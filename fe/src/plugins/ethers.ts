@@ -24,14 +24,14 @@ export default defineNuxtPlugin(async () => {
         smartContract = new ethers.Contract(
           CONTRACT_ADDRESS as string,
           contract.abi,
-          signer
+          signer,
         );
 
         return smartContract;
       } catch (error) {
         const walletConnectionError = "UNKNOWN_ERROR";
 
-        if ((error as { code: string }).code === walletConnectionError) {
+        if ((error as { code: string; }).code === walletConnectionError) {
           toast.error("Wallet connection failed!");
         } else {
           toast.error("Something went wrong!");
@@ -42,7 +42,7 @@ export default defineNuxtPlugin(async () => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        provider
+        provider,
       );
 
       return smartContract;
@@ -55,9 +55,9 @@ export default defineNuxtPlugin(async () => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        signer
+        signer,
       );
-    } catch (error) {}
+    } catch (error) { }
   }
 
   smartContract?.on("CampaignCreated", (sender, title) => {

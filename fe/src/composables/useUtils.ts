@@ -45,6 +45,16 @@ export const useUtils = () => {
     return `https://api.multiavatar.com/${id.toLowerCase()}.png`;
   };
 
+  const debounce = (fn = () => { }, delay = 500) => {
+    let timeout: NodeJS.Timeout;
+    return (...args: []) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        fn(...args);
+      }, delay);
+    };
+  };
+
   return {
     truncate,
     middleTruncate,
@@ -52,5 +62,6 @@ export const useUtils = () => {
     getDateYMD,
     getAvatarUrl,
     notConnectedWarning,
+    debounce,
   };
 };
