@@ -7,7 +7,7 @@
         All Campaigns
       </div>
       <div class="mt-6 px-36 flex items-center gap-7">
-        <div v-if="search" class="max-w-full truncate">
+        <div v-if="search" class="max-w-full w-full truncate">
           <span class="min-w-fit text-sm text-disabled">
             filtered by keyword:
           </span>
