@@ -26,7 +26,7 @@ const handleHelp = () => {
 };
 
 const handleSearch = (searchKey: string) => {
-  router.push(`campaigns${searchKey ? `?search=${searchKey}` : ""}`);
+  router.push(`/campaigns${searchKey ? `?search=${searchKey}` : ""}`);
 };
 
 watch(
