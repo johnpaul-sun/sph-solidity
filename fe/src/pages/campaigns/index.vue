@@ -6,14 +6,16 @@
       >
         All Campaigns
       </div>
-      <div class="mt-6 flex justify-between items-center">
-        <div>
-          <p v-if="search" class="text-sm text-disabled leading-[150%]">
-            filtered by keyword:
-            <span class="text-primary-10">{{ search }}</span>
-          </p>
+      <div class="mt-6 w-full flex items-center gap-7">
+        <div v-if="search" class="flex w-full items-center gap-1">
+          <p class="min-w-fit text-sm text-disabled">filtered by keyword:</p>
+          <div class="w-full truncate text-primary-10">{{ search }}</div>
         </div>
-        <BaseViewToggle :type="viewType" @change-type="changeViewType" />
+        <BaseViewToggle
+          class="min-w-fit"
+          :type="viewType"
+          @change-type="changeViewType"
+        />
       </div>
 
       <div v-if="viewType === 'cards'">
