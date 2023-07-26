@@ -1,5 +1,7 @@
 import { ContractTransaction } from "ethers";
 import { crowdFundingContract } from "./createContract";
+import type { BigNumber } from "ethers";
+import { utils } from "ethers";
 
 async function main() {
   if (
@@ -17,7 +19,7 @@ async function main() {
       process.argv[4], // title
       process.argv[5], // story
       process.argv[6], // image url
-      process.argv[7], // goal
+      utils.parseEther(process.argv[6]), // goal
       process.argv[8], // deadline
     );
   }
@@ -29,7 +31,7 @@ export default async function editCampaign(
   title: string,
   story: string,
   imageUrl: string,
-  goal: string,
+  goal: BigNumber,
   deadline: string,
 ) {
   console.log("EDITING...");

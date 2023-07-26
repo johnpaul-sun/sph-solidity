@@ -31,14 +31,13 @@ export default async function getUserDonations(
     .getUserDonations(userAddress, pageSize, pageNumber)
     .then((result: UserDonationsResult) => {
       result[0].forEach((donation) => {
+        console.log("----------------------------------------------------");
         console.log("CAMPAIGN TITLE: ", donation.campaignTitle);
         console.log("CREATOR: ", donation.userAddress);
         console.log(
-          "DONATION AMOUNT: ",
-          utils.formatEther(donation.donationAmount),
-          " ETH",
+          "DONATION AMOUNT: ", utils.formatEther(donation.donationAmount), " ETH"
         );
-        console.log("----------------------------------");
+        console.log("******************************************************");
       });
 
       console.log("Total Pages: ", result[1].totalPages.toNumber());

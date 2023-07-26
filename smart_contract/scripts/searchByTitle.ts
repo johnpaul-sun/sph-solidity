@@ -1,5 +1,6 @@
 import { crowdFundingContract } from "./createContract";
 import { CrowdFunding } from "../typechain-types/CrowdFunding";
+import { utils } from "ethers";
 
 type SearchResult = [
   CrowdFunding.CampaignStructOutput[],
@@ -37,10 +38,11 @@ export default async function searchByTitle(
         console.log("ID: ", campaign.id.toNumber());
         console.log("TITLE: ", campaign.title);
         console.log("FULL NAME: ", campaign.fullname);
-        console.log("CREATOR: ", campaign.creator);
+        console.log("CREATOR ADDRESS: ", campaign.creator);
         console.log("STORY: ", campaign.story);
-        console.log("GOAL: ", campaign.goalAmount.toNumber());
-        console.log("DEADLINE: ", campaign.deadline.toNumber());
+        console.log("GOAL AMOUNT: ", utils.formatEther(campaign.goalAmount), " ETH");
+        console.log("CURRENT AMOUNT: ", utils.formatEther(campaign.currentAmount), " ETH");
+        console.log("DEADLINE: ", campaign.deadline.toString());
       });
 
       console.log("******************************************************");

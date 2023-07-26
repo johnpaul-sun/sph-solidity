@@ -1,7 +1,6 @@
 import { crowdFundingContract } from "./createContract";
 import { CrowdFunding } from "../typechain-types/CrowdFunding";
 import { utils } from "ethers";
-import getCampaignDonations from './getCampaignDonations';
 
 async function main() {
   if (
@@ -17,18 +16,17 @@ export default async function getCampaign(id: string) {
     .getCampaign(id)
     .then((result: CrowdFunding.CampaignStructOutput) => {
       console.log("ID: ", result.id.toNumber());
-      console.log("CREATOR ADDRESS: ", result.creator);
-      console.log("FULL NAME: ", result.fullname);
       console.log("TITLE: ", result.title);
+      console.log("FULL NAME: ", result.fullname);
+      console.log("CREATOR ADDRESS: ", result.creator);
       console.log("STORY: ", result.story);
-      console.log("GOAL AMOUNT: ", utils.formatEther(result.goalAmount));
-      console.log("CURRENT AMOUNT: ", utils.formatEther(result.currentAmount));
-      console.log("DEADLINE: ", result.deadline.toNumber());
+      console.log("GOAL AMOUNT: ", utils.formatEther(result.goalAmount), " ETH");
+      console.log("CURRENT AMOUNT: ", utils.formatEther(result.currentAmount), " ETH");
+      console.log("DEADLINE: ", result.deadline.toString());
     })
     .catch((error: Error) => {
       console.log("ERROR!", error);
     });
-  await getCampaignDonations(id);
 }
 
 main();
