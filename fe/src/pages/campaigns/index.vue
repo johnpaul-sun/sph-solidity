@@ -1,13 +1,13 @@
 <template>
   <div class="flex-1 bg-primary-50">
-    <div class="mx-auto py-6">
+    <div class="px-36 mx-auto py-6">
       <div
-        class="px-36 bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
+        class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
       >
         All Campaigns
       </div>
-      <div class="mt-6 px-36 flex items-center gap-7">
-        <div v-if="search" class="max-w-full w-full truncate">
+      <div class="mt-6 flex justify-end items-center gap-7">
+        <div v-show="search" class="max-w-full w-full truncate">
           <span class="min-w-fit text-sm text-disabled">
             filtered by keyword:
           </span>
