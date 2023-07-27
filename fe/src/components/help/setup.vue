@@ -13,11 +13,10 @@
 </template>
 <script setup lang="ts">
 interface Props {
-  stepNumber: number;
+  stepNumber: number | string;
   totalSteps: number;
   stepTitle: string;
   activeStep: number;
-  handleClick: () => void;
 }
 
 defineProps<Props>();
