@@ -1,7 +1,7 @@
 export interface Creator {
   address: string;
   fullName: string;
-  imgSrc: string;
+  imageUrl: string;
 }
 
 export interface Donation {

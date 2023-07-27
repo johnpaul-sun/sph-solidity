@@ -9,7 +9,7 @@
             class="h-6 w-6 text-disabled"
           />
         </BaseButton>
-        <BaseSearchBar />
+        <BaseSearchBar :search-default="search" @on-submit="handleSearch" />
         <WalletButton />
       </div>
     </nav>
@@ -17,8 +17,22 @@
 </template>
 <script setup lang="ts">
 const router = useRouter();
+const search = ref<string>(
+  router.currentRoute.value.query.search?.toString() ?? "",
+);
 
 const handleHelp = () => {
   router.push("/help");
 };
+
+const handleSearch = (searchKey: string) => {
+  router.push(`/campaigns${searchKey ? `?search=${searchKey}` : ""}`);
+};
+
+watch(
+  () => router.currentRoute.value.query.search,
+  (value) => {
+    search.value = value?.toString() ?? "";
+  },
+);
 </script>

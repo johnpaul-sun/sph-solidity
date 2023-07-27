@@ -23,11 +23,7 @@
 
         <td class="px-4 py-2">
           <div class="flex items-center space-x-2">
-            <UserAvatar
-              :img-src="getAvatarUrl(creator.address)"
-              :height="40"
-              :width="40"
-            />
+            <UserAvatar :img-src="creator.imageUrl" :height="40" :width="40" />
             <span>
               {{ middleTruncate(creator.address, 6, 4) }}
             </span>
@@ -50,5 +46,5 @@ type Props = {
 const tableViewProps = defineProps<Props>();
 const { campaigns } = toRefs(tableViewProps);
 
-const { middleTruncate, getAvatarUrl } = useUtils();
+const { middleTruncate } = useUtils();
 </script>

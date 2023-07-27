@@ -1,8 +1,9 @@
 import { crowdFundingContract } from "./createContract";
 import { CrowdFunding } from "../typechain-types/CrowdFunding";
 import type { BigNumber } from "ethers";
+import { utils } from "ethers";
 
-export type RecentCampaignsResult = [
+type RecentCampaignsResult = [
   CrowdFunding.CampaignStructOutput[],
   BigNumber,
   BigNumber,
@@ -21,7 +22,19 @@ export default async function getRecentCampaigns(size: string) {
   await crowdFundingContract
     .getRecentCampaigns(size)
     .then((result: RecentCampaignsResult) => {
-      console.log(result[0]);
+      result[0].forEach((campaign) => {
+        console.log("----------------------------------------------------");
+        console.log("ID: ", campaign.id.toNumber());
+        console.log("TITLE: ", campaign.title);
+        console.log("FULL NAME: ", campaign.fullname);
+        console.log("CREATOR ADDRESS: ", campaign.creator);
+        console.log("STORY: ", campaign.story);
+        console.log("GOAL AMOUNT: ", utils.formatEther(campaign.goalAmount), " ETH");
+        console.log("CURRENT AMOUNT: ", utils.formatEther(campaign.currentAmount), " ETH");
+        console.log("DEADLINE: ", campaign.deadline.toString());
+      });
+
+      console.log("******************************************************");
       console.log("Fetched Campaigns: ", result[1].toNumber());
       console.log("Total Campaigns: ", result[2].toNumber());
     })

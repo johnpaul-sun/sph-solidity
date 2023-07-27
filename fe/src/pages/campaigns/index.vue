@@ -6,14 +6,20 @@
       >
         All Campaigns
       </div>
-      <div class="mt-6 flex justify-between items-center">
-        <div>
-          <p v-if="search" class="text-sm text-disabled leading-[150%]">
+      <div class="mt-6 flex justify-end items-center gap-7">
+        <div v-show="search" class="max-w-full w-full truncate">
+          <span class="min-w-fit text-sm text-disabled">
             filtered by keyword:
-            <span class="text-primary-10">{{ search }}</span>
-          </p>
+          </span>
+          <span class="w-full truncate text-primary-10">
+            {{ search }}
+          </span>
         </div>
-        <BaseViewToggle :type="viewType" @change-type="changeViewType" />
+        <BaseViewToggle
+          class="min-w-fit"
+          :type="viewType"
+          @change-type="changeViewType"
+        />
       </div>
 
       <div v-if="viewType === 'cards'">
@@ -30,10 +36,23 @@
       >
         <BaseButton
           class="rounded-lg border-primary-10 font-bold text-sm border px-4 py-2 h-10"
-          @click="loadCampaigns"
+          @click="loadCampaigns(true)"
         >
           Load more campaigns
         </BaseButton>
+      </div>
+
+      <div
+        v-show="allCampaigns.length < 1 && !isLoading"
+        class="mt-6 h-14 flex items-center justify-center"
+      >
+        No campaigns to show
+      </div>
+      <div
+        v-show="isLoading"
+        class="mt-6 h-14 flex items-center justify-center"
+      >
+        Loading campaigns...
       </div>
     </div>
   </div>
@@ -50,11 +69,9 @@ import {
 } from "~/types/SmartContract";
 
 const route = useRoute();
-const {
-  query: { search },
-} = route;
+const search = ref<string>(route.query.search?.toString() ?? "");
 
-const { getDaysLeft } = useUtils();
+const { getDaysLeft, getAvatarUrl } = useUtils();
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const viewType = ref<ViewToggleType>("cards");
@@ -69,18 +86,28 @@ const changeViewType = (type: ViewToggleType): void => {
   viewType.value = type;
 };
 
-const getAllCampaignsResult = async (
-  size: number,
-  startIndex: number,
-): Promise<[SmartContractCampaign[], SmartContractResultIndex]> => {
+const getCampaignsResult = async (): Promise<
+  [SmartContractCampaign[], SmartContractResultIndex]
+> => {
   const smartContract = await getSmartContract();
-  let campaigns, resultIndex;
+  let result, fetchedCampaigns, fetchedResultIndex;
   if (smartContract !== null) {
-    const result = await smartContract.getAllCampaigns(size, startIndex);
-    campaigns = result[0];
-    resultIndex = result[1];
+    if (search.value) {
+      result = await smartContract.searchByTitle(
+        search.value,
+        6,
+        resultIndex.value.nextIndex,
+      );
+    } else {
+      result = await smartContract.getAllCampaigns(
+        6,
+        resultIndex.value.nextIndex,
+      );
+    }
+    fetchedCampaigns = result[0];
+    fetchedResultIndex = result[1];
   }
-  return [campaigns, resultIndex];
+  return [fetchedCampaigns, fetchedResultIndex];
 };
 
 const setAllCampaigns = (data: SmartContractCampaign[]): Campaign[] => {
@@ -91,8 +118,7 @@ const setAllCampaigns = (data: SmartContractCampaign[]): Campaign[] => {
       creator: {
         address: campaign.creator,
         fullName: campaign.fullname,
-        imageUrl:
-          "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
+        imageUrl: getAvatarUrl(campaign.creator),
       },
       imageUrl: campaign.imageUrl,
       story: campaign.story,
@@ -111,12 +137,15 @@ const setResultIndex = (data: SmartContractResultIndex) => {
   };
 };
 
-const loadCampaigns = () => {
+const loadCampaigns = (fromLoadMore = false) => {
   isLoading.value = true;
-  getAllCampaignsResult(6, resultIndex.value.nextIndex)
+
+  getCampaignsResult()
     .then((result) => {
       const fetchedCampaigns = setAllCampaigns(result[0]);
-      allCampaigns.value = allCampaigns.value.concat(fetchedCampaigns);
+      allCampaigns.value = fromLoadMore
+        ? allCampaigns.value.concat(fetchedCampaigns)
+        : fetchedCampaigns;
       resultIndex.value = setResultIndex(result[1]);
     })
     .catch((error) => {
@@ -126,6 +155,18 @@ const loadCampaigns = () => {
       isLoading.value = false;
     });
 };
+
+watch(
+  () => route.query.search,
+  (value) => {
+    search.value = value?.toString() ?? "";
+    resultIndex.value = setResultIndex({
+      isLastPage: false,
+      nextIndex: 0,
+    });
+    loadCampaigns();
+  },
+);
 
 onMounted(() => {
   loadCampaigns();

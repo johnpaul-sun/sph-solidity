@@ -55,7 +55,7 @@ import { useWalletStore } from "~/store/wallet";
 import placeholderImage from "@/assets/img/placeholder.png";
 
 const route = useRoute();
-const { truncate, getDaysLeft } = useUtils();
+const { truncate, getDaysLeft, getAvatarUrl } = useUtils();
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
@@ -70,7 +70,7 @@ const campaign = ref<Campaign>({
   creator: {
     address: "",
     fullName: "",
-    imgSrc: "",
+    imageUrl: "",
   },
   imageUrl: "",
   story: "",
@@ -102,8 +102,7 @@ const setCampaign = (
     creator: {
       address: data[0].creator,
       fullName: data[0].fullname,
-      imgSrc:
-        "https://img.freepik.com/free-psd/3d-illustration-person_23-2149436182.jpg",
+      imageUrl: getAvatarUrl(data[0].creator),
     },
     imageUrl: data[0].imageUrl,
     story: data[0].story,

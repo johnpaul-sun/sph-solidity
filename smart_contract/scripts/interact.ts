@@ -1,4 +1,5 @@
 import promptSync from "prompt-sync";
+import { utils } from "ethers";
 
 import createCampaign from "./createCampaign";
 import getUserDonations from "./getUserDonations";
@@ -53,10 +54,10 @@ async function main() {
         title = prompt("Campaign Title: ");
         story = prompt("Story: ");
         imageUrl = prompt("Image Url: ");
-        amount = prompt("Goal: ");
-        deadline = prompt("Date: ");
+        amount = prompt("Goal in ETH: ");
+        deadline = prompt("Date in epoch/unix timestamp: ");
 
-        await createCampaign(name, title, story, imageUrl, amount, deadline);
+        await createCampaign(name, title, story, imageUrl, utils.parseEther(amount), deadline);
 
         break;
       case "2":
@@ -65,10 +66,10 @@ async function main() {
         title = prompt("Campaign Title: ");
         story = prompt("Story: ");
         imageUrl = prompt("Image Url: ");
-        amount = prompt("Goal: ");
-        deadline = prompt("Date: ");
+        amount = prompt("Goal in ETH: ");
+        deadline = prompt("Date in epoch/unix timestamp: ");
 
-        await editCampaign(id, name, title, story, imageUrl, amount, deadline);
+        await editCampaign(id, name, title, story, imageUrl, utils.parseEther(amount), deadline);
 
         break;
       case "3":
@@ -117,6 +118,7 @@ async function main() {
 
         await getRecentCampaigns(size);
 
+        break;
       case "10":
         search = prompt("Search: ");
         pageSize = prompt("Page Size: ");

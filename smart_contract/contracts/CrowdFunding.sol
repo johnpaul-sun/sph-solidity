@@ -494,10 +494,15 @@ contract CrowdFunding {
         require(pageSize > 0, "Page size cannot be 0");
         uint matchingCount = 0;
 
+        if (totalCampaigns == 0) {
+            searchIndexData.isLastPage = true;
+            searchIndexData.nextIndex = 0;
+        }
+
         // Count the number of campaigns that contain the search term
         for (
             uint i = startIndex;
-            i < totalCampaigns && matchingCount != pageSize;
+            i < totalCampaigns && matchingCount < pageSize;
             i++
         ) {
             if (
