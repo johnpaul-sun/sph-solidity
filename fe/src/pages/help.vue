@@ -127,7 +127,7 @@
           </div>
         </HelpSetup>
       </div>
-      <div class="flex space-x-2">
+      <div class="flex justify-between flex-row-reverse">
         <BaseButton
           v-if="activeStep < totalSteps"
           class="h-10 w-24 py-2 text-sm rounded-md bg-primary-400 text-white hover:bg-primary-500"
