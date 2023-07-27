@@ -1,14 +1,5 @@
 <template>
-  <div
-    v-if="isPageLoading"
-    class="flex justify-center items-center w-full h-screen"
-  >
-    <div class="flex justify-center items-center">
-      <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
-      ></div>
-    </div>
-  </div>
+  <Loader v-if="isPageLoading" />
   <div
     v-else
     class="flex flex-col gap-6 py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
@@ -87,7 +78,7 @@ import {
   SmartContractDonationTransaction,
 } from "~/types/SmartContract";
 import { useWalletStore } from "~/store/wallet";
-import placeholderImage from "@/assets/img/placeholder.png";
+import placeholderImage from "@/assets/img/placeholder.png"; 
 
 const route = useRoute();
 const { truncate, getDaysLeft, getAvatarUrl } = useUtils();

@@ -1,14 +1,5 @@
 <template>
-  <div
-    v-if="isPageLoading"
-    class="flex justify-center items-center w-full h-screen"
-  >
-    <div class="flex justify-center items-center">
-      <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
-      ></div>
-    </div>
-  </div>
+  <Loader v-if="isPageLoading" />
   <div v-else>
     <div
       v-if="isConnected || !isLoading"

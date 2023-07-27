@@ -1,14 +1,5 @@
 <template>
-  <div
-    v-if="isPageLoading"
-    class="flex justify-center items-center w-full h-screen"
-  >
-    <div class="flex justify-center items-center">
-      <div
-        class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"
-      ></div>
-    </div>
-  </div>
+  <Loader v-if="isPageLoading" />
   <div v-else class="flex-grow bg-linear-gradient-white-to-light">
     <div class="max-w-[960px] mx-auto space-y-6 py-6">
       <div class="flex items-center space-x-2">
