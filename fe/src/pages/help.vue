@@ -130,19 +130,19 @@
       <div class="flex space-x-2">
         <BaseButton
           v-if="activeStep < totalSteps"
-          class="h-10 w-24 py-2 text-sm rounded-md bg-primary-400 text-white"
+          class="h-10 w-24 py-2 text-sm rounded-md bg-primary-400 text-white hover:bg-primary-500"
           @click="handleNext"
           >Next</BaseButton
         >
         <BaseButton
           v-if="activeStep == totalSteps"
-          class="h-10 px-10 py-2 text-sm rounded-md bg-primary-400 text-white"
+          class="h-10 px-10 py-2 text-sm rounded-md bg-primary-400 text-white hover:bg-primary-500"
           @click="handleNext"
           >Go to dashboard</BaseButton
         >
         <BaseButton
           v-if="activeStep > 1"
-          class="h-10 px-4 py-2 text-sm border border-1 border-primary-400 rounded-md text-primary-400"
+          class="h-10 px-4 py-2 text-sm border border-1 border-primary-400 rounded-md text-primary-400 hover:border-primary-500 hover:text-primary-500"
           @click="handlePrevious"
           >Previous</BaseButton
         >
