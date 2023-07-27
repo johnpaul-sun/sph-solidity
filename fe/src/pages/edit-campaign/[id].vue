@@ -1,5 +1,6 @@
 <template>
-  <div class="flex-grow bg-linear-gradient-white-to-light">
+  <Loader v-if="isPageLoading" />
+  <div v-else class="flex-grow bg-linear-gradient-white-to-light">
     <div class="max-w-[960px] mx-auto space-y-6 py-6">
       <div class="flex items-center space-x-2">
         <BaseButton @click="handleBack">
@@ -113,6 +114,7 @@ const { isConnected } = storeToRefs(useWallet);
 const { id } = route.params;
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isLoading = ref<boolean>(false);
+const isPageLoading = ref<boolean>(true);
 const campaignData = ref<{
   fullname: string;
   campaign: string;
@@ -162,16 +164,19 @@ const getCampaign = async (): Promise<void> => {
         campaignData.value.imageUrl = values.imageUrl ?? "";
         campaignData.value.goal = values.goal;
         campaignData.value.date = values.date;
+        isPageLoading.value = false;
       })
       .catch((error): void => {
         toast.error(error.reason);
       })
       .finally((): void => {
         isLoading.value = false;
+        isPageLoading.value = false;
       });
   } else {
     notConnectedWarning();
     isLoading.value = false;
+    isPageLoading.value = false;
   }
 };
 

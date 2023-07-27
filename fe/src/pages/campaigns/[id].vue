@@ -1,14 +1,40 @@
 <template>
+  <Loader v-if="isPageLoading" />
   <div
-    class="flex flex-col gap-6 py-6 px-36 flex-1 bg-linear-gradient-white-to-light overflow-auto"
+    v-else
+    class="flex flex-col gap-6 py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
   >
     <div class="flex gap-[22px]">
-      <div class="w-full h-[420px]">
-        <img
-          :src="campaign.imageUrl"
-          class="object-cover w-full h-[420px]"
-          @error="replaceByDefault"
-        />
+      <div class="relative w-full h-[420px]" @click="viewImageFullscreen">
+        <div class="relative cursor-zoom-in">
+          <img
+            :src="campaign.imageUrl"
+            alt="Campaign Image"
+            class="object-cover w-full h-[420px]"
+            @error="replaceByDefault"
+          />
+        </div>
+
+        <div
+          v-if="showFullscreenImage"
+          class="fixed inset-0 flex justify-center items-center z-50 bg-black bg-opacity-70 cursor-zoom-out"
+        >
+          <div
+            class="w-[800px] h-[600px] rounded-lg shadow-lg bg-disabled relative cursor-zoom-out"
+          >
+            <img
+              :src="campaign.imageUrl"
+              alt="Campaign Image"
+              class="object-contain w-full h-full rounded-lg"
+              @error="replaceByDefault"
+            />
+            <button
+              class="absolute top-2 right-2 font-bold text-3xl cursor-pointer shadow-lg bg-white text-black rounded-full w-[35px] text-center"
+            >
+              &times;
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="flex flex-col gap-[24px]">
@@ -18,8 +44,8 @@
           :content="`${campaign.totalDonation} ETH`"
         />
         <CampaignDetailCard
-          label="Total backers"
-          :content="campaign.totalBackers"
+          label="Campaign Goal"
+          :content="`${campaign.campaignGoal} ETH`"
         />
       </div>
     </div>
@@ -52,7 +78,7 @@ import {
   SmartContractDonationTransaction,
 } from "~/types/SmartContract";
 import { useWalletStore } from "~/store/wallet";
-import placeholderImage from "@/assets/img/placeholder.png";
+import placeholderImage from "@/assets/img/placeholder.png"; 
 
 const route = useRoute();
 const { truncate, getDaysLeft, getAvatarUrl } = useUtils();
@@ -60,9 +86,11 @@ const { truncate, getDaysLeft, getAvatarUrl } = useUtils();
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const isLoading = ref<boolean>(false);
+const isPageLoading = ref<boolean>(true);
+const showFullscreenImage = ref(false);
 const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
-const { isConnected, address } = storeToRefs(useWallet);
+const { isConnected, address, refresher } = storeToRefs(useWallet);
 const id = Number(route.params.id);
 const campaign = ref<Campaign>({
   campaignId: 0,
@@ -76,7 +104,7 @@ const campaign = ref<Campaign>({
   story: "",
   daysLeft: 0,
   totalDonation: 0,
-  totalBackers: 0,
+  campaignGoal: 0,
   donations: [],
 });
 
@@ -96,6 +124,7 @@ const setCampaign = (
       };
     },
   );
+
   return {
     campaignId: Number(data[0].id),
     title: data[0].title,
@@ -108,7 +137,7 @@ const setCampaign = (
     story: data[0].story,
     daysLeft: getDaysLeft(data[0].deadline),
     totalDonation: Number(ethers.formatEther(data[0].currentAmount)),
-    totalBackers: Number(data[0].totalDonations),
+    campaignGoal: Number(ethers.formatEther(data[0].goalAmount)),
     donations,
   };
 };
@@ -156,19 +185,30 @@ const donateCampaign = async (amount: number): Promise<void> => {
   }
 };
 
-onMounted(() => {
-  getCampaign(id)
-    .then((result) => {
-      campaign.value = setCampaign(result);
-      if (
-        address.value.toLowerCase() ===
-        campaign.value.creator.address.toLowerCase()
-      ) {
-        canEdit.value = true;
-      }
-    })
-    .catch((error) => {
-      toast.error(error.reason);
-    });
-});
+if (process.client) {
+  watch(
+    refresher,
+    () => {
+      getCampaign(id)
+        .then((result) => {
+          campaign.value = setCampaign(result);
+          if (
+            address.value.toLowerCase() ===
+            campaign.value.creator.address.toLowerCase()
+          ) {
+            canEdit.value = true;
+          }
+          isPageLoading.value = false;
+        })
+        .catch((error) => {
+          toast.error(error.reason);
+        });
+    },
+    { immediate: true },
+  );
+}
+
+const viewImageFullscreen = () => {
+  showFullscreenImage.value = !showFullscreenImage.value;
+};
 </script>

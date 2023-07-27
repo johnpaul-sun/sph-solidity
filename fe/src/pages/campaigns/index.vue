@@ -1,5 +1,6 @@
 <template>
-  <div class="flex-1 bg-primary-50">
+  <Loader v-if="isPageLoading" />
+  <div v-else class="flex-1 bg-primary-50">
     <div class="px-36 mx-auto py-6">
       <div
         class="bg-gradient text-transparent bg-clip-text text-2xl font-bold leading-[125%]"
@@ -74,6 +75,7 @@ const search = ref<string>(route.query.search?.toString() ?? "");
 const { getDaysLeft, getAvatarUrl } = useUtils();
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
+const isPageLoading = ref<boolean>(true);
 const viewType = ref<ViewToggleType>("cards");
 const isLoading = ref<boolean>(true);
 const allCampaigns = ref<Campaign[]>([]);
@@ -170,5 +172,6 @@ watch(
 
 onMounted(() => {
   loadCampaigns();
+  isPageLoading.value = false;
 });
 </script>

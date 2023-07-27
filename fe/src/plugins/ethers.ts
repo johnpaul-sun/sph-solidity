@@ -63,6 +63,7 @@ export default defineNuxtPlugin(async () => {
   smartContract?.on("CampaignCreated", (sender, title) => {
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
       toast.success(`Campaign ${title} was successfully created!`);
+      useWalletStore().updateState();
       getRecentCampaigns(6, getSmartContract);
       smartContract?.removeAllListeners("CampaignCreated");
     }
@@ -71,12 +72,14 @@ export default defineNuxtPlugin(async () => {
   smartContract?.on("DonationSent", (sender) => {
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
       toast.success("Fund successfully sent!");
+      useWalletStore().updateState();
       smartContract?.removeAllListeners("DonationSent");
     }
   });
 
   smartContract?.on("CampaignEdited", (sender, title) => {
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
+      useWalletStore().updateState();
       setTimeout(function () {
         toast.success(`Campaign ${title} was successfully updated!`);
       }, 300);

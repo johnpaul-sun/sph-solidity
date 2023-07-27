@@ -1,5 +1,6 @@
 <template>
-  <div class="flex flex-grow">
+  <Loader v-if="isPageLoading" />
+  <div v-else class="flex flex-grow">
     <BaseModal>
       <div>
         You need to setup and connect your wallet in order to proceed with the
@@ -224,5 +225,11 @@ const onSubmit = handleSubmit(async () => {
     notConnectedWarning();
     isLoading.value = false;
   }
+});
+
+const isPageLoading = ref<boolean>(true);
+
+onMounted(() => {
+  isPageLoading.value = false;
 });
 </script>

@@ -72,7 +72,7 @@ const isLoading = ref<boolean>(false);
 const donations = ref<DonationType[]>([]);
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const useWallet = useWalletStore();
-const { address } = storeToRefs(useWallet);
+const { address, refresher } = storeToRefs(useWallet);
 
 const getUserDonations = async (pageNumber: number) => {
   isLoading.value = true;
@@ -106,9 +106,13 @@ const getUserDonations = async (pageNumber: number) => {
   }
 };
 
-onMounted(() => {
-  getUserDonations(currentPage.value);
-});
+watch(
+  refresher,
+  () => {
+    getUserDonations(currentPage.value);
+  },
+  { immediate: true },
+);
 
 const setPage = (_itemsPerPage: number, pageNumber: number): void => {
   currentPage.value = pageNumber;

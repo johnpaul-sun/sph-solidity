@@ -33,8 +33,13 @@
         :on-page-change="setPage"
       />
     </div>
-    <div v-if="userCampaigns.length < 1" class="flex justify-center mt-6">
-      <p>No campaigns to show.</p>
+    <div v-if="isLoading" class="flex justify-center items-center w-full">
+      <p>Loading...</p>
+    </div>
+    <div v-else>
+      <div v-if="userCampaigns.length < 1" class="flex justify-center mt-6">
+        <p>No campaigns to show.</p>
+      </div>
     </div>
   </div>
 </template>

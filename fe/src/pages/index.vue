@@ -60,7 +60,7 @@
             </div>
           </div>
           <div
-            v-if="recentCampaign?.length === 0"
+            v-if="recentCampaign?.length === 0 && !isLoading"
             class="h-40 flex justify-center items-center"
           >
             <span v-if="!isConnected"

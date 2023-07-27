@@ -9,6 +9,7 @@ export interface WalletStore {
   balance: number;
   isShowModal: boolean;
   recentCampaign: RecentCampaignData[] | undefined;
+  refresher: boolean;
 }
 
 export const useWalletStore = defineStore("walletStore", {
@@ -18,6 +19,7 @@ export const useWalletStore = defineStore("walletStore", {
     balance: 0,
     isShowModal: false,
     recentCampaign: [],
+    refresher: false,
   }),
   actions: {
     updateStatus(status: boolean, address: string) {
@@ -75,6 +77,9 @@ export const useWalletStore = defineStore("walletStore", {
           toast.error("Something went wrong!");
         }
       }
+    },
+    updateState() {
+      this.refresher = !this.refresher;
     },
   },
 });
