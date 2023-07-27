@@ -99,7 +99,7 @@ import {
   CreateCampaignRequestSchema,
   CreateCampaignRequest,
 } from "../../schemas/create-campaign";
-import isImageUrl from "~/plugins/isImageUrl";
+import isImageUrl from "../../utils/isImageUrl";
 import { useWalletStore } from "~/store/wallet";
 import placeholderImage from "@/assets/img/placeholder.png";
 
