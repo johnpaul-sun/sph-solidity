@@ -1,9 +1,12 @@
 <template>
   <div class="flex-grow bg-linear-gradient-white-to-light">
     <div class="max-w-[960px] mx-auto space-y-6 py-6">
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center">
         <BaseButton @click="handleBack">
-          <Icon name="material-symbols:chevron-left" class="h-6 w-6" />
+          <Icon
+            name="material-symbols:chevron-left"
+            class="h-6 w-10 hover:text-primary-400"
+          />
         </BaseButton>
         <div class="font-bold text-2xl text-dark">METAMASK WALLET SETUP</div>
       </div>
@@ -124,24 +127,24 @@
           </div>
         </HelpSetup>
       </div>
-      <div class="flex px-4 space-x-2">
-        <BaseButton
-          v-if="activeStep > 1"
-          class="h-10 px-4 py-2 text-sm font-bold border border-1 text-primary-10 border-primary-10 rounded-md"
-          @click="handlePrevious"
-          >Previous Step</BaseButton
-        >
+      <div class="flex space-x-2">
         <BaseButton
           v-if="activeStep < totalSteps"
-          class="h-10 px-4 py-2 bg-clip-text text-sm font-bold text-transparent border border-1 border-primary-400 rounded-md bg-linear-gradient-primary"
+          class="h-10 w-24 py-2 text-sm rounded-md bg-primary-400 text-white"
           @click="handleNext"
-          >Next Step</BaseButton
+          >Next</BaseButton
         >
         <BaseButton
           v-if="activeStep == totalSteps"
-          class="h-10 px-4 py-2 text-sm font-bold btn-gradient"
+          class="h-10 px-10 py-2 text-sm rounded-md bg-primary-400 text-white"
           @click="handleNext"
           >Go to dashboard</BaseButton
+        >
+        <BaseButton
+          v-if="activeStep > 1"
+          class="h-10 px-4 py-2 text-sm border border-1 border-primary-400 rounded-md text-primary-400"
+          @click="handlePrevious"
+          >Previous</BaseButton
         >
       </div>
     </div>

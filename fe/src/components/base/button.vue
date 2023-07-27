@@ -1,7 +1,7 @@
 <template>
   <button
     v-bind="$attrs"
-    class="{ disabled: 'opacity-50'}"
+    class="{ disabled: 'opacity-50'} transition"
     :disabled="disabled"
     @click="handleSubmit"
   >

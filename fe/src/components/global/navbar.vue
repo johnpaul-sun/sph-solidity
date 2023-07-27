@@ -6,7 +6,7 @@
         <BaseButton @click="handleHelp">
           <Icon
             name="heroicons:question-mark-circle"
-            class="h-6 w-6 text-disabled"
+            class="h-6 w-6 text-disabled hover:text-primary-400 transition"
           />
         </BaseButton>
         <BaseSearchBar :search-default="search" @on-submit="handleSearch" />
