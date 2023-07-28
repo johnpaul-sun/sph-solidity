@@ -1,20 +1,22 @@
 <template>
-  <div v-if="stepNumber == activeStep" class="px-4 space-y-6">
+  <div
+    v-if="stepNumber == activeStep"
+    class="bg-white p-10 space-y-6 rounded-md"
+  >
     <div class="text-dark">
       STEP {{ stepNumber }} of {{ totalSteps }}: {{ stepTitle }}
     </div>
-    <div class="flex flex-col space-y-4 px-4">
+    <div class="min-h-[480px] flex flex-col space-y-4">
       <slot />
     </div>
   </div>
 </template>
 <script setup lang="ts">
 interface Props {
-  stepNumber: number;
+  stepNumber: number | string;
   totalSteps: number;
   stepTitle: string;
   activeStep: number;
-  handleClick: () => void;
 }
 
 defineProps<Props>();

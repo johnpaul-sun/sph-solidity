@@ -45,7 +45,7 @@ export const useUtils = () => {
     return `https://api.multiavatar.com/${id.toLowerCase()}.png`;
   };
 
-  const debounce = (fn = () => { }, delay = 500) => {
+  const debounce = (fn = () => {}, delay = 500) => {
     let timeout: NodeJS.Timeout;
     return (...args: []) => {
       clearTimeout(timeout);

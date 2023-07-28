@@ -118,11 +118,11 @@ import { toast } from "vue3-toastify";
 import { useField, useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { ethers } from "ethers";
+import isImageUrl from "../utils/isImageUrl";
 import {
   CreateCampaignRequest,
   CreateCampaignRequestSchema,
 } from "../schemas/create-campaign";
-import isImageUrl from "~/plugins/isImageUrl";
 import { useWalletStore } from "~/store/wallet";
 
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);

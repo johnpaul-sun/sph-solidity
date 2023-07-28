@@ -15,7 +15,8 @@
         ) in campaigns"
         :key="campaignId"
         w
-        class="items-center h-14 min-h-[56px] border-b border-disabled"
+        class="items-center h-14 min-h-[56px] border-b border-disabled hover:bg-primary-100 hover:cursor-pointer"
+        @click="handleRedirect(`campaigns/${String(campaignId)}`)"
       >
         <td class="min-w-[56px] px-4 text-center bg-primary-200">
           {{ index + 1 }}
@@ -39,6 +40,8 @@
 <script setup lang="ts">
 import Campaign from "~/types/Campaign";
 
+const router = useRouter();
+
 type Props = {
   campaigns: Campaign[];
 };
@@ -47,4 +50,8 @@ const tableViewProps = defineProps<Props>();
 const { campaigns } = toRefs(tableViewProps);
 
 const { middleTruncate } = useUtils();
+
+const handleRedirect = (to: string) => {
+  router.push({ path: to });
+};
 </script>
