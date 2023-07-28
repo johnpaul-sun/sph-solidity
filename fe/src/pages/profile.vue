@@ -118,12 +118,14 @@ const callNewData = (currentPage: number): void => {
   getDonatorsByWalletAddress(address.value, itemsPerPage, currentPage);
 };
 
-watch(
-  [activeTab, address],
-  () => {
-    getDonatorsByWalletAddress(address.value, itemsPerPage, currentPage);
-    imgSrc.value = getAvatarUrl(address.value);
-  },
-  { immediate: true },
-);
+if (process.client) {
+  watch(
+    [activeTab, address],
+    () => {
+      getDonatorsByWalletAddress(address.value, itemsPerPage, currentPage);
+      imgSrc.value = getAvatarUrl(address.value);
+    },
+    { immediate: true },
+  );
+}
 </script>

@@ -144,7 +144,7 @@ const loadCampaigns = (fromLoadMore = false) => {
 
   getCampaignsResult()
     .then((result) => {
-      const fetchedCampaigns = setAllCampaigns(result[0]);
+      const fetchedCampaigns = setAllCampaigns(result[0]).reverse();
       allCampaigns.value = fromLoadMore
         ? allCampaigns.value.concat(fetchedCampaigns)
         : fetchedCampaigns;

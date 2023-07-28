@@ -8,37 +8,37 @@ contract CrowdFunding {
     address payable public owner;
 
     struct User {
-        uint totalCampaigns;
-        uint totalDonations;
-        mapping(uint => uint) campaignIds;
-        mapping(uint => uint) donationTransactionIds;
+        uint256 totalCampaigns;
+        uint256 totalDonations;
+        mapping(uint256 => uint256) campaignIds;
+        mapping(uint256 => uint256) donationTransactionIds;
     }
 
     struct Campaign {
-        uint id;
+        uint256 id;
         address creator;
         string fullname;
         string title;
         string story;
         string imageUrl;
-        uint goalAmount;
-        uint currentAmount;
-        uint deadline;
-        uint totalDonations;
+        uint256 goalAmount;
+        uint256 currentAmount;
+        uint256 deadline;
+        uint256 totalDonations;
     }
 
     struct DonationTransaction {
-        uint id;
-        uint campaignId;
+        uint256 id;
+        uint256 campaignId;
         address donor;
-        uint amount;
-        uint timestamp;
+        uint256 amount;
+        uint256 timestamp;
     }
 
     struct DonationData {
         address userAddress;
         string campaignTitle;
-        uint donationAmount;
+        uint256 donationAmount;
     }
 
     struct PaginationData {
@@ -51,20 +51,20 @@ contract CrowdFunding {
 
     struct ResultIndexData {
         bool isLastPage;
-        uint nextIndex;
+        uint256 nextIndex;
     }
 
     // State variables
     mapping(address => User) public users;
-    mapping(uint => Campaign) public campaigns;
-    mapping(uint => DonationTransaction) public donationTransactions;
-    uint public totalCampaigns;
-    uint public totalDonations;
+    mapping(uint256 => Campaign) public campaigns;
+    mapping(uint256 => DonationTransaction) public donationTransactions;
+    uint256 public totalCampaigns;
+    uint256 public totalDonations;
 
     // Events
     event CampaignCreated(address indexed sender, string title);
     event CampaignEdited(address indexed sender, string title);
-    event DonationSent(address indexed sender, string title, uint amount);
+    event DonationSent(address indexed sender, string title, uint256 amount);
 
     // Modifiers
     modifier validCampaignArguments(
@@ -72,8 +72,8 @@ contract CrowdFunding {
         string memory _title,
         string memory _story,
         string memory _imageUrl,
-        uint _goalAmount,
-        uint _deadline
+        uint256 _goalAmount,
+        uint256 _deadline
     ) {
         require(_deadline > block.timestamp, "Date should be future date");
         require(_goalAmount > 0, "Goal amount should be more than 0");
@@ -124,12 +124,12 @@ contract CrowdFunding {
         }
 
         for (
-            uint i = 0;
+            uint256 i = 0;
             i <= fullstringBytes.length - substringBytes.length;
             i++
         ) {
             bool found = true;
-            for (uint j = 0; j < substringBytes.length; j++) {
+            for (uint256 j = 0; j < substringBytes.length; j++) {
                 if (fullstringBytes[i + j] != substringBytes[j]) {
                     found = false;
                     break;
@@ -175,8 +175,8 @@ contract CrowdFunding {
         string memory _title,
         string memory _story,
         string memory _imageUrl,
-        uint _goalAmount,
-        uint _deadline
+        uint256 _goalAmount,
+        uint256 _deadline
     )
         public
         validCampaignArguments(
@@ -203,7 +203,7 @@ contract CrowdFunding {
 
         campaigns[totalCampaigns] = newCampaign;
 
-        uint userTotalCampaigns = users[msg.sender].totalCampaigns;
+        uint256 userTotalCampaigns = users[msg.sender].totalCampaigns;
         users[msg.sender].campaignIds[userTotalCampaigns] = newCampaign.id;
         users[msg.sender].totalCampaigns++;
 
@@ -226,37 +226,47 @@ contract CrowdFunding {
         )
     {
         User storage user = users[msg.sender];
-        PaginationData memory pagination = _paginate(
-            user.totalCampaigns,
-            _pageSize,
-            _pageNumber
+        uint256 totalUserCampaigns = user.totalCampaigns;
+
+        uint256 totalAvailablePages = (totalUserCampaigns + _pageSize - 1) /
+            _pageSize;
+        require(
+            _pageNumber > 0 && _pageNumber <= totalAvailablePages,
+            "Invalid page number"
         );
 
-        allCampaigns = new Campaign[](
-            pagination.endIndex - pagination.startIndex
-        );
+        uint256 startingIndex = totalUserCampaigns -
+            (_pageNumber - 1) *
+            _pageSize;
+        uint256 endIndex = startingIndex > _pageSize
+            ? startingIndex - _pageSize
+            : 0;
 
-        for (uint256 i = 0; i < allCampaigns.length; i++) {
+        uint256 resultSize = startingIndex - endIndex;
+
+        allCampaigns = new Campaign[](resultSize);
+
+        for (uint256 i = 0; i < resultSize; i++) {
             Campaign memory campaign = campaigns[
-                user.campaignIds[pagination.startIndex + i]
+                user.campaignIds[startingIndex - i - 1]
             ];
             allCampaigns[i] = campaign;
         }
 
-        userTotalCampaigns = user.totalCampaigns;
-        totalPages = pagination.totalPages;
-        nextPage = pagination.nextPage;
-        previousPage = pagination.previousPage;
+        userTotalCampaigns = totalUserCampaigns;
+        totalPages = totalAvailablePages;
+        nextPage = _pageNumber < totalAvailablePages ? _pageNumber + 1 : 0;
+        previousPage = _pageNumber > 1 ? _pageNumber - 1 : 0;
     }
 
     function editCampaign(
-        uint _campaignId,
+        uint256 _campaignId,
         string memory _fullname,
         string memory _title,
         string memory _story,
         string memory _imageUrl,
-        uint _goalAmount,
-        uint _deadline
+        uint256 _goalAmount,
+        uint256 _deadline
     )
         public
         validCampaignArguments(
@@ -288,7 +298,7 @@ contract CrowdFunding {
         emit CampaignEdited(msg.sender, campaign.title);
     }
 
-    function sendDonation(uint _campaignId) public payable {
+    function sendDonation(uint256 _campaignId) public payable {
         require(
             _campaignId >= 0 && _campaignId < totalCampaigns,
             "Invalid campaign ID"
@@ -301,7 +311,7 @@ contract CrowdFunding {
         require(msg.value > 0, "Donation amount should be more than 0");
 
         User storage sender = users[msg.sender];
-        uint totalUserDonations = sender.totalDonations;
+        uint256 totalUserDonations = sender.totalDonations;
 
         DonationTransaction memory transaction = DonationTransaction({
             id: totalDonations,
@@ -323,27 +333,27 @@ contract CrowdFunding {
     }
 
     function getCampaign(
-        uint _campaignId
+        uint256 _campaignId
     ) public view returns (Campaign memory) {
         return campaigns[_campaignId];
     }
 
     function getCampaignDonations(
-        uint _campaignId
+        uint256 _campaignId
     )
         public
         view
         returns (
             DonationTransaction[] memory allDonations,
-            uint totalCampaignDonations
+            uint256 totalCampaignDonations
         )
     {
         Campaign memory campaign = campaigns[_campaignId];
         totalCampaignDonations = campaign.totalDonations;
         allDonations = new DonationTransaction[](totalCampaignDonations);
-        uint donationCount = 0;
+        uint256 donationCount = 0;
 
-        for (uint i = 0; i < totalDonations; i++) {
+        for (uint256 i = 0; i < totalDonations; i++) {
             if (donationTransactions[i].campaignId == campaign.id) {
                 allDonations[donationCount] = donationTransactions[i];
                 donationCount++;
@@ -422,8 +432,8 @@ contract CrowdFunding {
 
     function getUserDonations(
         address _userAddress,
-        uint _pageSize,
-        uint _pageNumber
+        uint256 _pageSize,
+        uint256 _pageNumber
     )
         public
         view
@@ -432,7 +442,7 @@ contract CrowdFunding {
             PaginationData memory pagination
         )
     {
-        uint count = 0;
+        uint256 count = 0;
         User storage user = users[_userAddress];
 
         pagination = _paginate(user.totalDonations, _pageSize, _pageNumber);
@@ -440,7 +450,7 @@ contract CrowdFunding {
             pagination.endIndex - pagination.startIndex
         );
 
-        for (uint i = pagination.startIndex; i < pagination.endIndex; i++) {
+        for (uint256 i = pagination.startIndex; i < pagination.endIndex; i++) {
             DonationTransaction memory transaction = donationTransactions[
                 user.donationTransactionIds[i]
             ];
@@ -457,21 +467,23 @@ contract CrowdFunding {
     }
 
     function getRecentCampaigns(
-        uint _size
+        uint256 _size
     )
         public
         view
         returns (
             Campaign[] memory recentCampaigns,
-            uint totalFetchedCampaigns,
-            uint totalAllCampaigns
+            uint256 totalFetchedCampaigns,
+            uint256 totalAllCampaigns
         )
     {
-        uint startIndex = _size < totalCampaigns ? (totalCampaigns - _size) : 0;
-        uint arraySize = _size < totalCampaigns ? _size : totalCampaigns;
+        uint256 startIndex = _size < totalCampaigns
+            ? (totalCampaigns - _size)
+            : 0;
+        uint256 arraySize = _size < totalCampaigns ? _size : totalCampaigns;
         recentCampaigns = new Campaign[](arraySize);
 
-        for (uint i = 0; i < arraySize; i++) {
+        for (uint256 i = 0; i < arraySize; i++) {
             recentCampaigns[i] = campaigns[startIndex + i];
         }
 
@@ -481,8 +493,8 @@ contract CrowdFunding {
 
     function searchByTitle(
         string memory searchTerm,
-        uint pageSize,
-        uint startIndex
+        uint256 pageSize,
+        uint256 startIndex
     )
         public
         view
@@ -492,7 +504,7 @@ contract CrowdFunding {
         )
     {
         require(pageSize > 0, "Page size cannot be 0");
-        uint matchingCount = 0;
+        uint256 matchingCount = 0;
 
         if (totalCampaigns == 0) {
             searchIndexData.isLastPage = true;
@@ -525,11 +537,11 @@ contract CrowdFunding {
         }
 
         matchingCampaigns = new Campaign[](matchingCount);
-        uint index = 0;
+        uint256 index = 0;
 
         // Add the matching campaigns to the new array
         for (
-            uint i = startIndex;
+            uint256 i = startIndex;
             i < totalCampaigns && index < matchingCount;
             i++
         ) {
@@ -546,8 +558,8 @@ contract CrowdFunding {
     }
 
     function getAllCampaigns(
-        uint _size,
-        uint _startIndex
+        uint256 _size,
+        uint256 _startIndex
     )
         public
         view
@@ -557,19 +569,25 @@ contract CrowdFunding {
         )
     {
         require(_size > 0, "Size cannot be 0");
+        require(_startIndex <= totalCampaigns, "Invalid start index");
 
-        indexData.nextIndex = _startIndex + _size;
-        if (_size >= totalCampaigns - _startIndex) {
-            _size = totalCampaigns - _startIndex;
-            indexData.isLastPage = true;
-            indexData.nextIndex = 0;
-        }
+        indexData.isLastPage = _startIndex == 0
+            ? (_size >= totalCampaigns ? true : false)
+            : (_size >= _startIndex ? true : false);
 
-        uint index = 0;
+        _size = _startIndex == 0
+            ? (_size > totalCampaigns ? totalCampaigns : _size)
+            : (_size >= _startIndex ? _startIndex : _size);
+        indexData.nextIndex = _startIndex == 0
+            ? (totalCampaigns - _size)
+            : (_startIndex - _size);
 
         allCampaigns = new Campaign[](_size);
 
-        for (uint i = _startIndex; i < _startIndex + _size; i++) {
+        uint256 index = 0;
+        uint256 startIndex = indexData.nextIndex;
+
+        for (uint256 i = startIndex; i < startIndex + _size; i++) {
             allCampaigns[index] = campaigns[i];
             index++;
         }
