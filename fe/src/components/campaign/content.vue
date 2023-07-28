@@ -15,7 +15,11 @@
       <div class="group">
         <UserAvatar :img-src="creator.imageUrl" :width="60" :height="60" />
         <div class="flex flex-col gap-1 px-4 py-1 max-w-[196px] overflow-clip">
-          <p class="font-bold">
+          <p
+            :title="creator.address"
+            class="font-bold cursor-pointer"
+            @click="copyAddress(creator.address)"
+          >
             {{ middleTruncate(creator.address, 8, 5) }}
           </p>
           <p class="text-disabled">{{ creator.fullName }}</p>
@@ -24,10 +28,13 @@
     </div>
     <div class="group flex-col">
       <p class="label">Story</p>
-      <div class="text-sm text-disabled">{{ story }}</div>
+      <div class="text-sm text-primary-10">{{ story }}</div>
     </div>
     <div class="group flex-col w-[345px]">
       <p class="label">Donators</p>
+      <p v-if="donations.length == 0" class="text-sm text-disabled">
+        Be the first supporter on the list.
+      </p>
       <ol>
         <div
           v-for="donation in donations"
@@ -35,7 +42,11 @@
           class="flex justify-between text-sm"
         >
           <li class="text-disabled">
-            <span class="text-dark">
+            <span
+              :title="donation.address"
+              class="text-dark cursor-pointer"
+              @click="copyAddress(donation.address)"
+            >
               {{ middleTruncate(donation.address, 8, 5) }}
             </span>
           </li>
@@ -70,7 +81,7 @@ const editCampaign = (): void => {
   router.push(`/edit-campaign/${id.value}`);
 };
 
-const { middleTruncate } = useUtils();
+const { middleTruncate, copyAddress } = useUtils();
 </script>
 
 <style lang="postcss" scoped>

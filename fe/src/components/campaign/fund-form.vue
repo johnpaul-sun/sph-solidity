@@ -4,10 +4,14 @@
       class="bg-primary-100 p-4 flex flex-col gap-2 rounded-md"
       @submit.prevent="onSubmit"
     >
-      <p class="w-full font-bold text-dark text-md text-center">
+      <p
+        v-if="!isCampaignDone"
+        class="w-full font-bold text-dark text-md text-center"
+      >
         Fund the campaign
       </p>
       <BaseInput
+        v-if="!isCampaignDone"
         id="amount"
         type="number"
         step="any"
@@ -18,21 +22,24 @@
         @change="handleChange"
       />
       <div class="flex flex-col gap-4 p-4 mb-4 rounded-md bg-primary-50">
-        <p class="font-bold text-dark text-sm">
+        <p v-if="!isCampaignDone" class="font-bold text-dark text-sm">
           Back it because you believe in it.
         </p>
-        <p class="text-sm text-primary-10">
+        <p v-else class="font-bold text-dark text-sm">
+          The campaign's fundraising is over.
+        </p>
+        <p v-if="!isCampaignDone" class="text-sm text-primary-10">
           Supporting a project for no reward, just because it speaks to you.
         </p>
       </div>
       <BaseButton
         type="submit"
         :class="
-          isLoading
-            ? 'bg-disabled h-9 px-4 rounded-[6px] text-white'
+          isLoading || isCampaignDone
+            ? 'bg-disabled h-9 px-4 rounded-[6px] text-white cursor-not-allowed'
             : 'btn-gradient-hr'
         "
-        :disabled="isLoading"
+        :disabled="isLoading || isCampaignDone"
       >
         Fund Campaign
       </BaseButton>
@@ -70,9 +77,7 @@ const {
 
 const handleChange = (e: InputEvent) => {
   const { name, value } = e.target as HTMLInputElement;
-
   setFieldValue(name, parseFloat(value));
-
   validateField(name);
 };
 

@@ -7,11 +7,13 @@
       :id="id"
       v-model="modelValue"
       :name="name"
+      :disabled="disabled"
       :placeholder="placeholder"
       type="text"
       rows="5"
       :class="{
         'outline outline-danger outline-1': error,
+        'cursor-not-allowed': disabled,
       }"
       class="w-full text-sm p-2 h-32 max-h-32 overflow-y-auto rounded border border-disabled focus:outline-none placeholder-disabled"
     />
@@ -27,6 +29,7 @@ type Props = {
   modelValue?: string;
   placeholder?: string;
   error?: string;
+  disabled: boolean;
 };
 
 const props = defineProps<Props>();

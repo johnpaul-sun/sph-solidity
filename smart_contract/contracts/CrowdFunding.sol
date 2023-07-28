@@ -230,10 +230,13 @@ contract CrowdFunding {
 
         uint256 totalAvailablePages = (totalUserCampaigns + _pageSize - 1) /
             _pageSize;
-        require(
-            _pageNumber > 0 && _pageNumber <= totalAvailablePages,
-            "Invalid page number"
-        );
+
+        if (totalUserCampaigns > 0) {
+            require(
+                _pageNumber > 0 && _pageNumber <= totalAvailablePages,
+                "Invalid page number"
+            );
+        }
 
         uint256 startingIndex = totalUserCampaigns -
             (_pageNumber - 1) *
@@ -505,6 +508,11 @@ contract CrowdFunding {
     {
         require(pageSize > 0, "Page size cannot be 0");
         uint256 matchingCount = 0;
+
+        if (totalCampaigns == 0) {
+            searchIndexData.isLastPage = true;
+            searchIndexData.nextIndex = 0;
+        }
 
         if (totalCampaigns == 0) {
             searchIndexData.isLastPage = true;

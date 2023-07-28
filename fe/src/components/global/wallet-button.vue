@@ -25,7 +25,9 @@
       <div
         class="flex flex-col text-base text-dark text-left rounded-md w-44 divide-y divide-disabled divide border border-disabled bg-white"
       >
-        <BaseButton class="dropdown-item rounded-t-md" @click="copyAddress"
+        <BaseButton
+          class="dropdown-item rounded-t-md"
+          @click="copyAddress(address)"
           >Copy Address</BaseButton
         >
         <NuxtLink to="/profile" class="dropdown-item">Profile</NuxtLink>
@@ -43,7 +45,7 @@ import { toast } from "vue3-toastify";
 
 import { ProviderRpcError } from "~/types/ProviderRpcError";
 import { useWalletStore } from "~/store/wallet";
-const { middleTruncate } = useUtils();
+const { middleTruncate, copyAddress } = useUtils();
 
 const router = useRouter();
 const isDropdownOpen = ref<boolean>(false);
@@ -105,15 +107,4 @@ if (process.client) {
     }
   });
 }
-
-const copyAddress = (): void => {
-  navigator.clipboard
-    .writeText(address.value)
-    .then(() => {
-      toast.success("Address copied successfully!", { autoClose: 1500 });
-    })
-    .catch(() => {
-      toast.error("Failed to copy address!", { autoClose: 1500 });
-    });
-};
 </script>

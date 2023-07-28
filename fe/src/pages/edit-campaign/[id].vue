@@ -24,6 +24,7 @@
             placeholder="Enter your full name"
             :error="errors.fullname"
             :model-value="fullname"
+            :disabled="isCampaignDone"
             @change="handleChange"
           />
           <BaseInput
@@ -33,6 +34,7 @@
             placeholder="Enter a title"
             :error="errors.campaign"
             :model-value="campaign"
+            :disabled="isCampaignDone"
             @change="handleChange"
           />
           <BaseTextArea
@@ -42,6 +44,7 @@
             placeholder="Write your story..."
             :error="errors.story"
             :model-value="story"
+            :disabled="isCampaignDone"
             @change="handleChange"
           />
           <BaseInput
@@ -51,6 +54,7 @@
             placeholder="Enter an image link"
             :error="errors.imageUrl"
             :model-value="imageUrl"
+            :disabled="isCampaignDone"
             @change="handleValidateImageUrl"
           />
           <div class="flex w-full space-x-4">
@@ -63,6 +67,7 @@
               step="any"
               :error="errors.goal"
               :model-value="goal"
+              :disabled="isCampaignDone"
               @change="handleChange"
             />
             <BaseInput
@@ -72,6 +77,7 @@
               type="date"
               :error="errors.date"
               :model-value="date"
+              :disabled="isCampaignDone"
               @change="handleChange"
             />
           </div>
@@ -79,11 +85,11 @@
         <BaseButton
           class="w-fit"
           :class="
-            isLoading
-              ? 'bg-disabled h-10 px-4 rounded-[6px] text-white'
+            isLoading || isCampaignDone
+              ? 'bg-disabled h-10 px-4 rounded-[6px] text-white cursor-not-allowed'
               : 'btn-gradient'
           "
-          :disabled="isLoading || !isConnected"
+          :disabled="isLoading || !isConnected || isCampaignDone"
           >UPDATE CAMPAIGN</BaseButton
         >
       </form>
@@ -107,14 +113,15 @@ import placeholderImage from "@/assets/img/placeholder.png";
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
 const router = useRouter();
 const route = useRoute();
-const { getDateYMD, notConnectedWarning } = useUtils();
+const { getDateYMD, notConnectedWarning, campaignStatusChecker } = useUtils();
 
 const useWallet = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
-const { id } = route.params;
+const id = Number(route.params.id);
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isLoading = ref<boolean>(false);
 const isPageLoading = ref<boolean>(true);
+const isCampaignDone = ref<boolean>(false);
 const campaignData = ref<{
   fullname: string;
   campaign: string;
@@ -151,6 +158,12 @@ const getCampaign = async (): Promise<void> => {
     smartContract
       .getCampaign(id)
       .then((result) => {
+        isCampaignDone.value = campaignStatusChecker(
+          result.currentAmount,
+          result.goalAmount,
+          result.deadline,
+        );
+
         values.fullname = result[2];
         values.campaign = result[3];
         values.story = result[4];
@@ -181,6 +194,10 @@ const getCampaign = async (): Promise<void> => {
 };
 
 onMounted((): void => {
+  if (isNaN(id) || id < 0) {
+    router.push("/404");
+    return;
+  }
   getCampaign();
 });
 
