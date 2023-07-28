@@ -33,11 +33,14 @@
         :on-page-change="setPage"
       />
     </div>
-    <div v-if="isLoading" class="flex justify-center items-center w-full">
+    <div v-if="isPageLoading" class="flex justify-center items-center w-full">
       <p>Loading...</p>
     </div>
     <div v-else>
-      <div v-if="userCampaigns.length < 1" class="flex justify-center mt-6">
+      <div
+        v-if="userCampaigns.length < 1 && !isPageLoading"
+        class="flex justify-center mt-6"
+      >
         <p>No campaigns to show.</p>
       </div>
     </div>
@@ -60,6 +63,7 @@ const itemsPerPage = ref<number>(6);
 const currentPage = ref<number>(1);
 const lastPage = ref<number>(1);
 const isLoading = ref<boolean>(false);
+const isPageLoading = ref<boolean>(true);
 const userCampaigns = ref<CampaignCardProps[]>([]);
 
 const getUserCampaigns = async (pageNumber: number) => {
@@ -88,9 +92,11 @@ const getUserCampaigns = async (pageNumber: number) => {
       })
       .finally(() => {
         isLoading.value = false;
+        isPageLoading.value = false;
       });
   } else {
     isLoading.value = false;
+    isPageLoading.value = false;
   }
 };
 

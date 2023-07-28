@@ -1,4 +1,4 @@
-import { BigNumberish } from "ethers";
+import { BigNumberish, ethers } from "ethers";
 import { Id, toast } from "vue3-toastify";
 
 export const useUtils = () => {
@@ -55,6 +55,35 @@ export const useUtils = () => {
     };
   };
 
+  const copyAddress = (address: string): void => {
+    navigator.clipboard
+      .writeText(address)
+      .then(() => {
+        toast.success("Address copied successfully!", { autoClose: 1500 });
+      })
+      .catch(() => {
+        toast.error("Failed to copy address!", { autoClose: 1500 });
+      });
+  };
+
+  const campaignStatusChecker = (
+    currentAmount: BigNumberish,
+    goalAmount: BigNumberish,
+    deadline: BigNumberish,
+  ) => {
+    const totalDonation = Number(ethers.formatEther(currentAmount));
+    const campaignGoal = Number(ethers.formatEther(goalAmount));
+
+    const isCampaignExpired = getDaysLeft(deadline) <= 0;
+    const isCampaignAchieved = totalDonation >= campaignGoal;
+
+    if (isCampaignExpired || isCampaignAchieved) {
+      return true;
+    }
+
+    return false;
+  };
+
   return {
     truncate,
     middleTruncate,
@@ -63,5 +92,7 @@ export const useUtils = () => {
     getAvatarUrl,
     notConnectedWarning,
     debounce,
+    copyAddress,
+    campaignStatusChecker,
   };
 };

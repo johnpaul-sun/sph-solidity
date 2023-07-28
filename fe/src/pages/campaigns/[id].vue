@@ -10,7 +10,7 @@
           <img
             :src="campaign.imageUrl"
             alt="Campaign Image"
-            class="object-cover w-full h-[420px]"
+            class="object-cover w-full h-[420px] rounded-lg"
             @error="replaceByDefault"
           />
         </div>
@@ -62,6 +62,7 @@
       <CampaignFundForm
         :is-connected="isConnected"
         :is-loading="isLoading"
+        :is-campaign-done="isCampaignDone"
         @fund-campaign="donateCampaign"
       />
     </div>
@@ -81,10 +82,13 @@ import { useWalletStore } from "~/store/wallet";
 import placeholderImage from "@/assets/img/placeholder.png";
 
 const route = useRoute();
-const { truncate, getDaysLeft, getAvatarUrl } = useUtils();
+const router = useRouter();
+const { truncate, getDaysLeft, getAvatarUrl, campaignStatusChecker } =
+  useUtils();
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
+const isCampaignDone = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
 const isPageLoading = ref<boolean>(true);
 const showFullscreenImage = ref(false);
@@ -123,6 +127,12 @@ const setCampaign = (
         amount: Number(ethers.formatEther(donation.amount)),
       };
     },
+  );
+
+  isCampaignDone.value = campaignStatusChecker(
+    data[0].currentAmount,
+    data[0].goalAmount,
+    data[0].deadline,
   );
 
   return {
@@ -189,15 +199,21 @@ if (process.client) {
   watch(
     refresher,
     () => {
+      if (isNaN(id) || id < 0) {
+        router.push("/404");
+        return;
+      }
       getCampaign(id)
         .then((result) => {
           campaign.value = setCampaign(result);
-          if (
+          const isCampaignOwner =
             address.value.toLowerCase() ===
-            campaign.value.creator.address.toLowerCase()
-          ) {
-            canEdit.value = true;
+            campaign.value.creator.address.toLowerCase();
+
+          if (isCampaignOwner) {
+            canEdit.value = !isCampaignDone.value;
           }
+
           isPageLoading.value = false;
         })
         .catch((error) => {
