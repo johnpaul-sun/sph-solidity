@@ -78,7 +78,7 @@ import {
   SmartContractDonationTransaction,
 } from "~/types/SmartContract";
 import { useWalletStore } from "~/store/wallet";
-import placeholderImage from "@/assets/img/placeholder.png"; 
+import placeholderImage from "@/assets/img/placeholder.png";
 
 const route = useRoute();
 const { truncate, getDaysLeft, getAvatarUrl } = useUtils();

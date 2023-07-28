@@ -45,11 +45,17 @@
 </template>
 <script setup lang="ts">
 import { toast } from "vue3-toastify";
+import { storeToRefs } from "pinia";
 import { BigNumberish, ethers } from "ethers";
 import CampaignCardProps from "~/types/CampaignCardProps";
+import { useWalletStore } from "~/store/wallet";
+import { server } from "process";
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const { getDaysLeft } = useUtils();
+
+const useWallet = useWalletStore();
+const { refresher } = storeToRefs(useWallet);
 
 const itemsPerPage = ref<number>(6);
 const currentPage = ref<number>(1);
@@ -89,9 +95,15 @@ const getUserCampaigns = async (pageNumber: number) => {
   }
 };
 
-onMounted(() => {
-  getUserCampaigns(currentPage.value);
-});
+if (process.client) {
+  watch(
+    refresher,
+    () => {
+      getUserCampaigns(currentPage.value);
+    },
+    { immediate: true },
+  );
+}
 
 const setPage = (_itemsPerPage: number, pageNumber: number): void => {
   currentPage.value = pageNumber;
