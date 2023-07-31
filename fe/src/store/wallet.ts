@@ -8,7 +8,7 @@ export interface WalletStore {
   address: string;
   balance: number;
   isShowModal: boolean;
-  recentCampaign: RecentCampaignData[] | undefined;
+  recentCampaign: RecentCampaignData[];
   refresher: boolean;
 }
 
@@ -34,7 +34,7 @@ export const useWalletStore = defineStore("walletStore", {
     },
     async getRecentCampaigns(
       pageSize: number,
-      getSmartContract: () => Promise<ethers.Contract | null>,
+      getSmartContract: () => Promise<ethers.Contract | null>
     ) {
       type ResultData = [
         number,
@@ -46,7 +46,7 @@ export const useWalletStore = defineStore("walletStore", {
         number,
         number,
         number,
-        number,
+        number
       ][];
 
       try {

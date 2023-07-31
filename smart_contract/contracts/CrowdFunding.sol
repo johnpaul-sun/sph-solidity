@@ -338,6 +338,10 @@ contract CrowdFunding {
     function getCampaign(
         uint256 _campaignId
     ) public view returns (Campaign memory) {
+        require(
+            _campaignId >= 0 && _campaignId < totalCampaigns,
+            "Invalid campaign ID"
+        );
         return campaigns[_campaignId];
     }
 

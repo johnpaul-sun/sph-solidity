@@ -33,7 +33,7 @@ type Props = {
   type?: string;
   error?: string;
   step?: string;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 const props = defineProps<Props>();

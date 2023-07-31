@@ -1,5 +1,9 @@
 <template>
   <Loader v-if="isPageLoading" />
+  <Message
+    v-else-if="isInvalidCampaignId"
+    :message="'Campaign does not exist'"
+  />
   <div
     v-else
     class="flex flex-col gap-6 py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
@@ -91,6 +95,7 @@ const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isCampaignDone = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
 const isPageLoading = ref<boolean>(true);
+const isInvalidCampaignId = ref<boolean>(false);
 const showFullscreenImage = ref(false);
 const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
@@ -217,7 +222,12 @@ if (process.client) {
           isPageLoading.value = false;
         })
         .catch((error) => {
-          toast.error(error.reason);
+          if (error.reason.includes("Invalid campaign ID")) {
+            isPageLoading.value = false;
+            isInvalidCampaignId.value = true;
+          } else {
+            toast.error(error.reason);
+          }
         });
     },
     { immediate: true },
