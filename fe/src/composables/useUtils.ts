@@ -45,7 +45,7 @@ export const useUtils = () => {
     return `https://api.multiavatar.com/${id.toLowerCase()}.png`;
   };
 
-  const debounce = (fn = () => {}, delay = 500) => {
+  const debounce = (fn = () => { }, delay = 500) => {
     let timeout: NodeJS.Timeout;
     return (...args: []) => {
       clearTimeout(timeout);
@@ -84,6 +84,13 @@ export const useUtils = () => {
     return false;
   };
 
+  const showCampaignIdError = () => {
+    showError({
+      statusCode: 404,
+      statusMessage: "Invalid campaign ID",
+    });
+  };
+
   return {
     truncate,
     middleTruncate,
@@ -94,5 +101,6 @@ export const useUtils = () => {
     debounce,
     copyAddress,
     campaignStatusChecker,
+    showCampaignIdError,
   };
 };

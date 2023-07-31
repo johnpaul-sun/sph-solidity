@@ -1,9 +1,5 @@
 <template>
   <Loader v-if="isPageLoading" />
-  <Message
-    v-else-if="isInvalidCampaignId"
-    :message="'Campaign does not exist'"
-  />
   <div v-else class="flex-grow bg-linear-gradient-white-to-light">
     <div class="max-w-[960px] mx-auto space-y-6 py-6">
       <div class="flex items-center space-x-2">
@@ -117,7 +113,13 @@ import placeholderImage from "@/assets/img/placeholder.png";
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
 const router = useRouter();
 const route = useRoute();
-const { getDateYMD, notConnectedWarning, campaignStatusChecker } = useUtils();
+const {
+  getDateYMD,
+  notConnectedWarning,
+  campaignStatusChecker,
+  debounce,
+  showCampaignIdError,
+} = useUtils();
 
 const useWallet = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
@@ -125,7 +127,6 @@ const id = Number(route.params.id);
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isLoading = ref<boolean>(false);
 const isPageLoading = ref<boolean>(true);
-const isInvalidCampaignId = ref<boolean>(false);
 const isCampaignDone = ref<boolean>(false);
 const campaignData = ref<{
   fullname: string;
@@ -182,19 +183,22 @@ const getCampaign = async (): Promise<void> => {
         campaignData.value.imageUrl = values.imageUrl ?? "";
         campaignData.value.goal = values.goal;
         campaignData.value.date = values.date;
+
         isPageLoading.value = false;
       })
       .catch((error): void => {
         if (error.reason.includes("Invalid campaign ID")) {
-          isPageLoading.value = false;
-          isInvalidCampaignId.value = true;
+          showCampaignIdError();
         } else {
           toast.error(error.reason);
         }
+        debounce(() => {
+          isLoading.value = false;
+          isPageLoading.value = false;
+        }, 2000);
       })
       .finally((): void => {
         isLoading.value = false;
-        isPageLoading.value = false;
       });
   } else {
     notConnectedWarning();
@@ -205,7 +209,7 @@ const getCampaign = async (): Promise<void> => {
 
 onMounted((): void => {
   if (isNaN(id) || id < 0) {
-    router.push("/404");
+    showCampaignIdError();
     return;
   }
   getCampaign();

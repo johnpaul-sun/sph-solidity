@@ -1,9 +1,5 @@
 <template>
   <Loader v-if="isPageLoading" />
-  <Message
-    v-else-if="isInvalidCampaignId"
-    :message="'Campaign does not exist'"
-  />
   <div
     v-else
     class="flex flex-col gap-6 py-6 px-36 md:px-44 min-h-screen lg:px-48 bg-linear-gradient-white-to-light overflow-auto"
@@ -86,16 +82,20 @@ import { useWalletStore } from "~/store/wallet";
 import placeholderImage from "@/assets/img/placeholder.png";
 
 const route = useRoute();
-const router = useRouter();
-const { truncate, getDaysLeft, getAvatarUrl, campaignStatusChecker } =
-  useUtils();
+const {
+  truncate,
+  getDaysLeft,
+  getAvatarUrl,
+  campaignStatusChecker,
+  debounce,
+  showCampaignIdError,
+} = useUtils();
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const isCampaignDone = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
 const isPageLoading = ref<boolean>(true);
-const isInvalidCampaignId = ref<boolean>(false);
 const showFullscreenImage = ref(false);
 const canEdit = ref<boolean>(false);
 const useWallet = useWalletStore();
@@ -200,14 +200,14 @@ const donateCampaign = async (amount: number): Promise<void> => {
   }
 };
 
+if (isNaN(id) || id < 0) {
+  showCampaignIdError();
+}
+
 if (process.client) {
   watch(
     refresher,
     () => {
-      if (isNaN(id) || id < 0) {
-        router.push("/404");
-        return;
-      }
       getCampaign(id)
         .then((result) => {
           campaign.value = setCampaign(result);
@@ -218,16 +218,17 @@ if (process.client) {
           if (isCampaignOwner) {
             canEdit.value = !isCampaignDone.value;
           }
-
           isPageLoading.value = false;
         })
         .catch((error) => {
           if (error.reason.includes("Invalid campaign ID")) {
-            isPageLoading.value = false;
-            isInvalidCampaignId.value = true;
+            showCampaignIdError();
           } else {
             toast.error(error.reason);
           }
+          debounce(() => {
+            isPageLoading.value = false;
+          }, 2000);
         });
     },
     { immediate: true },
