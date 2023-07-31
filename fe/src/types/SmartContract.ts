@@ -11,6 +11,7 @@ export interface SmartContractCampaign {
   currentAmount: BigNumberish;
   deadline: BigNumberish;
   totalDonations: BigNumberish;
+  fundsReturned: boolean;
   isCampaignDone: boolean;
 }
 

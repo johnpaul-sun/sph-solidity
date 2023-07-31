@@ -88,10 +88,10 @@ const getDonatorsByWalletAddress = async (
 
       if (donators.length > 0) {
         const donatorsInfo = donators?.map(
-          (donator: [string, string, number]) => ({
-            donator: donator[0],
-            campaignTitle: donator[1],
-            donationAmount: donator[2].toString(),
+          (donator: [string, string, number][]) => ({
+            donator: donator[1],
+            campaignTitle: donator[2],
+            donationAmount: donator[3].toString(),
           }),
         );
         const donatorsList = JSON.parse(JSON.stringify(donatorsInfo, null, 2));
@@ -107,8 +107,10 @@ const getDonatorsByWalletAddress = async (
     }
   } catch (error) {
     isPageLoading.value = false;
+    const errorCode = JSON.parse(JSON.stringify(error)).code;
+
     if (process.client) {
-      if ((error as { code: string }).code === "UNCONFIGURED_NAME") return;
+      if (errorCode === "UNCONFIGURED_NAME" || errorCode === undefined) return;
       toast.error("Something went wrong!");
     }
   }

@@ -25,6 +25,8 @@ contract CrowdFunding {
         uint256 currentAmount;
         uint256 deadline;
         uint256 totalDonations;
+        bool fundsReturned;
+        bool fundsCredited;
     }
 
     struct DonationTransaction {
@@ -36,9 +38,12 @@ contract CrowdFunding {
     }
 
     struct DonationData {
+        uint256 id;
         address userAddress;
         string campaignTitle;
         uint256 donationAmount;
+        string status;
+        bool fundsReturned;
     }
 
     struct PaginationData {
@@ -65,6 +70,7 @@ contract CrowdFunding {
     event CampaignCreated(address indexed sender, string title);
     event CampaignEdited(address indexed sender, string title);
     event DonationSent(address indexed sender, string title, uint256 amount);
+    event Refunded();
 
     // Modifiers
     modifier validCampaignArguments(
@@ -72,10 +78,8 @@ contract CrowdFunding {
         string memory _title,
         string memory _story,
         string memory _imageUrl,
-        uint256 _goalAmount,
-        uint256 _deadline
+        uint256 _goalAmount
     ) {
-        require(_deadline > block.timestamp, "Date should be future date");
         require(_goalAmount > 0, "Goal amount should be more than 0");
         require(bytes(_fullname).length > 0, "Full name cannot be empty");
         require(bytes(_title).length > 0, "Title cannot be empty");
@@ -184,8 +188,7 @@ contract CrowdFunding {
             _title,
             _story,
             _imageUrl,
-            _goalAmount,
-            _deadline
+            _goalAmount
         )
     {
         Campaign memory newCampaign = Campaign({
@@ -198,7 +201,9 @@ contract CrowdFunding {
             goalAmount: _goalAmount,
             currentAmount: 0,
             deadline: _deadline,
-            totalDonations: 0
+            totalDonations: 0,
+            fundsReturned: false,
+            fundsCredited: false
         });
 
         campaigns[totalCampaigns] = newCampaign;
@@ -277,8 +282,7 @@ contract CrowdFunding {
             _title,
             _story,
             _imageUrl,
-            _goalAmount,
-            _deadline
+            _goalAmount
         )
     {
         Campaign storage campaign = campaigns[_campaignId];
@@ -331,6 +335,13 @@ contract CrowdFunding {
         totalDonations++;
         sender.totalDonations++;
         campaign.totalDonations++;
+
+        if (
+            campaign.currentAmount >= campaign.goalAmount &&
+            !campaign.fundsCredited
+        ) {
+            checkGoalAndSendFunds(_campaignId);
+        }
 
         emit DonationSent(msg.sender, campaign.title, campaign.currentAmount);
     }
@@ -415,6 +426,7 @@ contract CrowdFunding {
                             index < pagination.endIndex
                         ) {
                             DonationData memory donatorData;
+                            donatorData.id = campaign.id;
                             donatorData.userAddress = donation.donor;
                             donatorData.campaignTitle = campaign.title;
                             donatorData.donationAmount = donation.amount;
@@ -458,10 +470,25 @@ contract CrowdFunding {
                 user.donationTransactionIds[i]
             ];
             Campaign memory campaign = campaigns[transaction.campaignId];
+
+            bool isGoalMet = campaign.currentAmount >= campaign.goalAmount;
+            bool isExpired = block.timestamp >= campaign.deadline &&
+                !campaign.fundsReturned;
+
+            string memory status = "pending";
+            if (isGoalMet) {
+                status = "achieved";
+            } else if (isExpired) {
+                status = "expired";
+            }
+
             DonationData memory donationData = DonationData({
+                id: campaign.id,
                 userAddress: campaign.creator,
                 campaignTitle: campaign.title,
-                donationAmount: transaction.amount
+                donationAmount: transaction.amount,
+                status: status,
+                fundsReturned: campaign.fundsReturned
             });
 
             userDonations[count] = donationData;
@@ -484,13 +511,28 @@ contract CrowdFunding {
             ? (totalCampaigns - _size)
             : 0;
         uint256 arraySize = _size < totalCampaigns ? _size : totalCampaigns;
-        recentCampaigns = new Campaign[](arraySize);
+
+        Campaign[] memory tempCampaigns = new Campaign[](arraySize);
+        uint256 count = 0;
 
         for (uint256 i = 0; i < arraySize; i++) {
-            recentCampaigns[i] = campaigns[startIndex + i];
+            Campaign storage campaign = campaigns[startIndex + i];
+            if (
+                block.timestamp <= campaign.deadline &&
+                campaign.currentAmount < campaign.goalAmount &&
+                !campaign.fundsCredited
+            ) {
+                tempCampaigns[count] = campaign;
+                count++;
+            }
         }
 
-        totalFetchedCampaigns = totalCampaigns > 0 ? arraySize : 0;
+        recentCampaigns = new Campaign[](count);
+        for (uint256 i = 0; i < count; i++) {
+            recentCampaigns[i] = tempCampaigns[i];
+        }
+
+        totalFetchedCampaigns = count;
         totalAllCampaigns = totalCampaigns;
     }
 
@@ -590,14 +632,55 @@ contract CrowdFunding {
             ? (totalCampaigns - _size)
             : (_startIndex - _size);
 
-        allCampaigns = new Campaign[](_size);
+        Campaign[] memory tempCampaigns = new Campaign[](_size);
 
         uint256 index = 0;
         uint256 startIndex = indexData.nextIndex;
 
         for (uint256 i = startIndex; i < startIndex + _size; i++) {
-            allCampaigns[index] = campaigns[i];
-            index++;
+            Campaign storage campaign = campaigns[i];
+            if (
+                block.timestamp <= campaign.deadline &&
+                campaign.currentAmount < campaign.goalAmount &&
+                !campaign.fundsCredited
+            ) {
+                tempCampaigns[index] = campaign;
+                index++;
+            }
         }
+
+        allCampaigns = new Campaign[](index);
+        for (uint256 i = 0; i < index; i++) {
+            allCampaigns[i] = tempCampaigns[i];
+        }
+    }
+
+    function returnDonationsIfExpired(uint256 _campaignId) public {
+        Campaign storage campaign = campaigns[_campaignId];
+
+        // Update this function to just return the amount on current connected user, add address in the parameter.
+
+        for (uint256 i = 0; i < totalDonations; i++) {
+            DonationTransaction storage donation = donationTransactions[i];
+            if (donation.campaignId == _campaignId) {
+                address payable donorAddress = payable(donation.donor);
+                donorAddress.transfer(donation.amount);
+                campaign.currentAmount -= donation.amount;
+            }
+        }
+
+        campaign.fundsReturned = true;
+    }
+
+    function checkGoalAndSendFunds(uint256 _campaignId) public {
+        Campaign storage campaign = campaigns[_campaignId];
+        require(
+            _campaignId >= 0 && _campaignId < totalCampaigns,
+            "Invalid campaign ID"
+        );
+
+        address payable campaignCreator = payable(campaign.creator);
+        campaignCreator.transfer(campaign.currentAmount);
+        campaign.fundsCredited = true;
     }
 }
