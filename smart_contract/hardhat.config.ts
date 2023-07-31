@@ -9,13 +9,21 @@ const API_URL = process.env.API_URL;
 const USER_KEY = process.env.USER_KEY;
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.18",
+  solidity: {
+    version: "0.8.18",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
+  },
   networks: {
     sepolia: {
       url: API_URL,
-      accounts: [USER_KEY as string]
-    }
-  }
+      accounts: [USER_KEY as string],
+    },
+  },
 };
 
 export default config;

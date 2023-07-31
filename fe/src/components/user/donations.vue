@@ -50,18 +50,16 @@
           </td>
           <td class="px-4 w-40">{{ donationAmount }} ETH</td>
           <td class="px-4 w-40">
-            <span
-              v-if="status === 'achieved' && !fundsReturned"
-              class="text-green-600"
+            <span v-if="status === 'achieved'" class="text-green-600"
               >Success</span
             >
             <span
-              v-if="status === 'pending' && !fundsReturned"
+              v-if="status === 'pending' && fundsReturned"
               class="text-yellow-600"
               >Pending</span
             >
             <BaseButton
-              v-if="status === 'expired' || fundsReturned"
+              v-if="status === 'expired' || !fundsReturned"
               :class="
                 isLoading || fundsReturned
                   ? 'bg-disabled h-9 px-4 rounded-[6px] text-white cursor-not-allowed'

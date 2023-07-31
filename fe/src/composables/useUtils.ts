@@ -88,10 +88,10 @@ export const useUtils = () => {
 
     if (smartContract !== null) {
       smartContract
-        .returnDonationsIfExpired(id)
+        .returnDonationsIfExpired(id, address)
         .then(() => {
           useWalletStore().updateState();
-          toast.success("Fund transfer in progress..." + address);
+          toast.info("Fund transfer in progress...");
         })
         .catch((error) => {
           if (error.reason === "rejected") {

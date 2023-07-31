@@ -5,7 +5,7 @@ import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
   const router = useRouter();
-  const CONTRACT_ADDRESS = "0x5eDF1C24a5Fb69eEb7053c7658bEAb6eB8767837";
+  const CONTRACT_ADDRESS = "0x45012be8e7deAe0ae5d6348c3fd2492d064a3e26";
 
   const ethereum = window.ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
@@ -106,15 +106,13 @@ export default defineNuxtPlugin(async () => {
     }
   });
 
-  smartContract?.on("Refunded", (sender) => {
+  smartContract?.on("Refunded", () => {
     smartContract?.removeAllListeners();
-    if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
-      if (!isListenerExecuted) {
-        isListenerExecuted = true;
-        useWalletStore().updateState();
-        toast.success("Fund successfully sent!");
-        clearListener();
-      }
+    if (!isListenerExecuted) {
+      isListenerExecuted = true;
+      useWalletStore().updateState();
+      toast.success("Fund successfully sent!");
+      clearListener();
     }
   });
 

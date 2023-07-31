@@ -25,7 +25,7 @@ contract CrowdFunding {
         uint256 currentAmount;
         uint256 deadline;
         uint256 totalDonations;
-        bool fundsReturned;
+        address[] fundsReturned;
         bool fundsCredited;
     }
 
@@ -174,6 +174,18 @@ contract CrowdFunding {
         return pagination;
     }
 
+    function isAddressInArray(
+        address[] memory array,
+        address target
+    ) private pure returns (bool) {
+        for (uint256 i = 0; i < array.length; i++) {
+            if (array[i] == target) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function createCampaign(
         string memory _fullname,
         string memory _title,
@@ -191,6 +203,8 @@ contract CrowdFunding {
             _goalAmount
         )
     {
+        address[] memory fundsReturned = new address[](0);
+
         Campaign memory newCampaign = Campaign({
             id: totalCampaigns,
             creator: msg.sender,
@@ -202,7 +216,7 @@ contract CrowdFunding {
             currentAmount: 0,
             deadline: _deadline,
             totalDonations: 0,
-            fundsReturned: false,
+            fundsReturned: fundsReturned,
             fundsCredited: false
         });
 
@@ -471,9 +485,13 @@ contract CrowdFunding {
             ];
             Campaign memory campaign = campaigns[transaction.campaignId];
 
+            bool isFundsReturned = isAddressInArray(
+                campaign.fundsReturned,
+                _userAddress
+            );
             bool isGoalMet = campaign.currentAmount >= campaign.goalAmount;
             bool isExpired = block.timestamp >= campaign.deadline &&
-                !campaign.fundsReturned;
+                isFundsReturned;
 
             string memory status = "pending";
             if (isGoalMet) {
@@ -488,7 +506,7 @@ contract CrowdFunding {
                 campaignTitle: campaign.title,
                 donationAmount: transaction.amount,
                 status: status,
-                fundsReturned: campaign.fundsReturned
+                fundsReturned: isFundsReturned
             });
 
             userDonations[count] = donationData;
@@ -655,21 +673,26 @@ contract CrowdFunding {
         }
     }
 
-    function returnDonationsIfExpired(uint256 _campaignId) public {
+    function returnDonationsIfExpired(
+        uint256 _campaignId,
+        address _addressToRefund
+    ) public {
         Campaign storage campaign = campaigns[_campaignId];
-
-        // Update this function to just return the amount on current connected user, add address in the parameter.
 
         for (uint256 i = 0; i < totalDonations; i++) {
             DonationTransaction storage donation = donationTransactions[i];
-            if (donation.campaignId == _campaignId) {
+            if (
+                donation.campaignId == _campaignId &&
+                donation.donor == _addressToRefund
+            ) {
                 address payable donorAddress = payable(donation.donor);
                 donorAddress.transfer(donation.amount);
                 campaign.currentAmount -= donation.amount;
+                campaign.fundsReturned.push(_addressToRefund);
             }
         }
 
-        campaign.fundsReturned = true;
+        emit Refunded();
     }
 
     function checkGoalAndSendFunds(uint256 _campaignId) public {
