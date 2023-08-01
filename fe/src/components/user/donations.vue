@@ -54,12 +54,14 @@
               >Success</span
             >
             <span
-              v-if="status === 'pending' && fundsReturned"
+              v-if="status === 'pending' && !fundsReturned"
               class="text-yellow-600"
               >Pending</span
             >
             <BaseButton
-              v-if="status === 'expired' || !fundsReturned"
+              v-if="
+                status === 'expired' || (status === 'pending' && fundsReturned)
+              "
               :class="
                 isLoading || fundsReturned
                   ? 'bg-disabled h-9 px-4 rounded-[6px] text-white cursor-not-allowed'

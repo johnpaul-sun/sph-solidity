@@ -491,7 +491,7 @@ contract CrowdFunding {
             );
             bool isGoalMet = campaign.currentAmount >= campaign.goalAmount;
             bool isExpired = block.timestamp >= campaign.deadline &&
-                isFundsReturned;
+                !isFundsReturned;
 
             string memory status = "pending";
             if (isGoalMet) {

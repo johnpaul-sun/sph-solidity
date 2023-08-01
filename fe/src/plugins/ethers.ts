@@ -5,7 +5,7 @@ import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
   const router = useRouter();
-  const CONTRACT_ADDRESS = "0x45012be8e7deAe0ae5d6348c3fd2492d064a3e26";
+  const CONTRACT_ADDRESS = "0x828B8d50f2B83e2478344AE399B2beE6Fb395C28";
 
   const ethereum = window.ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
