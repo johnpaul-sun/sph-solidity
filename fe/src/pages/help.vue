@@ -18,8 +18,14 @@
           step-title="Install metamask"
         >
           <div>
-            Download the metamask extension via the button below. Once
-            installed, create an account.
+            <ul>
+              <li>- Download the metamask extension via the button below.</li>
+              <li>- Once installed, create an account.</li>
+              <li>
+                - After creating an account, pin the metamask extension in your
+                browser.
+              </li>
+            </ul>
           </div>
           <NuxtLink
             to="https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn"
@@ -27,7 +33,10 @@
             target="_blank"
             >Install Metamask</NuxtLink
           >
-          <div>If metamask is already installed, proceed to the next step.</div>
+          <div>
+            If metamask is already installed in your browser, kindly proceed to
+            the next step.
+          </div>
         </HelpSetup>
         <HelpSetup
           :active-step="activeStep"
@@ -36,47 +45,21 @@
           step-title="Enable Testnet"
         >
           <div>
-            Click the Metamask extension, then click the <u>Show/Hide</u> link
+            <ul>
+              <li>
+                - First Click the Metamask extension, then click the the
+                dropdown besides the Account name.
+              </li>
+              <li>- Then Enable the <u>Show test networks</u> toggle.</li>
+              <li>- Finally, select the Sepolia network.</li>
+            </ul>
           </div>
-          <img
-            src="../assets/img/metamask-extension.png"
-            alt="testnet"
-            class="w-72"
-          />
+          <img src="../assets/img/first-step.png" alt="testnet" class="w-72" />
         </HelpSetup>
         <HelpSetup
           :active-step="activeStep"
           :total-steps="totalSteps"
           step-number="3"
-          step-title="Enable Testnet"
-        >
-          <div>Make sure to toggle <u>Show test networks</u></div>
-          <img
-            src="../assets/img/toggle-test-networks.png"
-            alt="testnet"
-            class="w-72"
-          />
-        </HelpSetup>
-        <HelpSetup
-          :active-step="activeStep"
-          :total-steps="totalSteps"
-          step-number="4"
-          step-title="Network Selection"
-        >
-          <div>
-            Click on the Metamask extension and select
-            <u>Sepolia test network</u>
-          </div>
-          <img
-            src="../assets/img/select-sepolia-test-network.png"
-            alt="testnet"
-            class="w-72"
-          />
-        </HelpSetup>
-        <HelpSetup
-          :active-step="activeStep"
-          :total-steps="totalSteps"
-          step-number="5"
           step-title="Fund your Sepolia wallet"
         >
           <div class="space-y-2">
@@ -100,12 +83,17 @@
               >
               using Google and continue to the wallet setup.
             </div>
+            <img
+              src="../assets/img/third-step.png"
+              alt="testnet"
+              class="w-100"
+            />
           </div>
         </HelpSetup>
         <HelpSetup
           :active-step="activeStep"
           :total-steps="totalSteps"
-          step-number="6"
+          step-number="4"
           step-title="Fund your Sepolia wallet"
         >
           <div class="space-y-2">
@@ -116,7 +104,7 @@
               <span class="text-primary-400">0.5 ETH</span>.
             </div>
             <img
-              src="../assets/img/fund-sepolia-wallet.png"
+              src="../assets/img/second-step.png"
               alt="testnet"
               class="w-72"
             />
@@ -153,7 +141,7 @@
 <script setup lang="ts">
 const router = useRouter();
 const activeStep = ref(1);
-const totalSteps = ref(6);
+const totalSteps = ref(4);
 
 const handleNext = (): void => {
   if (activeStep.value < totalSteps.value) {

@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { toast } from "vue3-toastify";
+import { ethers } from "ethers";
 
 import { ProviderRpcError } from "~/types/ProviderRpcError";
 import { useWalletStore } from "~/store/wallet";
@@ -50,7 +51,7 @@ const { middleTruncate, copyAddress } = useUtils();
 const router = useRouter();
 const isDropdownOpen = ref<boolean>(false);
 const useWallet = useWalletStore();
-const { updateStatus, updateIsShowModal } = useWallet;
+const { updateStatus, updateIsShowModal, updateBalance } = useWallet;
 const { isConnected, address } = storeToRefs(useWallet);
 
 const connectWallet = async (): Promise<void> => {
@@ -61,7 +62,17 @@ const connectWallet = async (): Promise<void> => {
       const account = await ethereum.request({
         method: "eth_requestAccounts",
       });
+      const balanceWei = await ethereum.request({
+        method: "eth_getBalance",
+        params: [account[0], "latest"],
+      });
+
+      const balanceInWei = BigInt(String(balanceWei));
+      const etherBalance = Number(ethers.formatEther(balanceInWei));
+      const roundUpToTwoDecimalPlaces = Math.ceil(etherBalance * 100) / 100;
       const connection = localStorage.getItem("is-connected");
+
+      updateBalance(roundUpToTwoDecimalPlaces);
 
       if (!connection) {
         toast.success("Wallet connected successfully!", { autoClose: 1500 });

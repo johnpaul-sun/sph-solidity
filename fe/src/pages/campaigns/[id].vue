@@ -60,9 +60,13 @@
         :can-edit="canEdit"
       />
       <CampaignFundForm
+        :campaign-id="id"
         :is-connected="isConnected"
         :is-loading="isLoading"
         :is-campaign-done="isCampaignDone"
+        :is-goal-achieved="isGoalAchieved"
+        :is-donator="isDonator"
+        :is-funds-returned="isFundsReturned"
         @fund-campaign="donateCampaign"
       />
     </div>
@@ -94,6 +98,9 @@ const {
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const isCampaignDone = ref<boolean>(false);
+const isGoalAchieved = ref<boolean>(false);
+const isFundsReturned = ref<boolean>(false);
+const isDonator = ref<boolean>(false);
 const isLoading = ref<boolean>(false);
 const isPageLoading = ref<boolean>(true);
 const showFullscreenImage = ref(false);
@@ -126,6 +133,10 @@ const setCampaign = (
 ): Campaign => {
   const donations = data[1].map(
     (donation: SmartContractDonationTransaction) => {
+      if (donation.donor.toLowerCase() === address.value) {
+        isDonator.value = true;
+      }
+
       return {
         donationId: Number(donation.id),
         address: donation.donor,
@@ -133,13 +144,18 @@ const setCampaign = (
       };
     },
   );
-
+  const totalDonation = Number(ethers.formatEther(data[0].currentAmount));
+  const campaignGoal = Number(ethers.formatEther(data[0].goalAmount));
+  const addressLoweredCase = Object.values(data[0].fundsReturned).map(
+    (address) => address.toLowerCase(),
+  );
+  isFundsReturned.value = addressLoweredCase.includes(address.value);
+  isGoalAchieved.value = totalDonation >= campaignGoal;
   isCampaignDone.value = campaignStatusChecker(
-    data[0].currentAmount,
-    data[0].goalAmount,
+    totalDonation,
+    campaignGoal,
     data[0].deadline,
   );
-
   return {
     campaignId: Number(data[0].id),
     title: data[0].title,
@@ -151,8 +167,8 @@ const setCampaign = (
     imageUrl: data[0].imageUrl,
     story: data[0].story,
     daysLeft: getDaysLeft(data[0].deadline),
-    totalDonation: Number(ethers.formatEther(data[0].currentAmount)),
-    campaignGoal: Number(ethers.formatEther(data[0].goalAmount)),
+    totalDonation,
+    campaignGoal,
     donations,
   };
 };
@@ -211,6 +227,7 @@ if (process.client) {
       getCampaign(id)
         .then((result) => {
           campaign.value = setCampaign(result);
+
           const isCampaignOwner =
             address.value.toLowerCase() ===
             campaign.value.creator.address.toLowerCase();

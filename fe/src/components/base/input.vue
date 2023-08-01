@@ -16,7 +16,7 @@
         'cursor-not-allowed': disabled,
       }"
       class="w-full text-sm px-2 h-10 rounded border border-disabled focus:outline-none placeholder-disabled"
-      min="0"
+      :min="type === 'date' ? getCurrentDate() : 0"
       :disabled="disabled"
     />
     <span class="h-4 text-red-500 text-xs font-light"> {{ error }} </span>
@@ -40,4 +40,12 @@ const props = defineProps<Props>();
 const emit = defineEmits(["update:modelValue"]);
 
 const modelValue = useVModel(props, "modelValue", emit);
+
+const getCurrentDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 </script>

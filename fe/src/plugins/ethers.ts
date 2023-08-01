@@ -5,13 +5,14 @@ import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
   const router = useRouter();
-  const CONTRACT_ADDRESS = "0x8bb479380e88656567c49551009bC15D19A3f885";
+  const CONTRACT_ADDRESS = "0x828B8d50f2B83e2478344AE399B2beE6Fb395C28";
 
   const ethereum = window.ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
   const contractInterface = new ethers.BrowserProvider(ethereum);
   let smartContract: ethers.Contract | null = null;
   let signer = null;
+  let isListenerExecuted = false;
 
   const walletStore = useWalletStore();
   const { getRecentCampaigns } = walletStore;
@@ -23,7 +24,7 @@ export default defineNuxtPlugin(async () => {
         smartContract = new ethers.Contract(
           CONTRACT_ADDRESS as string,
           contract.abi,
-          signer
+          signer,
         );
 
         return smartContract;
@@ -41,11 +42,17 @@ export default defineNuxtPlugin(async () => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        provider
+        provider,
       );
 
       return smartContract;
     }
+  };
+
+  const clearListener = () => {
+    setTimeout(() => {
+      isListenerExecuted = false;
+    }, 3000);
   };
 
   if (ethereum?.selectedAddress !== null) {
@@ -54,36 +61,58 @@ export default defineNuxtPlugin(async () => {
       smartContract = new ethers.Contract(
         CONTRACT_ADDRESS as string,
         contract.abi,
-        signer
+        signer,
       );
     } catch (error) {}
   }
 
   smartContract?.on("CampaignCreated", (sender, title) => {
+    smartContract?.removeAllListeners();
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
-      toast.success(`Campaign ${title} was successfully created!`);
-      useWalletStore().updateState();
-      getRecentCampaigns(6, getSmartContract);
-      smartContract?.removeAllListeners("CampaignCreated");
+      if (!isListenerExecuted) {
+        isListenerExecuted = true;
+        toast.success(`Campaign ${title} was successfully created!`);
+        useWalletStore().updateState();
+        getRecentCampaigns(6, getSmartContract);
+        clearListener();
+      }
     }
   });
 
   smartContract?.on("DonationSent", (sender) => {
+    smartContract?.removeAllListeners();
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
-      toast.success("Fund successfully sent!");
-      useWalletStore().updateState();
-      smartContract?.removeAllListeners("DonationSent");
+      if (!isListenerExecuted) {
+        isListenerExecuted = true;
+        toast.success("Fund successfully sent!");
+        useWalletStore().updateState();
+        clearListener();
+      }
     }
   });
 
   smartContract?.on("CampaignEdited", (sender, title) => {
+    smartContract?.removeAllListeners();
     if (sender.toLowerCase() === ethereum.selectedAddress?.toLowerCase()) {
+      if (!isListenerExecuted) {
+        isListenerExecuted = true;
+        useWalletStore().updateState();
+        setTimeout(function () {
+          toast.success(`Campaign ${title} was successfully updated!`);
+        }, 300);
+        router.back();
+        clearListener();
+      }
+    }
+  });
+
+  smartContract?.on("Refunded", () => {
+    smartContract?.removeAllListeners();
+    if (!isListenerExecuted) {
+      isListenerExecuted = true;
       useWalletStore().updateState();
-      setTimeout(function () {
-        toast.success(`Campaign ${title} was successfully updated!`);
-      }, 300);
-      router.back();
-      smartContract?.removeAllListeners("CampaignEdited");
+      toast.success("Fund successfully sent!");
+      clearListener();
     }
   });
 

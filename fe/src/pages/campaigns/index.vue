@@ -97,13 +97,13 @@ const getCampaignsResult = async (): Promise<
     if (search.value) {
       result = await smartContract.searchByTitle(
         search.value,
-        6,
-        resultIndex.value.nextIndex
+        7,
+        resultIndex.value.nextIndex,
       );
     } else {
       result = await smartContract.getAllCampaigns(
-        6,
-        resultIndex.value.nextIndex
+        7,
+        resultIndex.value.nextIndex,
       );
     }
     fetchedCampaigns = result[0];
@@ -168,7 +168,7 @@ watch(
       nextIndex: 0,
     });
     loadCampaigns();
-  }
+  },
 );
 
 onMounted(() => {

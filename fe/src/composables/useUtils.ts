@@ -1,5 +1,6 @@
-import { BigNumberish, ethers } from "ethers";
+import { BigNumberish } from "ethers";
 import { Id, toast } from "vue3-toastify";
+import { useWalletStore } from "~/store/wallet";
 
 export const useUtils = () => {
   const truncate = (text: string, length: number): string => {
@@ -45,7 +46,7 @@ export const useUtils = () => {
     return `https://api.multiavatar.com/${id.toLowerCase()}.png`;
   };
 
-  const debounce = (fn = () => { }, delay = 500) => {
+  const debounce = (fn = () => {}, delay = 500) => {
     let timeout: NodeJS.Timeout;
     return (...args: []) => {
       clearTimeout(timeout);
@@ -71,11 +72,8 @@ export const useUtils = () => {
     goalAmount: BigNumberish,
     deadline: BigNumberish,
   ) => {
-    const totalDonation = Number(ethers.formatEther(currentAmount));
-    const campaignGoal = Number(ethers.formatEther(goalAmount));
-
     const isCampaignExpired = getDaysLeft(deadline) <= 0;
-    const isCampaignAchieved = totalDonation >= campaignGoal;
+    const isCampaignAchieved = currentAmount >= goalAmount;
 
     if (isCampaignExpired || isCampaignAchieved) {
       return true;
@@ -91,6 +89,27 @@ export const useUtils = () => {
     });
   };
 
+  const getRefund = async (id: number, address: string) => {
+    const { $getSmartContract: getSmartContract } = useNuxtApp();
+    const smartContract = await getSmartContract();
+
+    if (smartContract !== null) {
+      smartContract
+        .returnDonationsIfExpired(id, address)
+        .then(() => {
+          useWalletStore().updateState();
+          toast.info("Fund transfer in progress...");
+        })
+        .catch((error) => {
+          if (error.reason === "rejected") {
+            toast.error("Refund rejected!");
+          } else {
+            toast.error(error.reason);
+          }
+        });
+    }
+  };
+
   return {
     truncate,
     middleTruncate,
@@ -102,5 +121,6 @@ export const useUtils = () => {
     copyAddress,
     campaignStatusChecker,
     showCampaignIdError,
+    getRefund,
   };
 };

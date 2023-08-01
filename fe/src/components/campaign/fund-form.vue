@@ -33,13 +33,33 @@
         </p>
       </div>
       <BaseButton
-        type="submit"
+        v-if="isCampaignDone && !isGoalAchieved && isDonator"
         :class="
-          isLoading || isCampaignDone
+          isLoading || isFundsReturned
             ? 'bg-disabled h-9 px-4 rounded-[6px] text-white cursor-not-allowed'
             : 'btn-gradient-hr'
         "
-        :disabled="isLoading || isCampaignDone"
+        :disabled="isLoading || isFundsReturned"
+        @click="getRefund(campaignId, address)"
+      >
+        <span v-if="!isFundsReturned">Claim Refund</span>
+        <span v-else>Refunded</span>
+      </BaseButton>
+      <BaseButton
+        v-else
+        type="submit"
+        :class="
+          isLoading ||
+          (isCampaignDone && isGoalAchieved) ||
+          (isCampaignDone && !isDonator)
+            ? 'bg-disabled h-9 px-4 rounded-[6px] text-white cursor-not-allowed'
+            : 'btn-gradient-hr'
+        "
+        :disabled="
+          isLoading ||
+          (isCampaignDone && isGoalAchieved) ||
+          (isCampaignDone && !isDonator)
+        "
       >
         Fund Campaign
       </BaseButton>
@@ -48,19 +68,23 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useField, useForm } from "vee-validate";
 import {
   FundCampaignRequest,
   FundCampaignRequestSchema,
 } from "~/schemas/fund-campaign";
+import { useWalletStore } from "~/store/wallet";
 import CampaignFundFormProps from "~/types/CampaignFundFormProps";
 
 const campaignFundFormProps = defineProps<CampaignFundFormProps>();
 const emit = defineEmits(["fund-campaign"]);
 
-const { isLoading, isConnected } = toRefs(campaignFundFormProps);
-const { notConnectedWarning } = useUtils();
+const { isLoading, isConnected, isCampaignDone, isGoalAchieved } = toRefs(
+  campaignFundFormProps,
+);
+const { notConnectedWarning, getRefund } = useUtils();
 
 const validationSchema = toTypedSchema(FundCampaignRequestSchema);
 
@@ -74,6 +98,9 @@ const {
 } = useForm({
   validationSchema,
 });
+
+const useWallet = useWalletStore();
+const { address } = storeToRefs(useWallet);
 
 const handleChange = (e: InputEvent) => {
   const { name, value } = e.target as HTMLInputElement;
