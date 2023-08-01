@@ -82,9 +82,14 @@ import { useWalletStore } from "~/store/wallet";
 import placeholderImage from "@/assets/img/placeholder.png";
 
 const route = useRoute();
-const router = useRouter();
-const { truncate, getDaysLeft, getAvatarUrl, campaignStatusChecker } =
-  useUtils();
+const {
+  truncate,
+  getDaysLeft,
+  getAvatarUrl,
+  campaignStatusChecker,
+  debounce,
+  showCampaignIdError,
+} = useUtils();
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 
@@ -195,14 +200,14 @@ const donateCampaign = async (amount: number): Promise<void> => {
   }
 };
 
+if (isNaN(id) || id < 0) {
+  showCampaignIdError();
+}
+
 if (process.client) {
   watch(
     refresher,
     () => {
-      if (isNaN(id) || id < 0) {
-        router.push("/404");
-        return;
-      }
       getCampaign(id)
         .then((result) => {
           campaign.value = setCampaign(result);
@@ -213,11 +218,17 @@ if (process.client) {
           if (isCampaignOwner) {
             canEdit.value = !isCampaignDone.value;
           }
-
           isPageLoading.value = false;
         })
         .catch((error) => {
-          toast.error(error.reason);
+          if (error.reason.includes("Invalid campaign ID")) {
+            showCampaignIdError();
+          } else {
+            toast.error(error.reason);
+          }
+          debounce(() => {
+            isPageLoading.value = false;
+          }, 2000);
         });
     },
     { immediate: true },

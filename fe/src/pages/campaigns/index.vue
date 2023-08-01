@@ -98,12 +98,12 @@ const getCampaignsResult = async (): Promise<
       result = await smartContract.searchByTitle(
         search.value,
         6,
-        resultIndex.value.nextIndex,
+        resultIndex.value.nextIndex
       );
     } else {
       result = await smartContract.getAllCampaigns(
         6,
-        resultIndex.value.nextIndex,
+        resultIndex.value.nextIndex
       );
     }
     fetchedCampaigns = result[0];
@@ -127,6 +127,7 @@ const setAllCampaigns = (data: SmartContractCampaign[]): Campaign[] => {
       daysLeft: getDaysLeft(campaign.deadline),
       totalDonation: Number(ethers.formatEther(campaign.currentAmount)),
       totalBackers: Number(campaign.totalDonations),
+      campaignGoal: Number(campaign.goalAmount),
     };
   });
   return campaigns;
@@ -167,7 +168,7 @@ watch(
       nextIndex: 0,
     });
     loadCampaigns();
-  },
+  }
 );
 
 onMounted(() => {

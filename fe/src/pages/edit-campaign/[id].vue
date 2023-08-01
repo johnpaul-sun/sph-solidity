@@ -113,7 +113,13 @@ import placeholderImage from "@/assets/img/placeholder.png";
 const validationSchema = toTypedSchema(CreateCampaignRequestSchema);
 const router = useRouter();
 const route = useRoute();
-const { getDateYMD, notConnectedWarning, campaignStatusChecker } = useUtils();
+const {
+  getDateYMD,
+  notConnectedWarning,
+  campaignStatusChecker,
+  debounce,
+  showCampaignIdError,
+} = useUtils();
 
 const useWallet = useWalletStore();
 const { isConnected } = storeToRefs(useWallet);
@@ -177,14 +183,22 @@ const getCampaign = async (): Promise<void> => {
         campaignData.value.imageUrl = values.imageUrl ?? "";
         campaignData.value.goal = values.goal;
         campaignData.value.date = values.date;
+
         isPageLoading.value = false;
       })
       .catch((error): void => {
-        toast.error(error.reason);
+        if (error.reason.includes("Invalid campaign ID")) {
+          showCampaignIdError();
+        } else {
+          toast.error(error.reason);
+        }
+        debounce(() => {
+          isLoading.value = false;
+          isPageLoading.value = false;
+        }, 2000);
       })
       .finally((): void => {
         isLoading.value = false;
-        isPageLoading.value = false;
       });
   } else {
     notConnectedWarning();
@@ -195,7 +209,7 @@ const getCampaign = async (): Promise<void> => {
 
 onMounted((): void => {
   if (isNaN(id) || id < 0) {
-    router.push("/404");
+    showCampaignIdError();
     return;
   }
   getCampaign();

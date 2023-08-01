@@ -29,7 +29,7 @@ type Props = {
   modelValue?: string;
   placeholder?: string;
   error?: string;
-  disabled: boolean;
+  disabled?: boolean;
 };
 
 const props = defineProps<Props>();
