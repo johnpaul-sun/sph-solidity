@@ -126,7 +126,7 @@ const { getDaysLeft } = useUtils();
 const isLoading = ref<boolean>(true);
 
 onMounted(() => {
-  getRecentCampaigns(7, getSmartContract);
+  getRecentCampaigns(6, getSmartContract);
   isLoading.value = false;
 });
 </script>

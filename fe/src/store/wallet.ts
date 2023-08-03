@@ -34,7 +34,7 @@ export const useWalletStore = defineStore("walletStore", {
     },
     async getRecentCampaigns(
       pageSize: number,
-      getSmartContract: () => Promise<ethers.Contract | null>
+      getSmartContract: () => Promise<ethers.Contract | null>,
     ) {
       type ResultData = [
         number,
@@ -46,7 +46,7 @@ export const useWalletStore = defineStore("walletStore", {
         number,
         number,
         number,
-        number
+        number,
       ][];
 
       try {
@@ -69,7 +69,9 @@ export const useWalletStore = defineStore("walletStore", {
             totalDonations: item[9],
           }));
 
-          this.recentCampaign = campaignData.reverse();
+          this.recentCampaign = campaignData
+            .slice()
+            .sort((a, b) => Number(b.id) - Number(a.id));
         }
       } catch (error) {
         if (process.client) {
