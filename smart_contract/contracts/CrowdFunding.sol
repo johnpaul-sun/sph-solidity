@@ -25,7 +25,7 @@ contract CrowdFunding {
         uint256 currentAmount;
         uint256 deadline;
         uint256 totalDonations;
-        address[] fundsReturned;
+        bool fundsReturned;
         bool fundsCredited;
     }
 
@@ -174,18 +174,6 @@ contract CrowdFunding {
         return pagination;
     }
 
-    function isAddressInArray(
-        address[] memory array,
-        address target
-    ) private pure returns (bool) {
-        for (uint256 i = 0; i < array.length; i++) {
-            if (array[i] == target) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     function createCampaign(
         string memory _fullname,
         string memory _title,
@@ -203,8 +191,6 @@ contract CrowdFunding {
             _goalAmount
         )
     {
-        address[] memory fundsReturned = new address[](0);
-
         Campaign memory newCampaign = Campaign({
             id: totalCampaigns,
             creator: msg.sender,
@@ -216,7 +202,7 @@ contract CrowdFunding {
             currentAmount: 0,
             deadline: _deadline,
             totalDonations: 0,
-            fundsReturned: fundsReturned,
+            fundsReturned: false,
             fundsCredited: false
         });
 
@@ -363,10 +349,6 @@ contract CrowdFunding {
     function getCampaign(
         uint256 _campaignId
     ) public view returns (Campaign memory) {
-        require(
-            _campaignId >= 0 && _campaignId < totalCampaigns,
-            "Invalid campaign ID"
-        );
         return campaigns[_campaignId];
     }
 
@@ -489,13 +471,9 @@ contract CrowdFunding {
             ];
             Campaign memory campaign = campaigns[transaction.campaignId];
 
-            bool isFundsReturned = isAddressInArray(
-                campaign.fundsReturned,
-                _userAddress
-            );
             bool isGoalMet = campaign.currentAmount >= campaign.goalAmount;
             bool isExpired = block.timestamp >= campaign.deadline &&
-                !isFundsReturned;
+                !campaign.fundsReturned;
 
             string memory status = "pending";
             if (isGoalMet) {
@@ -510,7 +488,7 @@ contract CrowdFunding {
                 campaignTitle: campaign.title,
                 donationAmount: transaction.amount,
                 status: status,
-                fundsReturned: isFundsReturned
+                fundsReturned: campaign.fundsReturned
             });
 
             userDonations[count] = donationData;
@@ -529,32 +507,37 @@ contract CrowdFunding {
             uint256 totalAllCampaigns
         )
     {
-        uint256 startIndex = _size < totalCampaigns
+        Campaign[] memory tempCampaigns = new Campaign[](_size);
+        uint256 fetchedCampaignsCount = 0;
+        uint256 startIndex = totalCampaigns > _size
             ? (totalCampaigns - _size)
             : 0;
-        uint256 arraySize = _size < totalCampaigns ? _size : totalCampaigns;
+        uint256 i = startIndex;
 
-        Campaign[] memory tempCampaigns = new Campaign[](arraySize);
-        uint256 count = 0;
-
-        for (uint256 i = 0; i < arraySize; i++) {
-            Campaign storage campaign = campaigns[startIndex + i];
+        while (i < totalCampaigns && fetchedCampaignsCount < _size) {
+            Campaign storage campaign = campaigns[i];
             if (
                 block.timestamp <= campaign.deadline &&
                 campaign.currentAmount < campaign.goalAmount &&
                 !campaign.fundsCredited
             ) {
-                tempCampaigns[count] = campaign;
-                count++;
+                tempCampaigns[fetchedCampaignsCount] = campaign;
+                fetchedCampaignsCount++;
+            }
+
+            i++;
+
+            if (i == totalCampaigns && fetchedCampaignsCount < _size) {
+                i = 0;
             }
         }
 
-        recentCampaigns = new Campaign[](count);
-        for (uint256 i = 0; i < count; i++) {
-            recentCampaigns[i] = tempCampaigns[i];
+        recentCampaigns = new Campaign[](fetchedCampaignsCount);
+        for (uint256 j = 0; j < fetchedCampaignsCount; j++) {
+            recentCampaigns[j] = tempCampaigns[j];
         }
 
-        totalFetchedCampaigns = count;
+        totalFetchedCampaigns = fetchedCampaignsCount;
         totalAllCampaigns = totalCampaigns;
     }
 
@@ -585,7 +568,7 @@ contract CrowdFunding {
 
         // Count the number of campaigns that contain the search term
         for (
-            uint i = startIndex;
+            uint256 i = startIndex;
             i < totalCampaigns && matchingCount < pageSize;
             i++
         ) {
@@ -692,11 +675,9 @@ contract CrowdFunding {
                 address payable donorAddress = payable(donation.donor);
                 donorAddress.transfer(donation.amount);
                 campaign.currentAmount -= donation.amount;
-                campaign.fundsReturned.push(_addressToRefund);
+                campaign.fundsReturned = true;
             }
         }
-
-        emit Refunded();
     }
 
     function checkGoalAndSendFunds(uint256 _campaignId) public {

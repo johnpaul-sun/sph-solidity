@@ -5,7 +5,7 @@ import { useWalletStore } from "~/store/wallet";
 
 export default defineNuxtPlugin(async () => {
   const router = useRouter();
-  const CONTRACT_ADDRESS = "0x828B8d50f2B83e2478344AE399B2beE6Fb395C28";
+  const CONTRACT_ADDRESS = "0x0C70c062D46a6273312abAf0CCa286eb43d8AA10";
 
   const ethereum = window.ethereum;
   const provider = new ethers.BrowserProvider(ethereum);
@@ -13,9 +13,6 @@ export default defineNuxtPlugin(async () => {
   let smartContract: ethers.Contract | null = null;
   let signer = null;
   let isListenerExecuted = false;
-
-  const walletStore = useWalletStore();
-  const { getRecentCampaigns } = walletStore;
 
   const getSmartContract = async () => {
     if (ethereum?.selectedAddress !== null) {
@@ -73,7 +70,6 @@ export default defineNuxtPlugin(async () => {
         isListenerExecuted = true;
         toast.success(`Campaign ${title} was successfully created!`);
         useWalletStore().updateState();
-        getRecentCampaigns(6, getSmartContract);
         clearListener();
       }
     }

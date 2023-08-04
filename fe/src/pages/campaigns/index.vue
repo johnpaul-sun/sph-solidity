@@ -97,12 +97,12 @@ const getCampaignsResult = async (): Promise<
     if (search.value) {
       result = await smartContract.searchByTitle(
         search.value,
-        7,
+        6,
         resultIndex.value.nextIndex,
       );
     } else {
       result = await smartContract.getAllCampaigns(
-        7,
+        6,
         resultIndex.value.nextIndex,
       );
     }
