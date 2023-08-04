@@ -73,7 +73,6 @@ export default defineNuxtPlugin(async () => {
         isListenerExecuted = true;
         toast.success(`Campaign ${title} was successfully created!`);
         useWalletStore().updateState();
-        getRecentCampaigns(6, getSmartContract);
         clearListener();
       }
     }

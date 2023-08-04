@@ -118,15 +118,19 @@ const { $getSmartContract: getSmartContract } = useNuxtApp();
 
 const walletStore = useWalletStore();
 const { updateIsShowModal, getRecentCampaigns } = walletStore;
-const { recentCampaign, isConnected } = storeToRefs(walletStore);
+const { recentCampaign, isConnected, refresher } = storeToRefs(walletStore);
 
 const handleCloseModal = () => updateIsShowModal(false);
 const { getDaysLeft } = useUtils();
 
 const isLoading = ref<boolean>(true);
 
-onMounted(() => {
-  getRecentCampaigns(6, getSmartContract);
-  isLoading.value = false;
-});
+watch(
+  refresher,
+  () => {
+    getRecentCampaigns(6, getSmartContract);
+    isLoading.value = false;
+  },
+  { immediate: true },
+);
 </script>
