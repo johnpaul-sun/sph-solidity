@@ -91,7 +91,7 @@
               ></CampaignCard>
             </div>
             <div
-              v-if="!isLoading"
+              v-if="!isLoading && recentCampaign.length >= 6"
               class="w-full mt-8 h-14 flex items-center justify-center"
             >
               <NuxtLink

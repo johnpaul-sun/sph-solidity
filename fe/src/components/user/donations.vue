@@ -168,6 +168,9 @@ const getUserDonations = async (pageNumber: number) => {
         }
       })
       .catch((error) => {
+        const errorCode = JSON.parse(JSON.stringify(error)).code;
+        if (errorCode === "UNCONFIGURED_NAME" || errorCode === undefined)
+          return;
         toast.error(error.reason);
       })
       .finally(() => {
