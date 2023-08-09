@@ -35,4 +35,12 @@ defineEmits(["change-tab"]);
 const tabsProps = defineProps<TabsProps>();
 
 const { activeTab, items } = toRefs(tabsProps);
+
+watch(
+  activeTab,
+  () => {
+    useCookie("active-tab").value = activeTab.value;
+  },
+  { immediate: true },
+);
 </script>

@@ -65,7 +65,7 @@ const itemsPerPage = 6;
 const currentPage = 1;
 
 const profileTabs = ["My Campaigns", "Donators", "Donations"];
-const activeTab = ref("My Campaigns");
+const activeTab = ref(useCookie("active-tab").value);
 
 const getDonatorsByWalletAddress = async (
   walletAddress: string,
