@@ -119,10 +119,11 @@ const {
   campaignStatusChecker,
   debounce,
   showCampaignIdError,
+  sameString,
 } = useUtils();
 
 const useWallet = useWalletStore();
-const { isConnected } = storeToRefs(useWallet);
+const { isConnected, address } = storeToRefs(useWallet);
 const id = Number(route.params.id);
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const isLoading = ref<boolean>(false);
@@ -164,27 +165,31 @@ const getCampaign = async (): Promise<void> => {
     smartContract
       .getCampaign(id)
       .then((result) => {
-        isCampaignDone.value = campaignStatusChecker(
-          result.currentAmount,
-          result.goalAmount,
-          result.deadline,
-        );
+        if (!sameString(address.value, result.creator)) {
+          router.replace("/");
+        } else {
+          isCampaignDone.value = campaignStatusChecker(
+            result.currentAmount,
+            result.goalAmount,
+            result.deadline
+          );
 
-        values.fullname = result[2];
-        values.campaign = result[3];
-        values.story = result[4];
-        values.imageUrl = result[5];
-        values.goal = +ethers.formatEther(result[6]);
-        values.date = getDateYMD(result[8]);
+          values.fullname = result[2];
+          values.campaign = result[3];
+          values.story = result[4];
+          values.imageUrl = result[5];
+          values.goal = +ethers.formatEther(result[6]);
+          values.date = getDateYMD(result[8]);
 
-        campaignData.value.fullname = values.fullname ?? "";
-        campaignData.value.campaign = values.campaign ?? "";
-        campaignData.value.story = values.story ?? "";
-        campaignData.value.imageUrl = values.imageUrl ?? "";
-        campaignData.value.goal = values.goal;
-        campaignData.value.date = values.date;
+          campaignData.value.fullname = values.fullname ?? "";
+          campaignData.value.campaign = values.campaign ?? "";
+          campaignData.value.story = values.story ?? "";
+          campaignData.value.imageUrl = values.imageUrl ?? "";
+          campaignData.value.goal = values.goal;
+          campaignData.value.date = values.date;
 
-        isPageLoading.value = false;
+          isPageLoading.value = false;
+        }
       })
       .catch((error): void => {
         if (error.reason.includes("Invalid campaign ID")) {
@@ -216,7 +221,7 @@ onMounted((): void => {
 });
 
 const handleValidateImageUrl = async (
-  e: InputEvent,
+  e: InputEvent
 ): Promise<void | undefined> => {
   isLoading.value = true;
   const { name, value } = e.target as HTMLInputElement;
@@ -304,7 +309,7 @@ const onSubmit = handleSubmit(async (): Promise<void> => {
         values.story,
         values.imageUrl,
         ethers.parseEther((values.goal as number).toString()),
-        deadline.getTime() / 1000, // convert from milliseconds to secsonds
+        deadline.getTime() / 1000 // convert from milliseconds to secsonds
       )
       .then((): void => {
         resetForm();
