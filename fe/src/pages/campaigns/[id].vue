@@ -146,16 +146,19 @@ const setCampaign = (
   );
   const totalDonation = Number(ethers.formatEther(data[0].currentAmount));
   const campaignGoal = Number(ethers.formatEther(data[0].goalAmount));
-  const addressLoweredCase = Object.values(data[0].fundsReturned).map(
-    (address) => address.toLowerCase(),
+  const addressLoweredCase = Object.values(donations).map(
+    ({ address }: { address: string }) => address.toLowerCase(),
   );
-  isFundsReturned.value = addressLoweredCase.includes(address.value);
+  isFundsReturned.value = Boolean(
+    addressLoweredCase.includes(address.value) && data[0].fundsReturned,
+  );
   isGoalAchieved.value = totalDonation >= campaignGoal;
   isCampaignDone.value = campaignStatusChecker(
     totalDonation,
     campaignGoal,
     data[0].deadline,
   );
+
   return {
     campaignId: Number(data[0].id),
     title: data[0].title,
