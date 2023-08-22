@@ -25,6 +25,7 @@
         <UserDonators
           :donators-data="donatorsData"
           :call-new-data="callNewData"
+          :total-donators-pages="totalDonatorsPages"
         />
       </div>
       <div v-if="activeTab === 'Donations'">
@@ -54,6 +55,7 @@ const { middleTruncate, getAvatarUrl } = useUtils();
 const isLoading = ref<boolean>(false);
 const isPageLoading = ref<boolean>(true);
 const imgSrc = ref<string>("");
+const totalDonatorsPages = ref<number>(1);
 const donatorsData = ref<DonatorsData>({
   donatorsList: [],
   totalDonators: 0,
@@ -87,21 +89,29 @@ const getDonatorsByWalletAddress = async (
       const previousPage = Number(result[4]);
 
       if (donators.length > 0) {
-        const donatorsInfo = donators?.map(
-          (donator: [string, string, number][]) => ({
-            donator: donator[1],
-            campaignTitle: donator[2],
-            donationAmount: donator[3].toString(),
-          }),
-        );
-        const donatorsList = JSON.parse(JSON.stringify(donatorsInfo, null, 2));
+        const donatorsInfo = donators
+          ?.map((donator: [number, string, string, number]) => {
+            const donationAmount = donator[3].toString();
+            if (donationAmount !== "0") {
+              return {
+                id: donator[0],
+                donator: donator[1],
+                campaignTitle: donator[2],
+                donationAmount,
+              };
+            }
+            return null;
+          })
+          .filter(Boolean);
+
         donatorsData.value = {
-          donatorsList,
+          donatorsList: donatorsInfo,
           totalDonators,
           totalPages,
           nextPage,
           previousPage,
         };
+        totalDonatorsPages.value = totalPages;
       }
       isPageLoading.value = false;
     }

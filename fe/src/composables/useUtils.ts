@@ -14,7 +14,7 @@ export const useUtils = () => {
   const middleTruncate = (
     address: string,
     startLength: number,
-    endLength: number
+    endLength: number,
   ): string => {
     if (address.length <= startLength + endLength) {
       return address;
@@ -70,7 +70,7 @@ export const useUtils = () => {
   const campaignStatusChecker = (
     currentAmount: BigNumberish,
     goalAmount: BigNumberish,
-    deadline: BigNumberish
+    deadline: BigNumberish,
   ) => {
     const isCampaignExpired = getDaysLeft(deadline) <= 0;
     const isCampaignAchieved = currentAmount >= goalAmount;
@@ -114,6 +114,11 @@ export const useUtils = () => {
     return str1.toLocaleLowerCase() === str2.toLocaleLowerCase();
   };
 
+  const redirectToCampaign = (id: number) => {
+    const router = useRouter();
+    router.push(`/campaigns/${id}`);
+  };
+
   return {
     truncate,
     middleTruncate,
@@ -127,5 +132,6 @@ export const useUtils = () => {
     showCampaignIdError,
     getRefund,
     sameString,
+    redirectToCampaign,
   };
 };

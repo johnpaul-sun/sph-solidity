@@ -12,7 +12,7 @@
       <tbody>
         <tr
           v-for="(
-            { donator, campaignTitle, donationAmount }, index
+            { id, donator, campaignTitle, donationAmount }, index
           ) in donatorsData.donatorsList"
           :key="index"
           class="items-center min-h-[56px] border-b border-disabled"
@@ -20,7 +20,7 @@
           <td class="w-[56px] text-center px-4 bg-primary-200">
             {{ index + 1 }}
           </td>
-          <td class="px-4 py-2">
+          <td class="px-4 py-2 cursor-pointer" @click="redirectToCampaign(id)">
             <div class="flex items-center space-x-2">
               <UserAvatar
                 :img-src="getAvatarUrl(donator)"
@@ -32,7 +32,9 @@
               </span>
             </div>
           </td>
-          <td class="px-4 py-2">{{ campaignTitle }}</td>
+          <td class="px-4 py-2 cursor-pointer" @click="redirectToCampaign(id)">
+            {{ campaignTitle }}
+          </td>
           <td class="px-4 w-40">{{ formatEther(donationAmount) }} ETH</td>
         </tr>
       </tbody>
@@ -64,16 +66,17 @@ import DonatorsData from "~/types/DonatorsData";
 const props = defineProps<{
   donatorsData: DonatorsData;
   callNewData: (currentPage: number) => void;
+  totalDonatorsPages: number;
 }>();
 
-const { donatorsData } = toRefs(props);
+const { donatorsData, totalDonatorsPages } = toRefs(props);
 const useWallet = useWalletStore();
 const { refresher } = storeToRefs(useWallet);
 
-const { middleTruncate, getAvatarUrl } = useUtils();
+const { middleTruncate, getAvatarUrl, redirectToCampaign } = useUtils();
 const currentPage = ref(1);
 const itemsPerPage = ref(6);
-const lastPage = ref(donatorsData.value.totalPages);
+const lastPage = ref(totalDonatorsPages);
 
 const setPage = (_itemsPerPage: number, pageNumber: number): void => {
   currentPage.value = pageNumber;
