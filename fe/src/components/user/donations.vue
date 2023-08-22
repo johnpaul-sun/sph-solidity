@@ -29,11 +29,11 @@
         >
           <td
             class="min-w-[56px] px-4 text-center bg-primary-200 cursor-pointer"
-            @click="redirect(id)"
+            @click="redirectToCampaign(id)"
           >
             {{ index + 1 }}
           </td>
-          <td class="px-4 py-2 cursor-pointer" @click="redirect(id)">
+          <td class="px-4 py-2 cursor-pointer" @click="redirectToCampaign(id)">
             <div class="flex items-center space-x-2">
               <UserAvatar
                 :img-src="getAvatarUrl(userAddress)"
@@ -45,7 +45,7 @@
               </span>
             </div>
           </td>
-          <td class="px-4 py-2 cursor-pointer" @click="redirect(id)">
+          <td class="px-4 py-2 cursor-pointer" @click="redirectToCampaign(id)">
             {{ campaignTitle }}
           </td>
           <td class="px-4 w-40">{{ donationAmount }} ETH</td>
@@ -114,8 +114,8 @@ type DonationType = {
   fundsReturned: boolean;
 };
 
-const router = useRouter();
-const { middleTruncate, getAvatarUrl, getRefund } = useUtils();
+const { middleTruncate, getAvatarUrl, getRefund, redirectToCampaign } =
+  useUtils();
 const itemsPerPage = ref<number>(6);
 const currentPage = ref<number>(1);
 const lastPage = ref<number>(1);
@@ -125,10 +125,6 @@ const donations = ref<DonationType[]>([]);
 const { $getSmartContract: getSmartContract } = useNuxtApp();
 const useWallet = useWalletStore();
 const { address, refresher } = storeToRefs(useWallet);
-
-const redirect = (id: number) => {
-  router.push(`/campaigns/${id}`);
-};
 
 const getUserDonations = async (pageNumber: number) => {
   isLoading.value = true;

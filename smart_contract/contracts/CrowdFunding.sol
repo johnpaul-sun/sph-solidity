@@ -393,6 +393,11 @@ contract CrowdFunding {
         donatorCount = 0;
         PaginationData memory pagination;
 
+        DonationData[] memory temporaryDonations = new DonationData[](
+            totalDonations
+        );
+        uint256 tempDonationsIndex = 0;
+
         for (uint256 i = 0; i < totalCampaigns; i++) {
             Campaign storage campaign = campaigns[i];
             if (campaign.creator == _walletAddress) {
@@ -400,7 +405,34 @@ contract CrowdFunding {
                     DonationTransaction storage donation = donationTransactions[
                         j
                     ];
-                    if (donation.campaignId == campaign.id) {
+                    if (
+                        donation.campaignId == campaign.id &&
+                        donation.donor != address(0)
+                    ) {
+                        bool found = false;
+                        for (uint256 k = 0; k < tempDonationsIndex; k++) {
+                            if (
+                                temporaryDonations[k].userAddress ==
+                                donation.donor &&
+                                temporaryDonations[k].id == campaign.id
+                            ) {
+                                temporaryDonations[k].donationAmount += donation
+                                    .amount;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            DonationData memory newDonation;
+                            newDonation.id = campaign.id;
+                            newDonation.userAddress = donation.donor;
+                            newDonation.donationAmount = donation.amount;
+                            newDonation.campaignTitle = campaign.title;
+                            temporaryDonations[
+                                tempDonationsIndex
+                            ] = newDonation;
+                            tempDonationsIndex++;
+                        }
                         donatorCount++;
                     }
                 }
@@ -408,35 +440,34 @@ contract CrowdFunding {
         }
 
         pagination = _paginate(donatorCount, _pageSize, _pageNumber);
-        donations = new DonationData[](
-            pagination.endIndex - pagination.startIndex
-        );
-        uint256 index = 0;
 
-        for (uint256 i = 0; i < totalCampaigns; i++) {
-            Campaign storage campaign = campaigns[i];
-            if (campaign.creator == _walletAddress) {
-                for (uint256 j = 0; j < totalDonations; j++) {
-                    DonationTransaction storage donation = donationTransactions[
-                        j
-                    ];
-                    if (donation.campaignId == campaign.id) {
-                        if (
-                            index >= pagination.startIndex &&
-                            index < pagination.endIndex
-                        ) {
-                            DonationData memory donatorData;
-                            donatorData.id = campaign.id;
-                            donatorData.userAddress = donation.donor;
-                            donatorData.campaignTitle = campaign.title;
-                            donatorData.donationAmount = donation.amount;
-                            donations[
-                                index - pagination.startIndex
-                            ] = donatorData;
-                        }
-                        index++;
-                    }
+        // Filter out empty or zero donations
+        uint256 filteredDonationsCount = 0;
+        for (uint256 i = 0; i < tempDonationsIndex; i++) {
+            if (
+                temporaryDonations[i].userAddress != address(0) &&
+                temporaryDonations[i].donationAmount > 0
+            ) {
+                filteredDonationsCount++;
+            }
+        }
+
+        donations = new DonationData[](filteredDonationsCount);
+        uint256 index = 0;
+        for (uint256 i = 0; i < tempDonationsIndex; i++) {
+            if (
+                temporaryDonations[i].userAddress != address(0) &&
+                temporaryDonations[i].donationAmount > 0
+            ) {
+                if (
+                    index >= pagination.startIndex &&
+                    index < pagination.endIndex
+                ) {
+                    donations[
+                        index - pagination.startIndex
+                    ] = temporaryDonations[i];
                 }
+                index++;
             }
         }
 
@@ -444,6 +475,7 @@ contract CrowdFunding {
         nextPage = pagination.nextPage;
         previousPage = pagination.previousPage;
     }
+
 
     function getUserDonations(
         address _userAddress,
@@ -633,6 +665,7 @@ contract CrowdFunding {
         _size = _startIndex == 0
             ? (_size > totalCampaigns ? totalCampaigns : _size)
             : (_size >= _startIndex ? _startIndex : _size);
+
         indexData.nextIndex = _startIndex == 0
             ? (totalCampaigns - _size)
             : (_startIndex - _size);
@@ -644,14 +677,8 @@ contract CrowdFunding {
 
         for (uint256 i = startIndex; i < startIndex + _size; i++) {
             Campaign storage campaign = campaigns[i];
-            if (
-                block.timestamp <= campaign.deadline &&
-                campaign.currentAmount < campaign.goalAmount &&
-                !campaign.fundsCredited
-            ) {
-                tempCampaigns[index] = campaign;
-                index++;
-            }
+            tempCampaigns[index] = campaign;
+            index++;
         }
 
         allCampaigns = new Campaign[](index);

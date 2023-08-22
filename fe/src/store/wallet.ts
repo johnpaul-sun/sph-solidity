@@ -69,7 +69,14 @@ export const useWalletStore = defineStore("walletStore", {
             totalDonations: item[9],
           }));
 
-          this.recentCampaign = campaignData
+          const uniqueRecentCampaign = <RecentCampaignData[]>[];
+          for (const campaign of campaignData) {
+            if (!uniqueRecentCampaign.some(({ id }) => id === campaign.id)) {
+              uniqueRecentCampaign.push(campaign);
+            }
+          }
+
+          this.recentCampaign = uniqueRecentCampaign
             .slice()
             .sort((a, b) => Number(b.id) - Number(a.id));
         }

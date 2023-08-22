@@ -1,5 +1,10 @@
 export default interface DonatorsData {
-  donatorsList: [];
+  donatorsList: {
+    id: number;
+    donator: string;
+    campaignTitle: string;
+    donationAmount: number;
+  }[];
   totalDonators: number;
   totalPages: number;
   nextPage: number;
