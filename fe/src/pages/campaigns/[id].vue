@@ -38,7 +38,16 @@
       </div>
 
       <div class="flex flex-col gap-[24px]">
-        <CampaignDetailCard label="Days left" :content="campaign.daysLeft" />
+        <CampaignDetailCard
+          v-if="campaign.daysLeft >= 0"
+          :label="campaign.daysLeft > 1 ? 'Days left' : 'Day left'"
+          :content="campaign.daysLeft"
+        />
+        <CampaignDetailCard
+          v-else
+          label="Date Ended"
+          :content="getDateYMD(campaign.deadline)"
+        />
         <CampaignDetailCard
           label="Donations"
           :content="`${campaign.totalDonation} ETH`"
@@ -93,6 +102,7 @@ const {
   campaignStatusChecker,
   debounce,
   showCampaignIdError,
+  getDateYMD,
 } = useUtils();
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
@@ -122,6 +132,7 @@ const campaign = ref<Campaign>({
   totalDonation: 0,
   campaignGoal: 0,
   donations: [],
+  deadline: 0,
 });
 
 const replaceByDefault = (e: Event) => {
@@ -170,6 +181,7 @@ const setCampaign = (
     imageUrl: data[0].imageUrl,
     story: data[0].story,
     daysLeft: getDaysLeft(data[0].deadline),
+    deadline: data[0].deadline,
     totalDonation,
     campaignGoal,
     donations,

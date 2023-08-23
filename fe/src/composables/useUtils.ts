@@ -35,7 +35,11 @@ export const useUtils = () => {
   const getDateYMD = (dateInt: BigNumberish): string => {
     const date: Date = new Date(Number(dateInt) * 1000);
 
-    return date.toISOString().split("T")[0];
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+    const year = date.getFullYear();
+
+    return year + "-" + month + "-" + day;
   };
 
   const notConnectedWarning = (duration = 1500): Id => {
@@ -46,7 +50,7 @@ export const useUtils = () => {
     return `https://api.multiavatar.com/${id.toLowerCase()}.png`;
   };
 
-  const debounce = (fn = () => {}, delay = 500) => {
+  const debounce = (fn = () => { }, delay = 500) => {
     let timeout: NodeJS.Timeout;
     return (...args: []) => {
       clearTimeout(timeout);

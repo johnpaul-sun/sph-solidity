@@ -10,6 +10,7 @@
         totalDonation,
         imageUrl,
         daysLeft,
+        deadline,
       } in campaigns"
       :key="campaignId"
       :title="title"
@@ -18,6 +19,7 @@
       :image-url="imageUrl"
       :days-left="daysLeft"
       :to-link="`/campaigns/${campaignId}`"
+      :deadline="getDateYMD(deadline)"
     />
   </div>
 </template>
@@ -28,6 +30,8 @@ import Campaign from "~/types/Campaign";
 type Props = {
   campaigns: Campaign[];
 };
+
+const { getDateYMD } = useUtils();
 
 const cardViewProps = defineProps<Props>();
 const { campaigns } = toRefs(cardViewProps);
