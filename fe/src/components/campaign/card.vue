@@ -21,13 +21,21 @@
       </div>
     </div>
     <div class="mx-4 mb-4">
-      <div class="font-bold text-dark flex justify-between">
-        <div class="text-sm">{{ ethValue }}</div>
-        <div class="text-base w-4/12 text-left">{{ daysLeft }}</div>
-      </div>
-      <div class="font-normal text-primary-500 flex text-sm justify-between">
-        <div>Raised ETH</div>
-        <div class="w-4/12 text-left">Days Left</div>
+      <div class="flex justify-between">
+        <div>
+          <p class="font-bold text-dark">{{ ethValue }}</p>
+          <p class="font-normal text-primary-500">Raised ETH</p>
+        </div>
+        <div v-if="Number(daysLeft) >= 0" class="w-4/12 text-left">
+          <p class="font-bold text-dark">{{ daysLeft }}</p>
+          <p class="font-normal text-primary-500">
+            {{ Number(daysLeft) > 1 ? "Days left" : "Day left" }}
+          </p>
+        </div>
+        <div v-else class="w-4/12 text-left">
+          <p class="font-bold text-dark">{{ deadline }}</p>
+          <p class="font-normal text-primary-500">Date Ended</p>
+        </div>
       </div>
     </div>
   </NuxtLink>
@@ -45,6 +53,7 @@ const {
   title,
   description,
   daysLeft,
+  deadline,
   additionalClass,
   toLink,
 } = toRefs(campaignCardProps);

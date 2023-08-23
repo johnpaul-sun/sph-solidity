@@ -1,3 +1,5 @@
+import { BigNumberish } from "ethers";
+
 export interface Creator {
   address: string;
   fullName: string;
@@ -20,4 +22,5 @@ export default interface Campaign {
   totalDonation: number;
   campaignGoal: number;
   donations?: Donation[];
+  deadline: BigNumberish;
 }

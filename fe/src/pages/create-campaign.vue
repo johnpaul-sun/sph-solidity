@@ -160,7 +160,7 @@ const { updateIsShowModal } = useWallet;
 const handleCloseModal = () => updateIsShowModal(false);
 
 const handleValidateImageUrl = async (
-  e: InputEvent
+  e: InputEvent,
 ): Promise<void | undefined> => {
   isLoading.value = true;
   const { name, value } = e.target as HTMLInputElement;
@@ -206,7 +206,7 @@ const onSubmit = handleSubmit(async () => {
         values.story,
         values.imageUrl,
         ethers.parseEther((values.goal as number).toString()),
-        deadline.getTime() / 1000 // convert from milliseconds to secsonds
+        deadline.getTime() / 1000, // convert from milliseconds to secsonds
       )
       .then(() => {
         resetForm();

@@ -128,6 +128,7 @@ const setAllCampaigns = (data: SmartContractCampaign[]): Campaign[] => {
       totalDonation: Number(ethers.formatEther(campaign.currentAmount)),
       totalBackers: Number(campaign.totalDonations),
       campaignGoal: Number(campaign.goalAmount),
+      deadline: campaign.deadline,
     };
   });
   return campaigns;

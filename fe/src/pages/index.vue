@@ -88,6 +88,7 @@
                 :image-url="imageUrl"
                 :days-left="getDaysLeft(deadline)"
                 :to-link="`/campaigns/${id}`"
+                :deadline="getDateYMD(deadline)"
               ></CampaignCard>
             </div>
             <div
@@ -121,7 +122,7 @@ const { updateIsShowModal, getRecentCampaigns } = walletStore;
 const { recentCampaign, isConnected, refresher } = storeToRefs(walletStore);
 
 const handleCloseModal = () => updateIsShowModal(false);
-const { getDaysLeft } = useUtils();
+const { getDaysLeft, getDateYMD } = useUtils();
 
 const isLoading = ref<boolean>(true);
 

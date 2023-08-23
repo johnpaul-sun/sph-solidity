@@ -171,7 +171,7 @@ const getCampaign = async (): Promise<void> => {
           isCampaignDone.value = campaignStatusChecker(
             result.currentAmount,
             result.goalAmount,
-            result.deadline
+            result.deadline,
           );
 
           values.fullname = result[2];
@@ -221,7 +221,7 @@ onMounted((): void => {
 });
 
 const handleValidateImageUrl = async (
-  e: InputEvent
+  e: InputEvent,
 ): Promise<void | undefined> => {
   isLoading.value = true;
   const { name, value } = e.target as HTMLInputElement;
@@ -309,7 +309,7 @@ const onSubmit = handleSubmit(async (): Promise<void> => {
         values.story,
         values.imageUrl,
         ethers.parseEther((values.goal as number).toString()),
-        deadline.getTime() / 1000 // convert from milliseconds to secsonds
+        deadline.getTime() / 1000, // convert from milliseconds to secsonds
       )
       .then((): void => {
         resetForm();

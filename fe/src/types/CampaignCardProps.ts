@@ -6,6 +6,7 @@ interface CampaignCardProps {
   additionalClass?: string;
   ethValue: number | string;
   daysLeft: number | string;
+  deadline: string;
   toLink?: string;
 }
 

@@ -11,6 +11,7 @@
           description,
           ethValue,
           daysLeft,
+          deadline,
         } in userCampaigns"
         :key="id"
         :title="title"
@@ -18,6 +19,7 @@
         :eth-value="ethValue"
         :image-url="imageUrl"
         :days-left="daysLeft"
+        :deadline="getDateYMD(deadline)"
         additional-class="cursor-pointer"
         @click="$router.push(`/campaigns/${id}`)"
       ></CampaignCard>
@@ -54,7 +56,7 @@ import CampaignCardProps from "~/types/CampaignCardProps";
 import { useWalletStore } from "~/store/wallet";
 
 const { $getSmartContract: getSmartContract } = useNuxtApp();
-const { getDaysLeft } = useUtils();
+const { getDaysLeft, getDateYMD } = useUtils();
 
 const useWallet = useWalletStore();
 const { refresher } = storeToRefs(useWallet);
@@ -82,6 +84,7 @@ const getUserCampaigns = async (pageNumber: number) => {
               imageUrl: campaign[5],
               ethValue: ethers.formatEther(campaign[7]),
               daysLeft: getDaysLeft(campaign[8]),
+              deadline: campaign[8],
             };
           });
           lastPage.value = Number(result[2]);
